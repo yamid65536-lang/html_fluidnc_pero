@@ -1,0 +1,1730 @@
+
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0b1620">
+<title>ПЕРО · рукопись → FluidNC</title>
+<style>
+:root{--ink:#0b1620;--ink2:#12283a;--ink3:#1d4257;--paper:#e8eef2;--surf:#fff;--surf2:#f2f7fa;--line:#d2dee6;--line2:#b9cbd8;
+--tx:#10202b;--mut:#5a7183;--mut2:#8aa1b1;--blue:#1f6feb;--blueD:#1550c0;--blueT:#e3edff;--acid:#12b886;--acidD:#0d9668;--acidT:#dbf7ee;
+--amber:#f59f00;--amberT:#fdf0d6;--red:#e8443a;--redT:#fde5e3;--mag:#c026d3;--magT:#fae6fc;--teal:#0d9488;--tealT:#d6f2ef;
+--r:14px;--rs:10px;--sh:0 1px 2px rgba(11,22,32,.07),0 8px 24px -12px rgba(11,22,32,.24)}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{min-height:100%;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--tx);-webkit-tap-highlight-color:transparent}
+body{background:radial-gradient(900px 460px at 88% -10%,rgba(31,111,235,.14),transparent 62%),radial-gradient(760px 420px at -8% 8%,rgba(192,38,211,.10),transparent 58%),radial-gradient(700px 620px at 50% 118%,rgba(18,184,134,.11),transparent 60%),var(--paper);background-attachment:fixed}
+::selection{background:rgba(31,111,235,.24)}
+*{scrollbar-width:thin;scrollbar-color:var(--ink3) transparent}
+*::-webkit-scrollbar{width:10px;height:10px}
+*::-webkit-scrollbar-track{background:rgba(18,40,58,.08);border-radius:99px}
+*::-webkit-scrollbar-thumb{background:linear-gradient(var(--ink3),var(--ink2));border-radius:99px;border:2px solid transparent;background-clip:padding-box}
+*::-webkit-scrollbar-thumb:hover{background:linear-gradient(var(--blue),var(--mag));background-clip:padding-box}
+header{position:sticky;top:0;z-index:40;display:flex;align-items:center;gap:.55rem;padding:.6rem .8rem;color:#fff;background:linear-gradient(112deg,var(--ink),var(--ink2) 52%,#1b4a63);box-shadow:0 8px 26px -14px rgba(5,14,22,.9)}
+header::after{content:"";position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(118deg,rgba(255,255,255,.035) 0 2px,transparent 2px 10px)}
+.logo{width:2.1rem;height:2.1rem;flex:none;border-radius:10px;display:grid;place-items:center;font-size:1.1rem;background:linear-gradient(140deg,var(--blue),var(--mag));box-shadow:0 4px 14px -4px rgba(31,111,235,.85)}
+h1{flex:1;font-size:.98rem;font-weight:800;letter-spacing:.3px;line-height:1.15;min-width:0}
+h1 small{display:block;font-size:.58rem;font-weight:600;letter-spacing:.7px;color:#8ab0c8;text-transform:uppercase}
+.pill{font-size:.68rem;font-weight:800;padding:.24rem .55rem;border-radius:99px;background:linear-gradient(135deg,var(--acid),var(--teal));color:#03231b}
+.zipb{position:relative;z-index:1;border:none;border-radius:10px;padding:.5rem .7rem;font-weight:800;font-size:.78rem;cursor:pointer;color:#2b1c00;background:linear-gradient(135deg,#ffd43b,var(--amber));box-shadow:0 4px 14px -5px rgba(245,159,0,.9);transition:.15s;white-space:nowrap}
+.zipb:hover{transform:translateY(-1px);filter:brightness(1.07)}.zipb:active{transform:scale(.96)}
+nav{position:sticky;top:3.3rem;z-index:35;display:flex;gap:.38rem;padding:.4rem .75rem .55rem;background:rgba(11,22,32,.95);backdrop-filter:blur(10px)}
+nav button{flex:1;min-height:2.35rem;border:1px solid rgba(255,255,255,.09);border-radius:11px;background:rgba(255,255,255,.07);color:#bcd3e2;font-weight:800;font-size:.82rem;cursor:pointer;transition:.16s}
+nav button:hover{background:rgba(255,255,255,.16);color:#fff}
+nav button.on{background:linear-gradient(135deg,#fff,#e5eef8);color:var(--ink);border-color:transparent}
+main{max-width:660px;margin:0 auto;padding:.7rem .75rem 4rem}
+.pane{display:none;animation:up .32s cubic-bezier(.2,.7,.3,1) both}.pane.on{display:block}
+@keyframes up{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.card{background:var(--surf);border:1.5px solid var(--line);border-radius:var(--r);padding:.62rem .68rem;margin-bottom:.6rem;box-shadow:var(--sh)}
+.card>h2{display:flex;align-items:center;gap:.4rem;font-size:.68rem;font-weight:900;letter-spacing:.8px;text-transform:uppercase;color:var(--mut);margin-bottom:.48rem}
+.card>h2::before{content:"";width:.5rem;height:.5rem;border-radius:3px;background:linear-gradient(135deg,var(--blue),var(--mag))}
+.hint{font-size:.81rem;line-height:1.5;color:var(--mut);margin-bottom:.5rem}
+.note{font-size:.75rem;line-height:1.5;color:#0a5b45;background:var(--acidT);border:1.5px solid #a6e5d1;border-radius:var(--rs);padding:.48rem .58rem;margin:.45rem 0}
+.note b{color:#06412e}
+.empty{background:linear-gradient(135deg,var(--blueT),var(--magT));border:1.5px dashed var(--blue)}
+.empty h2{color:var(--blueD)}.empty p{font-size:.82rem;line-height:1.5;color:var(--tx);margin-bottom:.5rem}
+.row{display:flex;flex-wrap:wrap;gap:.48rem .58rem;align-items:flex-end}
+label{display:flex;flex-direction:column;gap:.15rem;font-size:.62rem;font-weight:800;letter-spacing:.5px;text-transform:uppercase;color:var(--mut)}
+input,textarea,select{font:inherit;font-size:.94rem;padding:.4rem .5rem;min-height:2.3rem;border:1.5px solid var(--line2);border-radius:var(--rs);background:#fff;color:var(--tx);transition:.14s}
+input:focus,textarea:focus,select:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px rgba(31,111,235,.18)}
+input[type=range]{padding:0;min-height:1.4rem;border:none;accent-color:var(--blue);background:none}
+input[type=checkbox]{width:1.12rem;height:1.12rem;min-height:0;accent-color:var(--blue)}
+textarea{width:100%;min-height:4rem;resize:vertical;line-height:1.45;font-size:1rem}
+#out{font-family:ui-monospace,Consolas,monospace;font-size:.75rem;min-height:8.5rem;background:var(--ink);color:#c7dbea;border-color:var(--ink)}
+.n{width:4.5rem}.ns{width:3.8rem}
+.btns{display:flex;flex-wrap:wrap;gap:.36rem;margin-top:.48rem}
+button,.btn{font:inherit;font-size:.84rem;font-weight:800;padding:.48rem .7rem;min-height:2.4rem;border:1.5px solid var(--line2);border-radius:11px;background:#fff;color:var(--tx);cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:.28rem;transition:.14s;box-shadow:0 1px 2px rgba(11,22,32,.06)}
+button:hover,.btn:hover{border-color:var(--mut2);transform:translateY(-1px);box-shadow:var(--sh)}
+button:active,.btn:active{transform:scale(.97)}
+button:disabled{opacity:.42;cursor:not-allowed;transform:none;box-shadow:none}
+.big{flex:1;min-width:38%}
+.pri{background:linear-gradient(135deg,var(--blue),var(--blueD));color:#fff;border-color:transparent}
+.ok{background:linear-gradient(135deg,var(--acid),var(--acidD));color:#03231b;border-color:transparent}
+.wr{background:linear-gradient(135deg,#ffd43b,var(--amber));color:#2b1c00;border-color:transparent}
+.mg{background:linear-gradient(135deg,var(--mag),#a21caf);color:#fff;border-color:transparent}
+.cnc{background:linear-gradient(135deg,#fb7c3c,#d9480f);color:#fff;border-color:transparent}
+.dg{background:#fff;color:var(--red);border-color:var(--red)}.dg:hover{background:var(--redT)}
+.ton{background:linear-gradient(135deg,var(--teal),#0b7a70);color:#fff;border-color:transparent}
+.eon{background:linear-gradient(135deg,var(--red),#c62f26);color:#fff;border-color:transparent}
+.play{background:linear-gradient(135deg,var(--red),#c62f26);color:#fff;border-color:transparent}
+.hide{position:absolute;width:1px;height:1px;opacity:0;overflow:hidden}
+.st{min-height:1.2em;font-size:.81rem;font-weight:700;color:var(--blueD);margin:.32rem 0}
+.sm{font-size:.72rem;line-height:1.5;color:var(--mut)}
+.tabs{display:flex;flex-wrap:wrap;gap:.26rem;margin-bottom:.42rem}
+.tabs button{min-height:1.9rem;padding:.26rem .52rem;font-size:.75rem;border-radius:8px}
+.tabs button.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.grid{display:grid;grid-template-columns:repeat(8,1fr);gap:.26rem}
+@media(min-width:430px){.grid{grid-template-columns:repeat(11,1fr)}}
+.g{aspect-ratio:1;min-height:0;padding:0;border-radius:9px;border:1.5px solid var(--line);background:var(--surf2);font-size:1rem;font-weight:800;position:relative}
+.g:hover{border-color:var(--blue);background:var(--blueT)}
+.g.dn{background:var(--acidT);border-color:var(--acid);color:var(--acidD)}
+.g.on{background:linear-gradient(135deg,var(--blue),var(--blueD));border-color:transparent;color:#fff;box-shadow:0 0 0 3px rgba(31,111,235,.3)}
+.g .v{position:absolute;right:2px;bottom:1px;font-size:.52rem;font-weight:900;background:var(--acid);color:#03231b;border-radius:4px;padding:0 3px;line-height:1.25}
+.g.on .v{background:#fff;color:var(--blueD)}
+.vl{display:flex;flex-wrap:wrap;gap:.3rem}
+.vb{min-height:2.1rem;padding:.3rem .52rem;border-radius:10px;border:1.5px solid var(--line);background:var(--surf2);font-size:.8rem;font-weight:800;display:inline-flex;align-items:center;gap:.32rem;cursor:pointer}
+.vb.on{background:var(--acidT);border-color:var(--acid);color:var(--acidD);box-shadow:0 0 0 3px rgba(18,184,134,.2)}
+.vb i{font-style:normal;font-size:.66rem;opacity:.6}
+.vb .x{border:none;background:var(--redT);color:var(--red);border-radius:6px;width:1.45rem;height:1.45rem;min-height:0;padding:0;font-size:.76rem;box-shadow:none}
+.wrap{position:relative;overflow:hidden;border:1.5px solid var(--line);border-radius:var(--r);background:#fff;margin:.32rem 0 .48rem;touch-action:none;box-shadow:var(--sh)}
+#cv,#cg{display:block;width:100%;height:auto;touch-action:none}#cv{cursor:crosshair}
+#cg{background:linear-gradient(rgba(31,111,235,.055) 1px,transparent 1px),linear-gradient(90deg,rgba(31,111,235,.055) 1px,transparent 1px),linear-gradient(rgba(31,111,235,.1) 1px,transparent 1px),linear-gradient(90deg,rgba(31,111,235,.1) 1px,transparent 1px),#fdfeff;background-size:11px 11px,11px 11px,55px 55px,55px 55px}
+.leg{display:flex;flex-wrap:wrap;gap:.42rem .8rem;font-size:.73rem;color:var(--mut);background:var(--surf);border:1.5px solid var(--line);border-radius:var(--rs);padding:.42rem .58rem;margin-bottom:.38rem}
+.leg span{display:inline-flex;align-items:center;gap:.3rem}
+.sw{width:1.2rem;height:0;border-top:3px solid;border-radius:2px}
+.stats{font-size:.74rem;line-height:1.55;background:var(--surf2);border:1.5px solid var(--line);border-radius:var(--rs);padding:.42rem .58rem;margin-top:.38rem}
+.chk{flex-direction:row;align-items:center;gap:.35rem;font-size:.79rem;font-weight:700;text-transform:none;letter-spacing:0;color:var(--tx);cursor:pointer}
+.rail{display:grid;grid-template-columns:repeat(auto-fit,minmax(126px,1fr));gap:.45rem .55rem}
+.fld{display:flex;flex-direction:column;gap:.18rem;background:var(--surf2);border:1.5px solid var(--line);border-radius:var(--rs);padding:.4rem .48rem}
+.fld label{font-size:.59rem}.fld .val{font-size:.71rem;font-weight:900;color:var(--blueD);font-variant-numeric:tabular-nums}
+.fld input[type=range]{width:100%}.fld input[type=number],.fld input[type=text]{width:100%;min-height:1.95rem;font-size:.86rem}
+.chips{display:flex;flex-wrap:wrap;gap:.32rem;margin-top:.45rem}
+.mono{font-family:ui-monospace,Consolas,monospace}
+.sl{display:flex;flex-wrap:wrap;gap:.38rem .75rem;align-items:baseline;margin:.32rem 0}
+.sl b{font-size:.93rem}.sl span{font-size:.8rem;color:var(--mut)}
+.s-Idle{color:var(--acid)}.s-Run{color:var(--blue)}.s-Hold{color:var(--amber)}.s-Jog{color:var(--mag)}.s-Alarm{color:var(--red)}.s-Home{color:var(--teal)}
+.zg{display:grid;grid-template-columns:repeat(4,1fr);gap:.3rem}
+.zg button{flex-direction:column;gap:.08rem;font-size:.76rem;padding:.4rem .18rem;min-height:0}
+.zg small{font-size:.56rem;opacity:.55;font-weight:700}
+.jb{display:flex;gap:.6rem;align-items:center;flex-wrap:wrap}
+.jog{display:grid;grid-template-columns:repeat(3,3.2rem);gap:.28rem}
+.jog button{min-height:2.85rem;font-size:1rem;padding:0}
+.js{display:flex;flex-direction:column;gap:.42rem;flex:1;min-width:8.5rem}
+.bar{height:.66rem;background:var(--line);border-radius:99px;overflow:hidden;margin:.38rem 0}
+.bar>i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,var(--acid),var(--teal));transition:width .25s}
+.pt{font-size:.77rem;min-height:1.1em;margin-bottom:.32rem}
+.res{background:var(--amberT);border:1.5px solid #f0cf8e;border-radius:var(--rs);padding:.48rem .58rem;font-size:.79rem;line-height:1.5;margin:.42rem 0}
+.cons{font-family:ui-monospace,Consolas,monospace;font-size:.69rem;line-height:1.5;background:var(--ink);color:#bcd2e2;border-radius:var(--rs);padding:.48rem .58rem;max-height:9rem;overflow-y:auto;white-space:pre-wrap;word-break:break-word;margin:.5rem 0}
+.fl{display:flex;flex-direction:column;gap:.22rem;max-height:14rem;overflow-y:auto;margin-top:.32rem}
+.fr{display:flex;align-items:center;gap:.35rem;background:var(--surf2);border:1.5px solid var(--line);border-radius:9px;padding:.28rem .42rem}
+.fr .fn{flex:1;font-size:.75rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.fr .fs{font-size:.67rem;color:var(--mut);min-width:3.2rem;text-align:right}
+.fr button,.fr a{min-height:1.8rem;min-width:1.9rem;padding:.1rem .35rem;font-size:.8rem;text-decoration:none}
+.err{font-size:.75rem;line-height:1.5;color:#7a5a12;background:var(--amberT);border:1.5px solid #f0cf8e;border-radius:9px;padding:.4rem .52rem}
+.toast{position:fixed;left:50%;bottom:1rem;transform:translate(-50%,150%);z-index:90;max-width:92vw;padding:.58rem .88rem;border-radius:12px;font-size:.82rem;font-weight:800;color:#fff;background:linear-gradient(135deg,var(--ink2),var(--ink3));box-shadow:0 14px 40px -14px rgba(5,14,22,.95);transition:transform .34s cubic-bezier(.2,.8,.3,1)}
+.toast.on{transform:translate(-50%,0)}
+.drop{position:fixed;inset:0;z-index:80;display:none;place-items:center;background:rgba(11,22,32,.72);backdrop-filter:blur(4px);color:#fff;font-size:1.1rem;font-weight:800;text-align:center;padding:2rem}
+.drop.on{display:grid}
+</style>
+</head>
+<body>
+<header><span class="logo">✒</span><h1>ПЕРО<small>рукопись → G-code → плоттер</small></h1><span class="pill" id="cnt">0</span><button class="zipb" id="zip">⬇ ZIP</button></header>
+<nav><button id="t1" class="on">✏ Шрифт</button><button id="t2">⚙ G-code</button><button id="t3">📡 Станок</button></nav>
+<main>
+<section class="pane on" id="p1">
+<div class="card empty" id="emptyCard"><h2>Загрузи свой шрифт</h2>
+<p>Шрифт <b>не вшит</b> в этот файл. Открой свой <b>my_hand.json</b> кнопкой ниже или просто перетащи файл на страницу. Он сохранится в памяти телефона и будет открываться автоматически.</p>
+<div class="btns" style="margin-top:0"><label class="btn pri big" for="fJs">📂 Открыть my_hand.json</label><input type="file" id="fJs" class="hide" accept=".json,application/json"><button id="bDemo">✏ Начать с нуля</button></div></div>
+<p class="hint">Рисуй пальцем или обводи скан. <b style="color:var(--acid)">Зелёная</b> точка — вход, <b style="color:var(--amber)">оранжевая</b> — выход. Именно они задают сшивку букв.</p>
+<div class="card"><h2>Контур и скан</h2>
+<div class="btns" style="margin-top:0"><button id="bTpl" class="ton">Контур: вкл</button><label class="btn wr" for="fImg">📷 Скан</label><input type="file" id="fImg" class="hide" accept="image/*"><button id="bClr">Убрать</button></div>
+<div class="row" style="margin-top:.45rem"><label style="flex:1;min-width:9rem">Прозрачность<input type="range" id="alpha" min="8" max="75" value="34"></label></div>
+<div class="btns" id="bgOpt" style="display:none"><button id="bMv">✥ Двигать</button><button id="bMi">−</button><button id="bPl">+</button><button id="bFit">⤢ Вписать</button></div></div>
+<div class="card"><h2>Алфавит</h2>
+<div class="tabs" id="sets"><button class="on" data-s="ru">а–я</button><button data-s="RU">А–Я</button><button data-s="d">0–9</button><button data-s="la">a–z</button><button data-s="LA">A–Z</button><button data-s="ex">знаки</button><button data-s="ok">готовые</button></div>
+<div class="grid" id="alpha"></div><p class="sm" style="margin-top:.42rem">Готово: <b id="nG">0</b> · вариантов: <b id="nV">0</b></p></div>
+<div class="row" style="margin-bottom:.45rem"><label>Буква<input id="ch" class="ns" style="text-align:center;font-size:1.2rem;font-weight:800" maxlength="2" value="а"></label><label>Шрифт<input id="fn" style="width:7rem" value="my_hand"></label><label>Край<input id="cL" class="ns" type="number" value="40" step="5"></label><label>Клетка<input id="cW" class="ns" type="number" value="160" step="10"></label></div>
+<div class="card" id="vBox" style="display:none"><h2>Варианты «<span id="vCh">а</span>»</h2><div class="vl" id="vList"></div></div>
+<div class="wrap"><canvas id="cv" width="400" height="360"></canvas></div>
+<div class="btns" style="margin-top:0"><button id="bUn">↩ штрих</button><button id="bPy">▶ перо</button><button id="bEr">🧽 ластик</button><button id="bCl">стереть</button><button id="bSn" title="маркеры на концы штрихов">●→ концы</button><button id="bSv" class="pri big">💾 Сохранить</button></div>
+<div class="btns" id="erOpt" style="display:none;align-items:center"><label style="flex-direction:row;align-items:center;gap:.38rem;text-transform:none;font-size:.79rem;flex:1">Радиус<input type="range" id="erR" min="6" max="36" value="14" style="flex:1"><span id="erV">14</span></label><button id="bDr" class="pri">✏ рисовать</button></div>
+<div class="btns"><button id="bDl" class="dg">Удалить варианты</button><button id="bNx">След. буква →</button></div>
+<div class="btns"><button id="bJs" class="ok big">⬇ JSON</button><label class="btn wr big" for="fJs2">📂 Загрузить JSON</label><input type="file" id="fJs2" class="hide" accept=".json,application/json"></div>
+<div class="btns"><button id="bLS">💾 в память</button><button id="bLR">↩ из памяти</button><button id="bRs">🗑 очистить шрифт</button></div>
+<p class="st" id="s1">Загрузи my_hand.json или начни рисовать</p>
+</section>
+<section class="pane" id="p2">
+<div class="card"><h2>Текст</h2><textarea id="txt">Привет ва ВА Ва Ав</textarea>
+<div class="btns"><button id="gD" class="pri">Обновить</button><button id="gP" class="mg">▶ Анимация</button><button id="gS">Стоп</button><label class="btn wr" for="fDoc">📄 Word / TXT</label><input type="file" id="fDoc" class="hide" accept=".docx,.txt,text/plain,application/vnd.openxmlformats-officedocument.wordprocessingml.document"><label class="btn wr" for="fPdf">🎵 PDF / картинка</label><input type="file" id="fPdf" class="hide" accept=".pdf,image/*"></div>
+<div class="btns" id="traceRow" style="display:none;gap:.4rem .55rem;align-items:center"><span id="traceInfo" style="font-size:.84rem;color:var(--mut);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"></span><label>след</label><select id="tMode"><option value="cnt">контуры</option><option value="ras">растр</option></select><label>шаг, мм</label><input type="number" id="tStep" value="0" min="0" step="0.1" style="width:56px" title="0 — авто (0.75 × перо); растр: мельче шаг — мельче детали, но больше штрихов"><label>заливка пустот</label><select id="tFill"><option value="sp">спираль</option><option value="cr">крестик</option><option value="off">нет</option></select><label>пустоты от, мм</label><input type="number" id="tHole" value="3" min="0" step="0.5" style="width:64px"><label>порог</label><input type="number" id="tThr" value="0" min="0" max="255" style="width:64px" title="0 — авто (Otsu)"><label>порог дырок</label><input type="number" id="tThrH" value="0" min="0" max="255" style="width:64px" title="Порог поиска пустот под заливку; 0 — авто (Otsu)"><button id="tClr" class="mg">✕ убрать</button></div></div>
+<div class="card"><h2>Пульт предпросмотра — всё живое</h2>
+<div class="rail">
+<div class="fld"><label>Высота букв, мм</label><input type="range" id="hMm" min="4" max="60" step="0.5" value="15"><span class="val" id="hMmV">15.0</span></div>
+<div class="fld"><label>Зазор букв, мм</label><input type="range" id="trk" min="-6" max="14" step="0.25" value="0"><span class="val" id="trkV">0.00</span></div>
+<div class="fld"><label>Ширина листа, мм</label><input type="number" id="pW" value="190" min="40" max="600"></div>
+<div class="fld"><label>Высота листа, мм</label><input type="number" id="pH" value="297" min="40" max="900"></div>
+<div class="fld"><label>Поле, мм</label><input type="number" id="mL" value="10" min="0" max="80"></div>
+<div class="fld"><label>Лимит отката, мм</label><input type="range" id="bt" min="0" max="40" step="0.5" value="10"><span class="val" id="btV">10.0</span></div>
+<div class="fld"><label>Z пишет</label><input type="number" id="zD" value="0" step="0.1"></div>
+<div class="fld"><label>Z перелёт</label><input type="number" id="zU" value="5" step="0.1"></div>
+<div class="fld"><label>Подача XY</label><input type="number" id="fXY" value="1500" step="50"></div>
+<div class="fld"><label>Подача Z</label><input type="number" id="fZ" value="800" step="50"></div>
+<div class="fld"><label>Скорость анимации</label><input type="range" id="spd" min="4" max="140" step="1" value="30"><span class="val" id="spdV">30</span></div>
+<div class="fld"><label>Толщина линии</label><input type="range" id="lw" min="1" max="5" step="0.1" value="2.2"><span class="val" id="lwV">2.2</span></div>
+<div class="fld"><label>Зерно вариаций</label><input type="text" id="seed" placeholder="пусто = новое" inputmode="numeric"></div>
+</div>
+<div class="chips"><label class="chk"><input type="checkbox" id="cSt" checked> сшивка</label><label class="chk"><input type="checkbox" id="cEE" checked> маркеры E/X</label><label class="chk"><input type="checkbox" id="cGr" checked> сетка</label><label class="chk"><input type="checkbox" id="cMk" checked> точки E/X</label><label class="chk"><input type="checkbox" id="cFl" checked> перелёты</label><label class="chk"><input type="checkbox" id="cMs" checked> пропуски</label></div>
+<div class="btns"><button id="gR" class="wr">🎲 Варианты</button><button id="gX">↺ Сброс</button><button id="gZ" class="ok">⬇ ZIP проекта</button></div>
+<div class="note">💡 Перо <b>всегда доводится до маркера выхода</b>: чистой линией, возвратом по штриху (в пределах лимита отката) или перелётом. Если буква закончилась слева (хвост влево, как у «в», «В», «у», «з») или прямая прорезает букву — до выхода будет <b>перелёт</b>: перо не поедет к маркеру и назад по хвосту с опущенным пером, лишних штрихов и искажения хвоста не будет. В точке выхода перо <b>опускается</b>, и линия <b>выход → вход</b> следующей буквы рисуется всегда. Исключение — <b>заглавные буквы</b>: перелёт всегда перед заглавной и между заглавными; от заглавной к строчной («От», «Бю») перо сшивает коротким чистым росчерком — не длиннее 3/4 высоты буквы и не задевая следующую букву, иначе перелёт. Выравнивание абзацев из Word (по центру / по правому краю) подхватывается при импорте .docx. Кнопка <b>🎵 PDF / картинка</b>: скан (ноты, рисунок) трассируется и рисуется пером «как есть» в истинном размере, а пустоты внутри контуров (например, целая нота) закрашиваются спиралью или «крестиком»; мелкие дырки отсеиваются по размеру. Порогов два: <b>порог</b> — жирность следа (ваш рабочий, напр. 27), <b>порог дырок</b> — где искать пустоты под заливку (0 — авто; если при жёстком следе тонкий овал ноты рвётся и пустота не находится — поставьте 90–120). PDF рендерится через pdf.js (CDN — при первом импорте нужен интернет; PNG/JPG работают офлайн). Режим следа: <b>контуры</b> — обводит линии «как есть» (сплошные головки станут контуром — заливайте пустоты или используйте растр); <b>растр</b> — ваша идея в работе: монохром по авто-порогу, чернила рисуются прогонками по сетке («шаг, мм»; 0 — авто 0.75 × перо), порядок штрихов — жадный «ближайший прогон». В растре головки сплошные, пустые ноты пустые, заливка и пороги не нужны; для мелких деталей берите тонкое перо 0.5–1 мм — жирное перо делает ноты грубее и может слипать линейки.</div></div>
+<div class="leg"><span><i class="sw" style="border-color:#10202b"></i>штрих Z0</span><span><i class="sw" style="border-color:#12b886"></i>сшивка Z0</span><span><i class="sw" style="border-color:#c026d3;border-top-style:dashed"></i>перелёт Z5</span><span><i class="sw" style="border-color:#e8443a"></i>нет буквы</span></div>
+<div class="wrap"><canvas id="cg" width="720" height="280"></canvas></div>
+<p class="st" id="s2">Готово</p><div class="stats" id="stats">—</div>
+<div class="card" style="margin-top:.58rem"><h2>G-code FluidNC</h2>
+<div class="btns" style="margin-top:0"><button id="gG" class="cnc big">⚙ Сгенерировать</button><button id="gDl" class="ok">💾 .gcode</button><button id="gC">📋 Копировать</button></div>
+<textarea id="out" readonly placeholder="Здесь появится G-code…" style="margin-top:.45rem"></textarea></div>
+</section>
+<section class="pane" id="p3">
+<p class="hint">FluidNC: WiFi или USB (Web Serial). Статус, джог, ноль листа, перо, печать и SD. USB — Chrome/Edge на компьютере.</p>
+<div class="card"><h2>Подключение</h2>
+<div class="tabs" id="mModeTabs" style="margin-bottom:.42rem">
+<button type="button" class="on" data-mode="wifi" id="mModeWifi">WiFi</button>
+<button type="button" data-mode="serial" id="mModeSer">USB · Serial</button>
+</div>
+<div id="mWifiBox">
+<div class="row"><label style="flex:1;min-width:10rem">Адрес<input id="mHost" placeholder="fluidnc.local или 192.168.1.50"></label><button id="mCn" class="pri">Подключить</button><button id="mDs" disabled>Отключить</button></div>
+</div>
+<div id="mSerBox" style="display:none">
+<div class="row">
+<label>Скорость<select id="mBaud"><option value="9600">9600</option><option value="57600">57600</option><option value="115200" selected>115200</option><option value="230400">230400</option><option value="250000">250000</option><option value="460800">460800</option><option value="921600">921600</option></select></label>
+<button id="mCnSer" class="pri">Подключить USB</button>
+<button id="mCnSerLast" class="ton" style="display:none">Тот же порт</button>
+<button id="mDsSer" disabled>Отключить</button>
+</div>
+<p class="sm" id="mSerHint">Нужен Chrome или Edge. Порт должен быть свободен (закройте FluidTerm, PuTTY). Подключение перезапускает ESP32 — это нормально.</p>
+</div>
+<div class="sl"><b class="mono" id="mSt">не подключено</b><span class="mono" id="mPo"></span><span class="mono" id="mFw"></span><span class="mono" id="mModeLbl" style="opacity:.7"></span></div>
+<p class="st" id="mEr"></p></div>
+<div id="mPan" style="display:none">
+<div class="card"><h2>Ноль листа</h2><div class="zg"><button id="zXY">Ноль XY<small>G92 X0 Y0</small></button><button id="zX">X=0<small>G92 X0</small></button><button id="zY">Y=0<small>G92 Y0</small></button><button id="zZ">Z=0<small>G92 Z0</small></button></div>
+<div class="row" style="margin-top:.45rem"><label>Отступ<input id="mMg" class="ns" type="number" value="10"></label><label>Быстро<input id="mFf" class="n" type="number" value="9000" step="500"></label><label>Медленно<input id="mFs" class="n" type="number" value="600" step="100"></label></div>
+<div class="btns"><button id="goS">В ноль плавно</button><button id="goF">В ноль быстро</button><button id="unl">Разблок $X</button><button id="hom">Дом $H</button></div></div>
+<div class="card"><h2>Джог и перо</h2><div class="jb"><div class="jog"><span></span><button data-dx="0" data-dy="1" data-dz="0">↑</button><span></span><button data-dx="-1" data-dy="0" data-dz="0">←</button><button id="goF2">0,0</button><button data-dx="1" data-dy="0" data-dz="0">→</button><span></span><button data-dx="0" data-dy="-1" data-dz="0">↓</button><span></span><span></span><button data-dx="0" data-dy="0" data-dz="1">Z+</button><span></span><span></span><button data-dx="0" data-dy="0" data-dz="-1">Z−</button><span></span></div>
+<div class="js"><label>Шаг, мм<select id="mSp"><option>0.1</option><option>1</option><option selected>5</option><option>10</option><option>25</option><option>50</option></select></label><label>Скорость<input id="mFd" type="number" value="3000" step="500"></label><button id="jS">Стоп джога</button></div></div>
+<div class="btns"><label>Z вверх<input id="mZu" class="ns" type="number" value="5" step="0.1"></label><label>Z вниз<input id="mZd" class="ns" type="number" value="0" step="0.1"></label><button id="pU">Перо ↑</button><button id="pD">Перо ↓</button></div></div>
+<div class="card"><h2>Печать и SD</h2><div class="btns" style="margin-top:0"><button id="mPr" class="cnc big">ПЕЧАТЬ ▶ из вкладки G-code</button></div>
+<label class="chk" style="margin-top:.42rem"><input type="checkbox" id="sft"> мягкий подъезд в ноль</label>
+<div class="bar"><i id="pBar" style="width:0"></i></div><div class="mono pt" id="pTx"></div>
+<div class="btns"><button id="pau">Пауза</button><button id="res">Продолжить</button><button id="stp" class="dg">Стоп</button></div>
+<div class="btns"><button id="sdW" class="ok">На SD</button><button id="sdP">ПЕЧАТЬ С SD ▶</button></div>
+<div class="res" id="rBox" style="display:none">Прервано на строке <b id="rAt">—</b> из <b id="rTo">—</b>. Поставь перо в ноль листа и нажми «Возобновить».<div class="btns"><button id="rGo">Возобновить</button><button id="rNo">Забыть</button></div></div></div>
+<div class="card"><h2>Файлы на SD</h2><p class="sm" id="fH"></p><div class="btns"><button id="fR">⟳ Список</button><label class="btn" for="fSd">📤 Файл на SD</label><input type="file" id="fSd" class="hide"><a class="btn" id="web" href="#" target="_blank" rel="noopener">🌐 Веб-морда</a></div><div class="fl" id="fL"></div></div>
+</div><div class="cons" id="mLog"></div>
+</section>
+</main>
+<div class="toast" id="toast"></div><div class="drop" id="drop">Отпусти файл — загружу шрифт<br><span style="font-size:.8rem;opacity:.7">my_hand.json</span></div>
+<script>
+/* serial.js — Web Serial for FluidNC/GRBL */
+/* serial.js — прямая связь браузера с FluidNC/GRBL через Web Serial API.
+ *
+ * Браузер сам открывает COM-порт ESP32 и шлёт G-code строку за строкой,
+ * дожидаясь "ok" от контроллера (окно подтверждений). Сервер Flask тут
+ * больше НЕ участвует в печати — только в генерации файла.
+ *
+ * Работает в Chrome / Edge (десктоп) на http://localhost — это безопасный
+ * контекст, HTTPS не нужен. Firefox/Safari Web Serial не поддерживают.
+ *
+ * Модуль не привязан к браузеру жёстко: транспорт (порт) подменяемый,
+ * поэтому вся логика протестирована в Node с виртуальным FluidNC.
+ */
+(function (global) {
+  'use strict';
+
+  // ---- реальные (внеочередные) символы GRBL: шлются без перевода строки
+  var RT_HOLD = '!';        // пауза подачи
+  var RT_RESUME = '~';      // продолжить
+  var RT_RESET = '\x18';    // мягкий сброс (Ctrl-X)
+  var RT_JOG_CANCEL = '\x85'; // отменить джог
+
+  function isSupported() {
+    return typeof navigator !== 'undefined' && !!navigator.serial &&
+      typeof navigator.serial.requestPort === 'function';
+  }
+
+  /* Убираем комментарии и пустышки: "(скобки)", "; до конца строки",
+   * строки "%". GRBL их просто съедает, но окно подтверждений неместно
+   * тратить на мусор. */
+  function cleanLine(s) {
+    var out = String(s).replace(/\([^)]*\)/g, '');
+    var i = out.indexOf(';');
+    if (i >= 0) out = out.slice(0, i);
+    out = out.trim();
+    if (!out || out === '%') return '';
+    return out;
+  }
+
+  function r3(n) {
+    n = Math.round(Number(n) * 1000) / 1000;
+    return String(n);
+  }
+
+  /* X/Y из строки движения G0/G1 — чтобы после обрыва вернуть перо
+   * к месту, где печать прервалась. Не-движения (G92, M-коды, F) — null. */
+  function parseXY(line) {
+    if (!/^G[01](?![\d.])/.test(line)) return null;
+    var x = line.match(/X(-?\d*\.?\d+)/), y = line.match(/Y(-?\d*\.?\d+)/);
+    if (!x && !y) return null;
+    return { x: x ? parseFloat(x[1]) : null, y: y ? parseFloat(y[1]) : null };
+  }
+
+  /* CRC16 XModem (полином 0x1021, начальное 0) — для пакетов передачи
+   * файла на SD-карту FluidNC. */
+  function crc16(data, len) {
+    var crc = 0;
+    for (var i = 0; i < len; i++) {
+      crc ^= data[i] << 8;
+      for (var b = 0; b < 8; b++) {
+        crc = (crc & 0x8000) ? ((crc << 1) ^ 0x1021) : (crc << 1);
+        crc &= 0xffff;
+      }
+    }
+    return crc;
+  }
+
+  /* ------------------------------------------------------------------ *
+   *  Транспорт: настоящий COM-порт через Web Serial API                 *
+   * ------------------------------------------------------------------ */
+  function WebSerialTransport() {
+    this.port = null;
+    this.writer = null;
+    this.onLine = null;    // cb(строка без \n)
+    this.onClosed = null;  // cb() — порт отвалился
+    this.rawMode = false;  // XMODEM: байты напрямую, без разбора строк
+    this.onRaw = null;     // cb(Uint8Array) в сыром режиме
+    this._reader = null;
+    this._ondisconnect = null; // обработчик системного «порт исчез»
+    this._buf = '';
+    this._enc = new TextEncoder();
+    this._dec = new TextDecoder();
+  }
+
+  /* preferred — уже выданный ранее SerialPort (navigator.serial.getPorts) */
+  WebSerialTransport.prototype.request = async function (preferred) {
+    if (preferred) { this.port = preferred; return this.port; }
+    if (!isSupported()) {
+      throw new Error('Браузер без Web Serial — нужен Chrome или Edge');
+    }
+    this.port = await navigator.serial.requestPort();
+    return this.port;
+  };
+
+  WebSerialTransport.prototype.open = async function (opts) {
+    if (!this.port) throw new Error('Порт не выбран');
+    var self = this;
+    /* USB отвал (помехи, выдернутый кабель, пере-enumeration ESP32):
+     * система сообщает событием disconnect — отменяем читателя сразу,
+     * не дожидаясь, пока упадёт read(); onClosed позовётся из readLoop
+     * ровно один раз. */
+    if (typeof navigator !== 'undefined' && navigator.serial &&
+        typeof navigator.serial.addEventListener === 'function') {
+      this._ondisconnect = function (e) {
+        if (!self.port) return;
+        if (e && e.port && e.port !== self.port) return; // чужой порт
+        if (self._reader) { try { self._reader.cancel(); } catch (err) { /* уже */ } }
+      };
+      navigator.serial.addEventListener('disconnect', this._ondisconnect);
+    }
+    await this.port.open({ baudRate: (opts && opts.baud) || 115200 });
+    this.writer = this.port.writable.getWriter();
+    this._readLoop();
+  };
+
+  WebSerialTransport.prototype.write = async function (s) {
+    if (!this.writer) throw new Error('Порт закрыт');
+    await this.writer.write(this._enc.encode(s));
+  };
+
+  /* Сырые байты — для XMODEM (бинарные пакеты, CRC, EOT). */
+  WebSerialTransport.prototype.writeBytes = async function (u8) {
+    if (!this.writer) throw new Error('Порт закрыт');
+    await this.writer.write(u8);
+  };
+
+  WebSerialTransport.prototype.close = async function () {
+    if (this._closing) return;           // уже закрываем — не встаём в очередь дважды
+    this._closing = true;
+    var sleep = function (ms) { return new Promise(function (r) { setTimeout(r, ms); }); };
+    try {
+      if (typeof navigator !== 'undefined' && navigator.serial &&
+          navigator.serial.removeEventListener && this._ondisconnect) {
+        navigator.serial.removeEventListener('disconnect', this._ondisconnect);
+      }
+      /* Отменяем читателя, но не ждём его вечно: после Ctrl-X (СТОП) или
+       * выдёргивания кабеля ESP32 пере-enumerates, и обещания reader.cancel()
+       * / port.close() могут не разрешиться никогда — «Отключить» висло,
+       * а порт оставался занятым до перезагрузки страницы. Теперь каждое
+       * ожидание ограничено таймаутом. */
+      if (this._reader) { try { await Promise.race([this._reader.cancel(), sleep(1200)]); } catch (e) { /* уже */ } }
+      if (this.writer) { try { this.writer.releaseLock(); } catch (e) { /* уже */ } }
+      this.writer = null;
+      if (this.port) { try { await Promise.race([this.port.close(), sleep(2500)]); } catch (e) { /* уже */ } }
+    } finally {
+      this.port = null; this.writer = null; this._reader = null;
+      this._closing = false;
+    }
+  };
+
+  WebSerialTransport.prototype._readLoop = async function () {
+    try {
+    while (this.port && this.port.readable) {
+      try {
+        this._reader = this.port.readable.getReader();
+        for (;;) {
+          var res = await this._reader.read();
+          if (res.done) break;
+          if (this.rawMode) {
+            /* XMODEM: байты как есть, строки не разбираем */
+            if (this.onRaw) { try { this.onRaw(res.value); } catch (e) { /* не роняем цикл */ } }
+            continue;
+          }
+          this._buf += this._dec.decode(res.value, { stream: true });
+          var idx;
+          while ((idx = this._buf.indexOf('\n')) >= 0) {
+            var line = this._buf.slice(0, idx).replace(/\r$/, '');
+            this._buf = this._buf.slice(idx + 1);
+            if (this.onLine) { try { this.onLine(line); } catch (e) { /* не роняем цикл */ } }
+          }
+        }
+      } catch (e) {
+        break; // выдернули кабель / порт умер
+      } finally {
+        try { if (this._reader) this._reader.releaseLock(); } catch (e) { /* уже */ }
+        this._reader = null;
+      }
+    }
+    } catch (e2) { /* порт умер окончательно (пере-enumeration USB) — выходим без падения */ }
+    if (this.onClosed) { try { this.onClosed(); } catch (e) { /* уже */ } }
+  };
+
+  /* ------------------------------------------------------------------ *
+   *  Связь с контроллером: очередь подтверждений, статусы, команды      *
+   * ------------------------------------------------------------------ */
+  function PlotterLink(opts) {
+    opts = opts || {};
+    this.log = opts.log || function () {};
+    this.onEvent = opts.onEvent || function () {};
+    this.WINDOW = opts.window || 6;   // строк в полёте (ждут "ok")
+    this.t = null;
+    this.connected = false;
+    this.ready = false;
+    this.fw = '';
+    this.state = '?';                 // Idle/Run/Hold/Jog/Alarm/…
+    this.pos = null;                  // рабочие координаты
+    this.posSrc = '';                 // WPos | MPos(пересчитан)
+    this._g92 = { x: 0, y: 0, z: 0 }; // сдвиг G92 для пересчёта MPos
+    this._queue = [];
+    this._polling = false;
+    this.job = null;
+    this.lastJob = null;   // прерванная печать: {all, stopIndex, xy, total}
+    this.busyRaw = false;  // идёт XMODEM-передача — опрос "?" запрещён
+  }
+
+  PlotterLink.prototype.connect = async function (transport, baud) {
+    this.t = transport;
+    var self = this;
+    transport.onLine = function (l) { self._line(l); };
+    transport.onClosed = function () { self._closed(); };
+    await transport.open({ baud: baud || 115200 });
+    this.connected = true;
+    this.log('— порт открыт, жду контроллер…');
+    await this.write('\n');             // растормошить баннер
+    await this._waitReady(2200);
+    if (!this.ready) {                  // ESP32 иногда просыпается медленно
+      await this.write('\n');
+      await this._waitReady(1400);
+    }
+    if (!this.ready) {
+      this.log('! Контроллер молчит. Проверьте скорость (FluidNC: 115200) и кабель.');
+    } else {
+      try { await this.cmd('G21', 4000); await this.cmd('G90', 4000); } catch (e) { /* не критично */ }
+      try { await this.cmd('$I', 4000); } catch (e) { /* не критично */ }
+      this.log('• Связь есть: ' + (this.fw || 'контроллер отвечает'));
+      this.onEvent({ type: 'ready', fw: this.fw });
+    }
+    this.onEvent({ type: 'connected', fw: this.fw });
+  };
+
+  PlotterLink.prototype._waitReady = function (ms) {
+    var self = this;
+    return new Promise(function (resolve) {
+      var t0 = Date.now();
+      var iv = setInterval(function () {
+        if (self.ready || Date.now() - t0 > ms) { clearInterval(iv); resolve(); }
+      }, 50);
+    });
+  };
+
+  PlotterLink.prototype.write = async function (s) {
+    if (this.t) await this.t.write(s);
+  };
+
+  /* Послать строку и дождаться "ok". Отклоняется на "error:N" и таймауте. */
+  PlotterLink.prototype.cmd = function (line, timeout) {
+    var self = this;
+    return new Promise(function (resolve, reject) {
+      var item = {
+        line: line, resolve: resolve, reject: reject,
+        timer: setTimeout(function () {
+          self._queue = self._queue.filter(function (q) { return q !== item; });
+          reject(new Error('нет ответа на: ' + line));
+        }, timeout || 15000)
+      };
+      self._queue.push(item);
+      self.write(line + '\n').catch(function (e) {
+        clearTimeout(item.timer);
+        self._queue = self._queue.filter(function (q) { return q !== item; });
+        reject(e);
+      });
+    });
+  };
+
+  PlotterLink.prototype._ack = function (errText) {
+    var item = this._queue.shift();
+    if (!item) return;                 // случайный "ok" без запроса — игнор
+    clearTimeout(item.timer);
+    if (errText) item.reject(new Error(errText));
+    else item.resolve();
+  };
+
+  PlotterLink.prototype._flushQueue = function (why) {
+    var q = this._queue; this._queue = [];
+    q.forEach(function (item) {
+      clearTimeout(item.timer);
+      item.reject(new Error(why));
+    });
+  };
+
+  PlotterLink.prototype._line = function (raw) {
+    var l = (raw || '').trim();
+    if (!l) return;
+    if (this._tap) { try { this._tap(l); } catch (e) { /* не мешаем */ } }
+    if (l === 'ok') return this._ack(null);
+    var mErr = l.match(/^error:(\d+)(:.*)?/i);
+    if (mErr) {
+      this.log('! ' + l);
+      return this._ack('контроллер ответил "' + l + '"');
+    }
+    if (l.charAt(0) === '<' && l.charAt(l.length - 1) === '>') return this._status(l);
+    if (/^ALARM:/i.test(l)) {
+      this.state = 'Alarm';
+      this.onEvent({ type: 'state', state: 'Alarm' });
+      this.log('! ' + l + ' — нажмите «Разблок ($X)»');
+      return;
+    }
+    var mVer = l.match(/^\[VER:([^\]]*)\]/i);
+    if (mVer) {
+      this.fw = mVer[1].trim();
+      this.onEvent({ type: 'fw', fw: this.fw });
+      return this.log(l);
+    }
+    if (/grbl|fluidnc/i.test(l) && l.charAt(0) !== '[') {
+      this.ready = true;
+      if (!this.fw) { this.fw = l; this.onEvent({ type: 'fw', fw: l }); }
+      return this.log(l);
+    }
+    this.log(l);
+  };
+
+  /* <Idle|WPos:1.000,2.000,0.000|FS:0,0> или <Run|MPos:...> */
+  PlotterLink.prototype._status = function (l) {
+    var parts = l.slice(1, -1).split('|');
+    var st = (parts[0] || '').split(':')[0];
+    if (st) this.state = st;
+    var pos = null, src = '', sd = null, sdFile = null;
+    for (var k = 0; k < parts.length; k++) {
+      /* FluidNC: SD:17.79  или  SD:17.79,/sd/file.nc */
+      var mSD = parts[k].match(/^SD:([\d.]+)(?:,(.+))?/);
+      if (mSD) {
+        sd = parseFloat(mSD[1]);
+        if (mSD[2]) sdFile = mSD[2];
+        this._sdPct = sd;
+        this._sdFile = sdFile;
+        continue;
+      }
+      var m = parts[k].match(/^WPos:(-?[\d.]+),(-?[\d.]+),(-?[\d.]+)/);
+      if (m) { pos = { x: +m[1], y: +m[2], z: +m[3] }; src = 'WPos'; break; }
+      m = parts[k].match(/^MPos:(-?[\d.]+),(-?[\d.]+),(-?[\d.]+)/);
+      if (m) {
+        pos = { x: +m[1] - this._g92.x, y: +m[2] - this._g92.y, z: +m[3] - this._g92.z };
+        src = 'MPos';
+      }
+    }
+    if (pos) { this.pos = pos; this.posSrc = src; }
+    this.onEvent({ type: 'status', state: this.state, pos: this.pos, posSrc: src,
+                   sd: sd, sdFile: sdFile });
+  };
+
+  /* Опрос статуса "?" — реальновременный, ответ "ok" не ждём.
+   * Во время XMODEM-загрузки на SD опрос ЗАПРЕЩЁН: ответы статуса
+   * перемешались бы с байтами передачи. */
+  PlotterLink.prototype.poll = function () {
+    if (!this.connected || this._polling || this.busyRaw) return;
+    this._polling = true;
+    var self = this;
+    this.write('?').catch(function () {}).finally(function () { self._polling = false; });
+  };
+
+  PlotterLink.prototype._closed = function () {
+    if (this._intentClose) return;     // это мы сами закрыли порт — не паникуем
+    this.connected = false; this.ready = false;
+    this._abortJob('порт закрылся');
+    this._flushQueue('порт закрылся');
+    this.onEvent({ type: 'closed' });
+  };
+
+  PlotterLink.prototype.disconnect = async function () {
+    var t = this.t;
+    this._intentClose = true;          // порт закрываем сами — _closed() промолчит
+    this.t = null; this.connected = false; this.ready = false;
+    this._abortJob('отключено');
+    this._flushQueue('отключено');
+    if (t) {
+      /* close() внутри уже с таймаутами; это страховка сверху: «Отключить»
+       * не блокируется дольше 5 с ни при каких обстоятельствах. */
+      try { await Promise.race([t.close(),
+            new Promise(function (r) { setTimeout(r, 5000); })]); } catch (e) { /* уже */ }
+    }
+    this._intentClose = false;
+    this.onEvent({ type: 'closed' });
+  };
+
+  /* ------------------------- команды станка ------------------------- */
+
+  PlotterLink.prototype.home = function () { return this.cmd('$H', 240000); };
+  PlotterLink.prototype.unlock = function () { return this.cmd('$X', 8000); };
+
+  /* Ноль листа: как в наших .nc — G92 X0 Y0 (перья Z не касаемся). */
+  PlotterLink.prototype.setZeroXY = async function () {
+    await this.cmd('G92 X0 Y0', 8000);
+    this._markG92(['x', 'y']);
+  };
+  PlotterLink.prototype.setZeroZ = async function () {
+    await this.cmd('G92 Z0', 8000);
+    this._markG92(['z']);
+  };
+  /* Обнулить отдельные оси: 'x', 'y', 'z' или 'xy' (ноль листа).
+   * Для станков без концевиков — основная калибровка: поставил перо
+   * в угол листа вручную/джогом и обнулил нужные оси. */
+  PlotterLink.prototype.setZeroAxis = async function (a) {
+    var k = String(a || 'xy').toLowerCase();
+    var axes = k === 'xy' ? ['x', 'y'] : [k];
+    if (!/^[xyz]$/.test(axes[0])) throw new Error('не знаю такую ось: ' + a);
+    var line = 'G92 ' + axes.map(function (s) { return s.toUpperCase() + '0'; }).join(' ');
+    await this.cmd(line, 8000);
+    this._markG92(axes);
+  };
+  /* axes — какие оси реально обнулили, чтобы не испортить показания
+   * остальных (G92 X0 Y0 не меняет Z). */
+  PlotterLink.prototype._markG92 = function (axes) {
+    if (this.posSrc === 'WPos' || !this.pos) { this._g92 = { x: 0, y: 0, z: 0 }; return; }
+    // новая точка нуля — там, где сейчас стоит перо:
+    // машинные = показ + старый сдвиг
+    var self = this;
+    (axes || ['x', 'y', 'z']).forEach(function (a) {
+      self._g92[a] = self.pos[a] + self._g92[a];
+    });
+  };
+
+  PlotterLink.prototype.goZeroXY = function (f) {
+    var self = this;
+    return this.cmd('G90', 5000).then(function () {
+      return self.cmd('G0 X0 Y0 F' + r3(f || 9000), 120000);
+    });
+  };
+
+  /* Двухфазный подъезд в ноль листа БЕЗ концевиков:
+   *   1) перо вверх, 2) быстро до отступа margin от (0,0),
+   *   3) последние миллиметры — медленно: инерция не уводит каретку,
+   * ноль точный, перо не бьётся. Ноль — тот, что задан G92. */
+  PlotterLink.prototype.goZeroSoft = function (zUp, fFast, fSlow, margin) {
+    var self = this;
+    var m = Math.max(0, Number(margin) || 0);
+    var seq = this.cmd('G90', 5000).then(function () {
+      return self.cmd('G0 Z' + r3(zUp || 4), 60000);
+    });
+    if (m > 0.01) {
+      seq = seq.then(function () {
+        return self.cmd('G0 X' + r3(m) + ' Y' + r3(m) + ' F' + r3(fFast || 9000), 120000);
+      });
+    }
+    return seq.then(function () {
+      return self.cmd('G0 X0 Y0 F' + r3(fSlow || 600), 120000);
+    });
+  };
+
+  /* Джог через $J= — контроллер сам вернёт прежний режим после движения. */
+  PlotterLink.prototype.jog = function (dx, dy, dz, f) {
+    var p = [];
+    if (dx) p.push('X' + r3(dx));
+    if (dy) p.push('Y' + r3(dy));
+    if (dz) p.push('Z' + r3(dz));
+    if (!p.length) return Promise.resolve();
+    return this.cmd('$J=G91 G21 ' + p.join(' ') + ' F' + r3(f || 9000), 120000);
+  };
+  PlotterLink.prototype.jogCancel = function () { return this.write(RT_JOG_CANCEL); };
+
+  PlotterLink.prototype.penUp = function (zUp) {
+    return this.cmd('G0 Z' + r3(zUp), 60000);
+  };
+  PlotterLink.prototype.penDown = function (zDown, fz) {
+    return this.cmd('G1 Z' + r3(zDown) + ' F' + r3(fz || 9000), 60000);
+  };
+
+  /* ------------------------- печать файла --------------------------- */
+
+  /* lines — массив строк .nc. Стритель шлёт окно из WINDOW строк и ждёт
+   * "ok" на каждую. Пауза — "!" контроллеру + перестаём подавать новые.
+   * Ошибка контроллера — останавливаем подачу и держим перо ("!").
+   * startIndex — продолжить с индекса (возобновление после обрыва USB).
+   * Прерванная работа запоминается в this.lastJob — см. resumeJob(). */
+  PlotterLink.prototype.runJob = function (lines, cb, startIndex) {
+    cb = cb || {};
+    var self = this;
+    var all = (lines || []).map(cleanLine).filter(Boolean);
+    var start = Math.max(0, Math.min(startIndex | 0, all.length));
+    var job = {
+      total: all.length, sent: start, i: start, inflight: 0,
+      paused: false, aborted: false, finished: false, err: null,
+      lastXY: null,                    // цель последней подтверждённой строки
+      _all: all,
+      onProgress: cb.onProgress || function () {},
+      onDone: cb.onDone || function () {},
+      onError: cb.onError || function () {}
+    };
+    this.job = job;
+    this.lastJob = null;               // новая печать — прежний обрыв забыт
+
+    var prog = function () {
+      job.onProgress({
+        sent: job.sent, total: job.total,
+        pct: job.total ? Math.round(100 * job.sent / job.total) : 100,
+        paused: job.paused,
+        running: !job.finished && !job.aborted && !job.err
+      });
+    };
+    job._prog = prog;
+
+    var pump = function () {
+      if (job.finished || job.aborted || job.err) return;
+      if (job.paused) return;
+      while (job.i < job.total && job.inflight < self.WINDOW) {
+        let line = all[job.i++];   // let! каждое замыкание ловит СВОЮ строку
+        job.inflight++;
+        self.cmd(line, 120000).then(function () {
+          job.inflight--; job.sent++;
+          var xy = parseXY(line);
+          if (xy) {
+            job.lastXY = {
+              x: xy.x != null ? xy.x : (job.lastXY ? job.lastXY.x : null),
+              y: xy.y != null ? xy.y : (job.lastXY ? job.lastXY.y : null)
+            };
+          }
+          prog(); pump();
+        }).catch(function (e) {
+          job.inflight--; job.err = e; prog();
+          self._stash(job);
+          self.log('! ОШИБКА на «' + line + '»: ' + e.message);
+          self.log('  Движение поставлено на паузу (!). Стоп = сброс контроллера.');
+          self.log('  Печать запомнена — после подключения можно возобновить.');
+          self.write(RT_HOLD).catch(function () {});
+          job.onError(e, line);
+        });
+      }
+      if (job.i >= job.total && job.inflight === 0 && !job.err && !job.finished) {
+        job.finished = true; prog(); job.onDone();
+      }
+    };
+    job.pump = pump;
+    pump();
+    return job;
+  };
+
+  /* Запомнить прерванную печать: продолжать с первой строки, которую
+   * контроллер НЕ подтвердил ("ok" приходят по порядку), и с координатой
+   * последней подтверждённой точки — туда вернём перо при возобновлении. */
+  PlotterLink.prototype._stash = function (job) {
+    if (!job || job.finished || !job._all || !job._all.length) return;
+    this.lastJob = {
+      all: job._all,
+      stopIndex: Math.min(job.sent, job._all.length),
+      xy: job.lastXY,
+      total: job.total
+    };
+    /* Сохраняем в память браузера, как делает WiFi-ветка: иначе после
+     * переподключения USB (ESP32 перезапустился) возобновить печать
+     * было нечем — «Печать запомнена» оказывалась пустым обещанием. */
+    try {
+      localStorage.setItem('pero_job_v5', JSON.stringify({
+        all: this.lastJob.all, at: this.lastJob.stopIndex,
+        xy: this.lastJob.xy, total: this.lastJob.total
+      }));
+    } catch (e) { /* нет localStorage (Node/тесты) — не беда */ }
+  };
+
+  PlotterLink.prototype.pause = function () {
+    var j = this.job;
+    if (j && !j.paused && !j.finished && !j.aborted && !j.err) {
+      j.paused = true;
+      this.write(RT_HOLD).catch(function () {});
+      j._prog();
+    }
+  };
+  PlotterLink.prototype.resume = function () {
+    var j = this.job;
+    if (j && j.paused) {
+      j.paused = false;
+      this.write(RT_RESUME).catch(function () {});
+      j._prog();
+      j.pump();
+    }
+  };
+  PlotterLink.prototype._abortJob = function (why) {
+    var j = this.job;
+    if (j && !j.finished) { j.aborted = true; this._stash(j); j._prog(); }
+    this.job = null;
+    if (why) this.log('— печать остановлена: ' + why);
+  };
+
+  /* Возобновить ПРЕРВАННУЮ печать (обрыв USB, помеха, «Стоп»).
+   * Контроллер при переподключении перезапускается и теряет ноль листа,
+   * поэтому СНАЧАЛА пользователь джогом ставит перо в ноль листа и
+   * обнуляет оси («X = 0, Y = 0»), ПОТОМ вызывается это:
+   *   перо вверх -> быстрый подвод к точке обрыва -> строки с первой
+   *   неподтверждённой и до конца файла. Один и тот же штрих может быть
+   *   пройден пером дважды — шариковой ручке это безвредно. */
+  PlotterLink.prototype.resumeJob = async function (cb) {
+    var lj = this.lastJob;
+    if (!lj || !lj.all || !(lj.stopIndex < lj.all.length)) return null;
+    await this.cmd('G0 Z' + r3(cb && cb.zUp != null ? cb.zUp : 4), 60000);
+    if (lj.xy && lj.xy.x != null && lj.xy.y != null) {
+      await this.cmd('G0 X' + r3(lj.xy.x) + ' Y' + r3(lj.xy.y) +
+                     ' F' + r3((cb && cb.fTravel) || 9000), 120000);
+    }
+    return this.runJob(lj.all, cb, lj.stopIndex);
+  };
+  /* ------------------- SD-карта: файл на станке --------------------- *
+   * Печать с SD — «железобетонная»: файл играет сам ESP32, и обрыв
+   * USB ему безразличен. Протокол FluidNC:
+   *   $SD/Status          -> [MSG:INFO: SD card detected] (+ ok)
+   *   $Xmodem/Receive=/sd/имя  -> [MSG:...], затем символы 'C',
+   *   после них — XMODEM-CRC блоками по 1024 байта (STX, «XModem-1K»;
+   *   приёмник FluidNC их принимает — src/xmodem.cpp, case STX) —
+   *   в 8 раз меньше подтверждений и записей на карту, чем у
+   *   классических 128 байт (SOH), потому и в разы быстрее. Если
+   *   прошивка STX не знает — откат на 128. В конце EOT; контроллер
+   *   печатает "Received N bytes to file ..." и 'ok'. Так же работает
+   *   FluidTerm (mode='xmodem').
+   *   $SD/Run=/sd/имя     -> станок играет файл; в статусе появится
+   *   поле SD:45.5 (проценты файла). */
+
+  PlotterLink.prototype.sdStatus = async function () {
+    var lines = [], self = this;
+    this._tap = function (l) { lines.push(l); };
+    try {
+      await this.cmd('$SD/Status', 8000);
+    } finally {
+      this._tap = null;
+    }
+    var present = lines.some(function (l) { return /sd card detected/i.test(l) && !/no sd/i.test(l); });
+    var absent = lines.some(function (l) { return /no sd card/i.test(l); });
+    return { present: present, absent: absent, text: lines.join(' | ') };
+  };
+
+  /* Запуск файла с SD. FluidNC 4.x иногда не шлёт классический "ok"
+   * сразу, а уходит в <Run|...|SD:n,/sd/file>. Считаем успехом:
+   *   1) ok
+   *   2) статус Run/Hold с полем SD:
+   *   3) error:N — явный провал
+   * Пока ждём — не мешаем poll() (статус как раз сигнал успеха). */
+  PlotterLink.prototype.sdRun = function (name) {
+    var self = this;
+    var path = '/sd/' + name;
+    return new Promise(function (resolve, reject) {
+      if (!self.connected) return reject(new Error('нет порта'));
+      var done = false;
+      var prevSd = self._sdPct;
+      var timer = setTimeout(function () {
+        if (done) return;
+        done = true;
+        self._tap = null;
+        /* если за 8 с уже видим SD: в статусе — станок играет, ok потерялся */
+        if (self._sdPct != null && self.state === 'Run') {
+          resolve({ via: 'status-timeout', pct: self._sdPct });
+        } else {
+          reject(new Error('нет ответа на: $SD/Run=' + path));
+        }
+      }, 8000);
+
+      self._tap = function (l) {
+        if (done) return;
+        if (l === 'ok') {
+          done = true; clearTimeout(timer); self._tap = null;
+          resolve({ via: 'ok' });
+          return;
+        }
+        var mErr = l.match(/^error:(\d+)/i);
+        if (mErr) {
+          done = true; clearTimeout(timer); self._tap = null;
+          reject(new Error('контроллер ответил "' + l + '"'));
+          return;
+        }
+        /* <Run|...|SD:1.2,/sd/file.nc> */
+        if (l.charAt(0) === '<' && /\|SD:[\d.]+/i.test(l)) {
+          done = true; clearTimeout(timer); self._tap = null;
+          resolve({ via: 'status', line: l });
+        }
+      };
+
+      self.write('$SD/Run=' + path + '\n').catch(function (e) {
+        if (done) return;
+        done = true; clearTimeout(timer); self._tap = null;
+        reject(e);
+      });
+    });
+  };
+
+  /* Записать файл на SD через XMODEM-CRC блоками 1024 байта (STX) с
+   * откатом на 128 (SOH), если прошивка 1К не берёт.
+   * onProgress({sent,total,pct}). Возвращает {bytes}. Перед вызовом
+   * лучше проверить sdStatus(). */
+  PlotterLink.prototype.sdUpload = function (name, text, onProgress) {
+    var t = this.t;
+    if (!t || !this.connected) return Promise.reject(new Error('нет порта'));
+    if (this.busyRaw) return Promise.reject(new Error('передача уже идёт'));
+    var self = this;
+    return new Promise(function (resolve, reject) {
+      (async function () {
+        var bytes = new TextEncoder().encode(String(text));
+        var buf = [], waiters = [];
+        var okSeen = false;              // 'ok' мог прийти ещё до старта XMODEM
+        t.rawMode = true;
+        self.busyRaw = true;
+        t.onRaw = function (arr) {
+          for (var i = 0; i < arr.length; i++) buf.push(arr[i]);
+          var w = waiters.splice(0);
+          for (var k = 0; k < w.length; k++) w[k]();
+        };
+        var cleanup = function () { t.rawMode = false; t.onRaw = null; self.busyRaw = false; };
+
+        /* ждём один байт не дольше ms; null = тишина */
+        var getc = function (ms) {
+          return new Promise(function (res) {
+            if (buf.length) { res(buf.shift()); return; }
+            var done = false;
+            var to = setTimeout(function () {
+              if (!done) { done = true; res(null); }
+            }, ms);
+            waiters.push(function () {
+              if (!done && buf.length) { done = true; clearTimeout(to); res(buf.shift()); }
+            });
+          });
+        };
+        var sleepMs = function (ms) {
+          return new Promise(function (r) { setTimeout(r, ms); });
+        };
+        /* копим строку до \n; одиночный байт 'C' — стартовое "пиканье" XMODEM.
+         * Возвращает: завершённую строку | 'C' | null */
+        var line = '';
+        var feed = function (b) {
+          if (b === 0x0a) {
+            var s = line.replace(/\r$/, '');
+            line = '';
+            if (s) self.log(s);
+            return s;
+          }
+          if (b === 0x43 && !line) return 'C';   // 'C' вне строки
+          line += String.fromCharCode(b);
+          if (line.length > 160) { self.log(line); line = ''; }
+          return null;
+        };
+
+        try {
+          /* 1) команда приёма файла */
+          await self.write('$Xmodem/Receive=/sd/' + name + '\n');
+
+          /* 2) ждём 'C' (приём по CRC) или NAK (совсем старая прошивка —
+           * приём по контрольной сумме); заодно показываем [MSG] */
+          var got = false, crcMode = true, t0 = Date.now();
+          while (Date.now() - t0 < 20000 && !got) {
+            if (!self.connected) throw new Error('порт закрылся во время передачи');
+            var b = await getc(1000);
+            if (b == null) continue;
+            if (b === 0x43) { got = true; }                        // 'C'
+            else if (b === 0x15) { got = true; crcMode = false; }  // NAK
+            else {
+              var fb = feed(b);
+              if (fb === 'C') got = true;
+              else if (fb && /^ok$/i.test(fb)) okSeen = true;      // 'ok' уже был
+            }
+          }
+
+          if (!got) throw new Error('FluidNC не начал приём (нет "C") — ' +
+            'проверьте SD-карту ($SD/Status) и версию прошивки');
+
+          /* 3) блоки 1024 байта (STX) + CRC16; помеха = NAK = повтор того
+           * же блока (приёмник FluidNC дубликат по номеру принимает).
+           * Если 1К-блоки NAKаются, а ни один ещё не прошёл, — прошивка
+           * без STX: откат на 128 байт (SOH). Совсем старые прошивки
+           * стартуют NAK'ом — тогда сразу 128 байт и 1-байтовая сумма. */
+          var useCrc = crcMode, size1K = crcMode;
+          var seq = 1, pos = 0;
+          var acked1K = 0, t0up = Date.now(), lastLog = 0;
+          while (pos < bytes.length) {
+            var bsize = size1K ? 1024 : 128;
+            var end = Math.min(pos + bsize, bytes.length);
+            var frame = new Uint8Array(bsize + (useCrc ? 5 : 4));
+            frame[0] = size1K ? 0x02 : 0x01;       // STX | SOH
+            frame[1] = seq & 0xff;
+            frame[2] = 0xff - (seq & 0xff);
+            frame.set(bytes.subarray(pos, end), 3);
+            var ip;
+            for (ip = end - pos; ip < bsize; ip++) frame[3 + ip] = 0x1a; // Ctrl-Z добивка
+            if (useCrc) {
+              var cc = crc16(frame.subarray(3, 3 + bsize), bsize);
+              frame[3 + bsize] = (cc >> 8) & 0xff;
+              frame[4 + bsize] = cc & 0xff;
+            } else {
+              var sum = 0;
+              for (ip = 0; ip < bsize; ip++) sum = (sum + frame[3 + ip]) & 0xff;
+              frame[3 + bsize] = sum;
+            }
+            var acked = false, tries = 0, nakCnt = 0;
+            var dead = Date.now() + 90000;         // упрёмся в 90 с на блок
+            while (!acked && tries < 20 && Date.now() < dead) {
+              tries++;
+              await t.writeBytes(frame);
+              for (var w2 = 0; w2 < 12 && !acked; w2++) {
+                var a = await getc(4000);
+                if (!self.connected) throw new Error('порт закрылся во время передачи');
+                if (a == null) break;                       // тишина — шлём блок ещё раз
+                if (a === 0x06) { acked = true; }           // ACK
+                else if (a === 0x15) { nakCnt++; break; }   // NAK — повторить блок
+                else {
+                  var fa = feed(a);      /* мусор от помех — ждать дальше */
+                  if (fa && /^ok$/i.test(fa)) okSeen = true;
+                }
+              }
+            }
+            if (acked && size1K) acked1K++;
+            if (!acked && size1K && acked1K === 0 && nakCnt >= 3) {
+              size1K = false;                        // прошивка без STX
+              self.log('— 1К-блоки не приняты, перехожу на 128 байт');
+              continue;                              // тот же кусок файла, тот же номер
+            }
+            if (!acked) throw new Error('контроллер не подтвердил блок ' + seq +
+              ' (помехи на линии — кабель/феррит/скорость, см. README)');
+            pos = end;
+            seq = (seq + 1) & 0xff;
+            var pct = Math.round(100 * pos / bytes.length);
+            if (pct >= lastLog + 10 || pos === bytes.length) {
+              var secs = Math.max((Date.now() - t0up) / 1000, 0.1);
+              self.log('— передано ' + pct + '% (' + Math.round(pos / 1024) +
+                       ' КБ, ' + (pos / 1024 / secs).toFixed(1) + ' КБ/с)');
+              lastLog = pct - (pct % 10);
+            }
+            if (onProgress) {
+              onProgress({ sent: pos, total: bytes.length, pct: pct });
+            }
+          }
+
+          /* 4) EOT — конец файла */
+          var eotOk = false;
+          for (var r2 = 0; r2 < 6 && !eotOk; r2++) {
+            await t.writeBytes(new Uint8Array([0x04]));
+            var e = await getc(4000);
+            if (e === 0x06) eotOk = true;                  // ACK
+            /* NAK после первого EOT — классика: шлём EOT снова */
+          }
+          if (!eotOk) throw new Error('нет подтверждения конца передачи');
+
+          /* 5) докушиваем хвост: "Received N bytes to file ..." + ok.
+           * Если 'ok' уже прилетел раньше (часть прошивок отвечает сразу) —
+           * не сидим лишние 10 секунд, а выходим сразу. */
+          if (!okSeen) {
+            var t3 = Date.now();
+            while (Date.now() - t3 < 10000 && !okSeen) {
+              var b2 = await getc(1000);
+              if (b2 == null) continue;
+              var res = feed(b2);
+              if (typeof res === 'string' && /^ok$/i.test(res)) okSeen = true;
+            }
+          }
+          await sleepMs(300);                    // дать линии замолчать
+          resolve({ bytes: bytes.length, name: name });
+        } catch (err) {
+          /* Аварийный выход. Гасим приёмник CAN'ами и мягко сбрасываем
+           * контроллер: иначе недопереданные хвосты последнего блока
+           * FluidNC разберёт как G-code и поедет рисовать мусор.
+           * 0x18 внутри XMODEM = CAN, вне его = Ctrl-X (мягкий сброс). */
+          try {
+            await sleepMs(300);
+            await t.writeBytes(new Uint8Array([0x18, 0x18, 0x18]));
+            await sleepMs(400);
+            await self.write('\n' + RT_RESET);
+            self.ready = false;
+            self.log('— контроллер сброшен, чтобы хвост неудавшейся передачи '
+                     + 'не уехал в движение');
+            await self._waitReady(2500);
+          } catch (e2) { /* порт уже мёртв — catch (err) важнее */ }
+          reject(err);
+        } finally {
+          cleanup();
+        }
+      })().catch(function (e) { try { reject(e); } catch (x) { /* уже отклонено */ } });
+    });
+  };
+
+  /* Стоп = мягкий сброс контроллера (буфер движений очищается). */
+  PlotterLink.prototype.stop = async function () {
+    this._abortJob('нажат СТОП');
+    this._flushQueue('сброс контроллера');
+    await this.write(RT_RESET).catch(function () {});
+    this.ready = false;
+    this.log('— контроллер перезапущен, жду баннер…');
+    await this._waitReady(2000);
+    if (this.ready) this.log('• Контроллер снова на связи');
+    else this.log('! Баннера не дождались — проверьте панель станка');
+    this.onEvent({ type: 'reset' });
+  };
+
+  var PlotterSerial = {
+    PlotterLink: PlotterLink,
+    WebSerialTransport: WebSerialTransport,
+    cleanLine: cleanLine,
+    isSupported: isSupported,
+    RT: { HOLD: RT_HOLD, RESUME: RT_RESUME, RESET: RT_RESET, JOG_CANCEL: RT_JOG_CANCEL }
+  };
+
+  if (typeof module !== 'undefined' && module.exports) module.exports = PlotterSerial;
+  global.PlotterSerial = PlotterSerial;
+})(typeof window !== 'undefined' ? window : globalThis);
+
+</script>
+<script>
+const SELF_HTML='<!DOCTYPE html>\n'+document.documentElement.outerHTML;
+const $=i=>document.getElementById(i);
+const LS='pero_font_v5',LSM='pero_machine_v5',LSJ='pero_job_v5';
+let toastT=0;
+function toast(m){const t=$('toast');t.textContent=m;t.classList.add('on');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('on'),2600);}
+function dl(blob,name){const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),4000);}
+const CRCT=(()=>{const t=new Uint32Array(256);for(let n=0;n<256;n++){let c=n;for(let k=0;k<8;k++)c=c&1?0xEDB88320^(c>>>1):c>>>1;t[n]=c>>>0;}return t;})();
+function crc32(u){let c=0xFFFFFFFF;for(let i=0;i<u.length;i++)c=CRCT[(c^u[i])&255]^(c>>>8);return(c^0xFFFFFFFF)>>>0;}
+/* Есть ли в тексте хотя бы одна исполняемая строка (не комментарий/пустышка)?
+ * Сгенерированный G-code ВСЕГДА начинается с комментария "; FluidNC ...",
+ * поэтому проверять "начинается с ;" нельзя — так ломались скачивание,
+ * печать и запись на SD. Смотрим каждую строку: убираем (скобки) и хвост
+ * после ; — если что-то осмысленное осталось, код есть. */
+function hasCode(c){return String(c||'').split('\n').some(l=>{const t=l.replace(/\([^)]*\)/g,'').split(';')[0].trim();return !!t&&t!=='%';});}
+/* CRC16 XModem (полином 0x1021) — для XMODEM-CRC при передаче файла на SD.
+ * В WiFi-ветке раньше стояла crc32 — приёмник FluidNC её отвергал. */
+function crc16x(u,off,len){let c=0;off=off||0;len=(len==null)?(u.length-off):len;for(let i=0;i<len;i++){c^=u[off+i]<<8;for(let b=0;b<8;b++)c=(c&0x8000)?((c<<1)^0x1021):(c<<1);c&=0xffff;}return c;}
+function makeZip(files){const enc=new TextEncoder(),parts=[],cen=[];let off=0;const d=new Date();
+const tm=((d.getHours()<<11)|(d.getMinutes()<<5)|(d.getSeconds()>>1))&65535,dt=(((d.getFullYear()-1980)<<9)|((d.getMonth()+1)<<5)|d.getDate())&65535;
+for(const f of files){const nm=enc.encode(f.name),da=typeof f.data==='string'?enc.encode(f.data):f.data,cr=crc32(da);
+const lh=new Uint8Array(30+nm.length),lv=new DataView(lh.buffer);
+lv.setUint32(0,0x04034b50,true);lv.setUint16(4,20,true);lv.setUint16(6,0x0800,true);lv.setUint16(8,0,true);lv.setUint16(10,tm,true);lv.setUint16(12,dt,true);lv.setUint32(14,cr,true);lv.setUint32(18,da.length,true);lv.setUint32(22,da.length,true);lv.setUint16(26,nm.length,true);lh.set(nm,30);parts.push(lh,da);
+const ch=new Uint8Array(46+nm.length),cv=new DataView(ch.buffer);
+cv.setUint32(0,0x02014b50,true);cv.setUint16(4,20,true);cv.setUint16(6,20,true);cv.setUint16(8,0x0800,true);cv.setUint16(10,0,true);cv.setUint16(12,tm,true);cv.setUint16(14,dt,true);cv.setUint32(16,cr,true);cv.setUint32(20,da.length,true);cv.setUint32(24,da.length,true);cv.setUint16(28,nm.length,true);cv.setUint32(42,off,true);ch.set(nm,46);cen.push(ch);off+=lh.length+da.length;}
+let cs=0;cen.forEach(c=>cs+=c.length);const e=new Uint8Array(22),ev=new DataView(e.buffer);
+ev.setUint32(0,0x06054b50,true);ev.setUint16(8,files.length,true);ev.setUint16(10,files.length,true);ev.setUint32(12,cs,true);ev.setUint32(16,off,true);
+return new Blob([...parts,...cen,e],{type:'application/zip'});}
+const SETS={ru:'абвгдеёжзийклмнопрстуфхцчшщъыьэюя',RU:'АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ',d:'0123456789',la:'abcdefghijklmnopqrstuvwxyz',LA:'ABCDEFGHIJKLMNOPQRSTUVWXYZ',ex:'.,!?;:«»-—()[]/+*=%№@'};
+const BL=260,BODY=180,XR=.5,HIT=18,MAXV=5;
+const S={ch:'а',name:'my_hand',glyphs:{},strokes:[],ref:[],cur:null,cW:160,cL:40,entry:{x:40,y:BL},exit:{x:200,y:BL},drag:null,set:'ru',mode:'draw',erR:14,tpl:true,alpha:.34,img:null,imgT:null,imgMove:false,varIdx:-1,seedUsed:0,rev:0,alignMap:{}};
+const cv=$('cv'),cx=cv.getContext('2d');
+function tab(n){stopEd();G.stop();[1,2,3].forEach(i=>{$('t'+i).classList.toggle('on',i===n);$('p'+i).classList.toggle('on',i===n);});if(n===2)G.refresh();}
+$('t1').onclick=()=>tab(1);$('t2').onclick=()=>tab(2);$('t3').onclick=()=>tab(3);
+function st1(m){$('s1').textContent=m||'';}
+function vc(ch){const g=S.glyphs[ch];if(!g)return 0;return Math.max((g.variants||[]).length,g.strokes&&g.strokes.length?1:0);}
+function nGlyph(){return Object.keys(S.glyphs).filter(c=>c!==' ').length;}
+function nVar(){let n=0;for(const c in S.glyphs)if(c!==' ')n+=vc(c);return n;}
+function info(){$('cnt').textContent=nGlyph();$('nG').textContent=nGlyph();$('nV').textContent=nVar();$('emptyCard').style.display=nGlyph()?'none':'block';renderAlpha();}
+function cL(){return Math.max(0,Number(S.cL)||40);}
+function cR(){return cL()+Math.max(60,Number(S.cW)||160);}
+function clampEE(){for(const p of[S.entry,S.exit]){p.x=Math.max(8,Math.min(cv.width-8,p.x));p.y=Math.max(8,Math.min(cv.height-8,p.y));}}
+function vars(ch){const g=S.glyphs[ch];if(!g)return[];if(g.variants&&g.variants.length)return g.variants;if(g.strokes&&g.strokes.length)return[{advance:g.advance,strokes:g.strokes,entry:g.entry,exit:g.exit}];return[];}
+function renderAlpha(){const el=$('alpha');el.innerHTML='';let list;
+if(S.set==='ok'){list=Object.keys(S.glyphs).filter(c=>c!==' '&&vc(c)).sort((a,b)=>a.localeCompare(b,'ru'));if(!list.length){el.innerHTML='<span style="grid-column:1/-1;font-size:.82rem;color:var(--mut2)">Пока пусто — загрузи JSON или нарисуй букву</span>';return;}}
+else list=[...(SETS[S.set]||SETS.ru)];
+for(const ch of list){const b=document.createElement('button');b.type='button';b.className='g'+(vc(ch)?' dn':'')+(ch===S.ch?' on':'');b.textContent=ch;const n=vc(ch);if(n){const v=document.createElement('span');v.className='v';v.textContent=n;b.appendChild(v);}b.onclick=()=>{stopEd();S.ch=ch;$('ch').value=ch;loadGlyph();};el.appendChild(b);}}
+function drawRef(){if(!S.tpl||!S.ref.length)return;const sc=BODY/700,ox=cL(),oy=BL;cx.save();cx.strokeStyle='rgba(192,38,211,'+S.alpha+')';cx.lineWidth=3.2;cx.lineCap='round';cx.lineJoin='round';cx.setLineDash([5,5]);
+for(const s of S.ref){if(s.length<2)continue;cx.beginPath();cx.moveTo(ox+s[0][0]*sc,oy-s[0][1]*sc);for(let i=1;i<s.length;i++)cx.lineTo(ox+s[i][0]*sc,oy-s[i][1]*sc);cx.stroke();}cx.restore();}
+function drawImg(){if(!S.img)return;cx.save();cx.globalAlpha=S.alpha;const i=S.img,W=cv.width,H=cv.height;if(S.imgT)cx.drawImage(i,S.imgT.x,S.imgT.y,i.width*S.imgT.s,i.height*S.imgT.s);else{const ir=i.width/i.height,cr=W/H;let dw,dh,dx,dy;if(ir>cr){dh=H;dw=H*ir;dx=(W-dw)/2;dy=0;}else{dw=W;dh=W/ir;dx=0;dy=(H-dh)/2;}cx.drawImage(i,dx,dy,dw,dh);}cx.restore();}
+function fitImg(){if(!S.img)return;const s=Math.min(cv.width/S.img.width,cv.height/S.img.height);S.imgT={x:(cv.width-S.img.width*s)/2,y:(cv.height-S.img.height*s)/2,s};redraw();}
+function zoomImg(k){if(!S.imgT)return;const s0=S.imgT.s,s=Math.max(.1,Math.min(9,s0*k)),f=s/s0,X=cv.width/2,Y=cv.height/2;S.imgT={x:X-(X-S.imgT.x)*f,y:Y-(Y-S.imgT.y)*f,s};redraw();}
+function syncImg(){$('bgOpt').style.display=S.img?'flex':'none';$('bMv').classList.toggle('ton',S.imgMove);$('bMv').textContent=S.imgMove?'✥ двигаю':'✥ Двигать';cv.style.cursor=S.imgMove?'move':(S.mode==='erase'?'none':'crosshair');}
+function redraw(){const W=cv.width,H=cv.height,yCap=BL-BODY,yX=BL-BODY*XR,yD=Math.min(H-8,BL+BODY*.4);cx.fillStyle='#fdfeff';cx.fillRect(0,0,W,H);drawImg();
+const dx=Math.tan(15*Math.PI/180);cx.strokeStyle='#e7eef5';cx.lineWidth=1;for(let x=-H;x<W+H;x+=34){cx.beginPath();cx.moveTo(x,BL);cx.lineTo(x+dx*(yCap-BL),yCap);cx.moveTo(x,BL);cx.lineTo(x+dx*(yD-BL),yD);cx.stroke();}
+cx.fillStyle='rgba(18,184,134,.07)';cx.fillRect(cL(),yCap,cR()-cL(),yD-yCap);
+for(const L of[[yCap,'#e8443a',[],'ЗАГЛ',1.6],[yX,'#1f6feb',[5,4],'стр',1.2],[BL,'#132734',[],'строка',1.8],[yD,'#8aa1b1',[4,4],'хвост',1]]){cx.strokeStyle=L[1];cx.lineWidth=L[4];cx.setLineDash(L[2]);cx.beginPath();cx.moveTo(0,L[0]);cx.lineTo(W,L[0]);cx.stroke();cx.setLineDash([]);cx.fillStyle=L[1];cx.font='11px sans-serif';cx.fillText(L[3],W-44,L[0]-4);}
+cx.strokeStyle='#12b886';cx.lineWidth=1.5;cx.setLineDash([6,4]);cx.beginPath();cx.moveTo(cL(),yCap);cx.lineTo(cL(),yD);cx.moveTo(cR(),yCap);cx.lineTo(cR(),yD);cx.stroke();cx.setLineDash([]);drawRef();
+const line=p=>{if(!p||p.length<2)return;cx.beginPath();cx.moveTo(p[0][0],p[0][1]);for(let i=1;i<p.length;i++)cx.lineTo(p[i][0],p[i][1]);cx.stroke();};
+if(edAnim){if(edAnim.flight){cx.strokeStyle='#c026d3';cx.lineWidth=1.6;cx.setLineDash([7,6]);line(edAnim.flight);cx.setLineDash([]);}cx.strokeStyle='#10202b';cx.lineWidth=2.8;cx.lineCap='round';cx.lineJoin='round';for(let i=0;i<edAnim.done;i++)line(edAnim.used[i]);line(edAnim.cur);if(edAnim.pen){cx.beginPath();cx.arc(edAnim.pen[0],edAnim.pen[1],8,0,7);cx.fillStyle=edAnim.down?'#10202b':'#c026d3';cx.fill();cx.lineWidth=2;cx.strokeStyle='#fff';cx.stroke();}}
+else{cx.strokeStyle='#10202b';cx.lineWidth=2.8;cx.lineCap='round';cx.lineJoin='round';for(const s of S.strokes)line(s);if(S.cur&&S.cur[0]!=='erase'){cx.strokeStyle='#1f6feb';line(S.cur);}
+const dot=(p,c,t)=>{cx.beginPath();cx.arc(p.x,p.y,9,0,7);cx.fillStyle=c;cx.fill();cx.lineWidth=2;cx.strokeStyle='#fff';cx.stroke();cx.strokeStyle='#fff';cx.lineWidth=1.5;cx.beginPath();cx.moveTo(p.x-4,p.y);cx.lineTo(p.x+4,p.y);cx.moveTo(p.x,p.y-4);cx.lineTo(p.x,p.y+4);cx.stroke();cx.fillStyle=c;cx.font='bold 11px sans-serif';cx.fillText(t,Math.min(W-46,Math.max(4,p.x+12)),Math.max(14,p.y-12));};dot(S.entry,'#12b886','вход');dot(S.exit,'#f59f00','выход');}
+if(S.mode==='erase'&&S.ep){cx.beginPath();cx.arc(S.ep.x,S.ep.y,S.erR,0,7);cx.strokeStyle='rgba(232,68,58,.85)';cx.lineWidth=1.5;cx.setLineDash([3,3]);cx.stroke();cx.setLineDash([]);cx.fillStyle='rgba(232,68,58,.12)';cx.fill();}}
+function pt(e){const r=cv.getBoundingClientRect(),s=e.touches&&e.touches[0]?e.touches[0]:e;return{x:(s.clientX-r.left)*(cv.width/r.width),y:(s.clientY-r.top)*(cv.height/r.height)};}
+function eraseAt(x,y){const R2=S.erR*S.erR,out=[];for(const s of S.strokes){let c=[];const fl=()=>{if(c.length>1)out.push(c);c=[];};for(const p of s){((p[0]-x)**2+(p[1]-y)**2<=R2)?fl():c.push(p);}fl();}S.strokes=out;}
+cv.addEventListener('pointerdown',e=>{if(edAnim){e.preventDefault();stopEd('Остановлено');return;}e.preventDefault();try{cv.setPointerCapture(e.pointerId);}catch(_){}
+const p=pt(e);if(S.imgMove){if(S.imgT){S.drag='img';S.bs={px:p.x,py:p.y,x:S.imgT.x,y:S.imgT.y};}redraw();return;}
+if(Math.hypot(p.x-S.entry.x,p.y-S.entry.y)<=HIT){S.drag='e';S.cur=null;redraw();return;}
+if(Math.hypot(p.x-S.exit.x,p.y-S.exit.y)<=HIT){S.drag='x';S.cur=null;redraw();return;}
+S.drag=null;if(S.mode==='erase'){S.cur=['erase'];S.ep=p;eraseAt(p.x,p.y);redraw();return;}S.cur=[[p.x,p.y]];redraw();});
+cv.addEventListener('pointermove',e=>{e.preventDefault();const p=pt(e);
+if(S.drag==='e'){S.entry={x:p.x,y:p.y};clampEE();redraw();return;}if(S.drag==='x'){S.exit={x:p.x,y:p.y};clampEE();redraw();return;}
+if(S.drag==='img'){if(S.imgT){S.imgT.x=S.bs.x+p.x-S.bs.px;S.imgT.y=S.bs.y+p.y-S.bs.py;redraw();}return;}
+if(!S.cur)return;if(S.cur[0]==='erase'){S.ep=p;eraseAt(p.x,p.y);redraw();return;}const l=S.cur[S.cur.length-1];if(Math.hypot(p.x-l[0],p.y-l[1])>=1.2)S.cur.push([p.x,p.y]);redraw();});
+function upEd(e){if(e)e.preventDefault();if(S.drag){S.drag=null;redraw();return;}if(!S.cur)return;if(S.cur[0]!=='erase'&&S.cur.length>1)S.strokes.push(S.cur);S.cur=null;S.ep=null;redraw();}
+cv.addEventListener('pointerup',upEd);cv.addEventListener('pointercancel',upEd);
+let edAnim=null;
+function edBtn(){$('bPy').textContent=edAnim?'■ стоп':'▶ перо';$('bPy').classList.toggle('play',!!edAnim);}
+function stopEd(m){if(!edAnim)return;cancelAnimationFrame(edAnim.raf);edAnim=null;edBtn();redraw();if(m)st1(m);}
+function playEd(){if(edAnim){stopEd('Остановлено');return;}if(S.cur&&S.cur[0]!=='erase'&&S.cur.length>1){S.strokes.push(S.cur);S.cur=null;}
+const segs=[],used=[];let pen=[S.entry.x,S.entry.y];for(const s of S.strokes){if(s.length<2)continue;const d=Math.hypot(s[0][0]-pen[0],s[0][1]-pen[1]);segs.push({t:'m',a:pen,b:s[0],dur:Math.max(d/230,.12)});let L=0;for(let i=1;i<s.length;i++)L+=Math.hypot(s[i][0]-s[i-1][0],s[i][1]-s[i-1][1]);segs.push({t:'d',s,L,dur:Math.max(L/320,.05)});used.push(s);pen=s[s.length-1];}
+if(!used.length){st1('Сначала нарисуй букву');return;}edAnim={segs,used,t0:performance.now(),raf:0,done:0,cur:null,flight:null,pen:null,down:false};edBtn();st1('▶ перо идёт от точки «вход»');
+const tick=now=>{if(!edAnim)return;let t=(now-edAnim.t0)/1000;let i=0,done=0,cur=null,fl=null,pen=null,down=false;
+for(;i<segs.length;i++){const g=segs[i];if(t>=g.dur){t-=g.dur;if(g.t==='d')done++;continue;}const k=g.dur>0?t/g.dur:1;
+if(g.t==='m'){pen=[g.a[0]+(g.b[0]-g.a[0])*k,g.a[1]+(g.b[1]-g.a[1])*k];fl=[g.a,pen];}else{const lim=k*g.L;let acc=0;cur=[g.s[0].slice()];pen=g.s[0].slice();down=true;for(let j=1;j<g.s.length;j++){const a=g.s[j-1],b=g.s[j],d=Math.hypot(b[0]-a[0],b[1]-a[1]);if(acc+d>=lim){const u=(lim-acc)/d;pen=[a[0]+(b[0]-a[0])*u,a[1]+(b[1]-a[1])*u];cur.push(pen);break;}acc+=d;cur.push(b.slice());pen=b.slice();}}break;}
+if(i>=segs.length){const n=used.length;stopEd();st1('▶ готово · штрихов '+n);return;}Object.assign(edAnim,{done,cur,flight:fl,pen,down});redraw();edAnim.raf=requestAnimationFrame(tick);};edAnim.raf=requestAnimationFrame(tick);}
+$('bPy').onclick=playEd;
+function toFont(){const sc=700/BODY,L=cL(),st=[];for(const s of S.strokes)if(s.length>1)st.push(s.map(p=>[Math.round((p[0]-L)*sc),Math.round((BL-p[1])*sc)]));return{strokes:st,advance:Math.max(120,Math.round(Math.max(60,Number(S.cW)||160)*sc)),entry:[Math.round((S.entry.x-L)*sc),Math.round((BL-S.entry.y)*sc)],exit:[Math.round((S.exit.x-L)*sc),Math.round((BL-S.exit.y)*sc)]};}
+function fromFont(st){const sc=BODY/700,L=cL(),o=[];for(const s of st||[])if(s.length>1)o.push(s.map(p=>[L+p[0]*sc,BL-p[1]*sc]));return o;}
+function apply(g){const sc=BODY/700,L=cL();S.strokes=[];if(!g){S.entry={x:L,y:BL};S.exit={x:cR(),y:BL};S.ref=[];clampEE();return;}
+let st=g.strokes,ad=g.advance,en=g.entry,ex=g.exit;if(g.variants&&g.variants.length){const v=g.variants[S.varIdx>=0&&S.varIdx<g.variants.length?S.varIdx:g.variants.length-1];st=v.strokes;ad=v.advance!=null?v.advance:ad;en=v.entry||en;ex=v.exit||ex;}
+S.strokes=fromFont(st);S.ref=st.map(s=>s.map(p=>p.slice()));if(ad){S.cW=Math.max(60,Math.round(ad*sc));$('cW').value=S.cW;}S.entry=en?{x:L+en[0]*sc,y:BL-en[1]*sc}:{x:L,y:BL};S.exit=ex?{x:L+ex[0]*sc,y:BL-ex[1]*sc}:{x:cR(),y:BL};clampEE();}
+function loadGlyph(){const ch=(S.ch||'').slice(0,1);S.ch=ch;$('ch').value=ch;const v=vars(ch);S.varIdx=v.length?v.length-1:-1;apply(S.glyphs[ch]||null);redraw();info();renderVars();st1(ch?'«'+ch+'» · вариантов '+vc(ch)+'/'+MAXV:'Укажи букву');}
+function renderVars(){const ch=S.ch,v=vars(ch);$('vCh').textContent=ch||'?';if(!v.length){$('vBox').style.display='none';return;}$('vBox').style.display='block';const el=$('vList');el.innerHTML='';
+v.forEach((x,i)=>{const b=document.createElement('button');b.type='button';b.className='vb'+(i===S.varIdx?' on':'');b.innerHTML='<span>#'+(i+1)+'</span><i>'+(x.strokes||[]).length+' штр</i>';b.onclick=()=>loadVar(i);const d=document.createElement('button');d.type='button';d.className='x';d.textContent='🗑';d.onclick=e=>{e.stopPropagation();delVar(i);};b.appendChild(d);el.appendChild(b);});
+if(v.length<MAXV){const a=document.createElement('button');a.type='button';a.className='vb';a.textContent='＋ новый';a.onclick=()=>{stopEd();S.varIdx=-1;S.strokes=[];S.cur=null;S.entry={x:cL(),y:BL};S.exit={x:cR(),y:BL};clampEE();redraw();renderVars();st1('Новый вариант «'+ch+'»');};el.appendChild(a);}}
+function loadVar(i){stopEd();const v=vars(S.ch);if(!v[i])return;S.varIdx=i;const x=v[i],sc=BODY/700,L=cL();S.strokes=fromFont(x.strokes);S.ref=x.strokes.map(s=>s.map(p=>p.slice()));if(x.advance){S.cW=Math.max(60,Math.round(x.advance*sc));$('cW').value=S.cW;}S.entry=x.entry?{x:L+x.entry[0]*sc,y:BL-x.entry[1]*sc}:{x:L,y:BL};S.exit=x.exit?{x:L+x.exit[0]*sc,y:BL-x.exit[1]*sc}:{x:cR(),y:BL};clampEE();redraw();renderVars();st1('Вариант #'+(i+1));}
+function delVar(i){stopEd();const g=S.glyphs[S.ch];if(!g)return;const v=vars(S.ch);if(!v[i])return;if(!confirm('Удалить вариант #'+(i+1)+' «'+S.ch+'»?'))return;if(!g.variants||!g.variants.length)g.variants=v.slice();g.variants.splice(i,1);
+if(!g.variants.length){delete S.glyphs[S.ch];S.varIdx=-1;apply(null);}else{const l=g.variants[g.variants.length-1];Object.assign(g,{strokes:l.strokes,advance:l.advance,entry:l.entry,exit:l.exit});S.varIdx=Math.max(0,Math.min(S.varIdx===i?i:S.varIdx-(S.varIdx>i?1:0),g.variants.length-1));apply(g);}
+S.rev++;redraw();info();renderVars();saveLS();G.invalidate();toast('Вариант удалён');}
+function saveVar(){const ch=(S.ch||'').slice(0,1);if(!ch){st1('Укажи букву');return;}if(ch===' '){st1('Пробел не рисуют');return;}const f=toFont();if(!f.strokes.length){st1('Сначала нарисуй');return;}let g=S.glyphs[ch];
+if(!g){S.glyphs[ch]=g={...f,variants:[f]};S.varIdx=0;toast('«'+ch+'» сохранена');}else{if(!g.variants)g.variants=[];if(!g.variants.length&&g.strokes&&g.strokes.length)g.variants.push({advance:g.advance,strokes:g.strokes,entry:g.entry,exit:g.exit});
+if(S.varIdx>=0&&S.varIdx<g.variants.length){g.variants[S.varIdx]=f;toast('Вариант #'+(S.varIdx+1)+' обновлён');}else if(g.variants.length>=MAXV){if(!confirm('Уже '+MAXV+' вариантов. Заменить последний?'))return;g.variants[MAXV-1]=f;S.varIdx=MAXV-1;}else{g.variants.push(f);S.varIdx=g.variants.length-1;toast('«'+ch+'» #'+(S.varIdx+1));}
+const c=g.variants[S.varIdx];Object.assign(g,{strokes:c.strokes,advance:c.advance,entry:c.entry,exit:c.exit});}
+S.rev++;redraw();info();renderVars();saveLS();G.invalidate();}
+function buildFont(){return{format:'stroke-font-v1',name:S.name,upem:1000,cap_height:700,cursive:true,glyphs:{' ':{advance:300,strokes:[]},...S.glyphs}};}
+function normGlyph(g){if(g.s&&!g.strokes){const st=g.s,en=g.E||(st[0]&&st[0][0]),ex=g.X||(st.length?st[st.length-1][st[st.length-1].length-1]:null);return{advance:g.a||400,strokes:st,entry:en,exit:ex,variants:[{advance:g.a||400,strokes:st,entry:en,exit:ex}]};}return g;}
+function loadFont(f){if(!f||!f.glyphs){st1('Нужен JSON шрифта');return false;}S.glyphs={};for(const ch in f.glyphs){if(ch===' ')continue;S.glyphs[ch]=normGlyph(f.glyphs[ch]);}if(f.name)S.name=String(f.name).replace(/\s*\(hand-drawn\)\s*/i,'').trim()||'my_hand';$('fn').value=S.name;const first=Object.keys(S.glyphs).sort((a,b)=>a.localeCompare(b,'ru'))[0];if(first)S.ch=first;S.rev++;loadGlyph();saveLS();G.invalidate();return true;}
+function saveLS(){try{localStorage.setItem(LS,JSON.stringify({name:S.name,glyphs:S.glyphs,ch:S.ch,cW:S.cW}));}catch(e){}}
+function readLS(){try{const d=JSON.parse(localStorage.getItem(LS)||'null');if(d&&d.glyphs&&Object.keys(d.glyphs).length){S.glyphs=d.glyphs;S.name=d.name||'my_hand';$('fn').value=S.name;if(d.ch)S.ch=d.ch;if(d.cW){S.cW=d.cW;$('cW').value=d.cW;}S.rev++;return true;}}catch(e){}return false;}
+async function pickFontFile(f){if(!f)return;try{const ok=loadFont(JSON.parse(await f.text()));if(ok)toast('Шрифт загружен · '+nGlyph()+' букв');}catch(x){st1('JSON: '+x.message);toast('Не удалось прочитать JSON');}}
+$('sets').onclick=e=>{const b=e.target.closest('button');if(!b)return;[...$('sets').children].forEach(x=>x.classList.remove('on'));b.classList.add('on');S.set=b.dataset.s;renderAlpha();};
+$('bTpl').onclick=()=>{S.tpl=!S.tpl;$('bTpl').textContent='Контур: '+(S.tpl?'вкл':'выкл');$('bTpl').classList.toggle('ton',S.tpl);redraw();};
+$('alpha').oninput=()=>{S.alpha=(+$('alpha').value||34)/100;redraw();};
+$('fImg').onchange=e=>{const f=e.target.files[0];if(!f)return;const i=new Image();i.onload=()=>{S.img=i;S.imgMove=false;syncImg();fitImg();toast('Скан загружен');};i.src=URL.createObjectURL(f);e.target.value='';};
+$('bClr').onclick=()=>{stopEd();S.img=null;S.imgT=null;S.imgMove=false;syncImg();redraw();};
+$('bMv').onclick=()=>{S.imgMove=!S.imgMove;syncImg();redraw();};$('bMi').onclick=()=>zoomImg(1/1.3);$('bPl').onclick=()=>zoomImg(1.3);$('bFit').onclick=fitImg;
+$('ch').oninput=()=>{S.ch=($('ch').value||'').slice(0,1);redraw();renderAlpha();};$('ch').onchange=()=>{stopEd();S.ch=($('ch').value||'').slice(0,1);loadGlyph();};
+$('fn').oninput=()=>{S.name=$('fn').value||'my_hand';saveLS();};
+$('cW').oninput=()=>{const r=cR();S.cW=+$('cW').value||160;if(Math.abs(S.exit.x-r)<12)S.exit.x=cR();clampEE();redraw();};
+$('cL').oninput=()=>{const l=cL();S.cL=+$('cL').value||40;if(Math.abs(S.entry.x-l)<12)S.entry.x=cL();clampEE();redraw();};
+$('bSn').onclick=()=>{stopEd();let f=null,l=null;for(const s of S.strokes){if(s.length<2)continue;if(!f)f=s[0];l=s[s.length-1];}if(!f){st1('Сначала нарисуй штрих');return;}S.entry={x:f[0],y:f[1]};S.exit={x:l[0],y:l[1]};clampEE();redraw();toast('Маркеры на концах штрихов');};
+$('bUn').onclick=()=>{stopEd();S.strokes.pop();redraw();};$('bCl').onclick=()=>{stopEd();S.strokes=[];S.cur=null;redraw();};
+function mode(m){S.mode=m;const e=m==='erase';$('bEr').classList.toggle('eon',e);$('erOpt').style.display=e?'flex':'none';cv.style.cursor=e?'none':'crosshair';st1(e?'Ластик — веди по лишнему':'Рисование');redraw();}
+$('bEr').onclick=()=>{stopEd();mode(S.mode==='erase'?'draw':'erase');};$('bDr').onclick=()=>{stopEd();mode('draw');};
+$('erR').oninput=()=>{S.erR=+$('erR').value||14;$('erV').textContent=S.erR;};
+$('bSv').onclick=()=>{stopEd();saveVar();};
+$('bNx').onclick=()=>{stopEd();const all=Object.values(SETS).join('');const i=all.indexOf(S.ch);S.ch=all[(i+1)%all.length];$('ch').value=S.ch;loadGlyph();};
+$('bDl').onclick=()=>{if(!S.glyphs[S.ch])return;if(!confirm('Удалить все варианты «'+S.ch+'»?'))return;delete S.glyphs[S.ch];S.strokes=[];S.ref=[];apply(null);S.rev++;redraw();info();renderVars();saveLS();G.invalidate();toast('Буква удалена');};
+$('bJs').onclick=()=>{dl(new Blob([JSON.stringify(buildFont())],{type:'application/json'}),S.name+'.json');toast('JSON скачан');};
+$('fJs').onchange=e=>{pickFontFile(e.target.files[0]);e.target.value='';};$('fJs2').onchange=e=>{pickFontFile(e.target.files[0]);e.target.value='';};
+$('bLS').onclick=()=>{saveLS();toast('Сохранено в память телефона');};
+$('bLR').onclick=()=>{if(readLS()){loadGlyph();G.invalidate();toast('Загружено из памяти');}else st1('В памяти пусто');};
+$('bRs').onclick=()=>{if(!confirm('Очистить весь шрифт? Загрузи JSON заново или рисуй с нуля.'))return;S.glyphs={};S.strokes=[];S.ref=[];S.rev++;apply(null);loadGlyph();saveLS();G.invalidate();toast('Шрифт очищен');};
+$('bDemo').onclick=()=>{S.glyphs={};S.ch='а';$('ch').value='а';loadGlyph();$('emptyCard').style.display='none';st1('Пустой шрифт — нарисуй первую букву и сохрани');toast('Рисуй букву «а»');};
+let dragDepth=0;
+addEventListener('dragenter',e=>{e.preventDefault();dragDepth++;$('drop').classList.add('on');});
+addEventListener('dragover',e=>e.preventDefault());
+addEventListener('dragleave',e=>{e.preventDefault();dragDepth--;if(dragDepth<=0){dragDepth=0;$('drop').classList.remove('on');}});
+addEventListener('drop',e=>{e.preventDefault();dragDepth=0;$('drop').classList.remove('on');const f=e.dataTransfer.files[0];if(f)pickFontFile(f);});
+const cvG=$('cg'),cg=cvG.getContext('2d');
+function isUpChar(c){return c!==c.toLowerCase()&&c===c.toUpperCase();}
+const G={plan:[],miss:[],marks:[],anim:null,raf:0,key:null,_rand:false,
+st(m){$('s2').textContent=m||'';},d(a,b){return Math.hypot(b[0]-a[0],b[1]-a[1]);},
+cross(a,b,c,d){const rx=b[0]-a[0],ry=b[1]-a[1],sx=d[0]-c[0],sy=d[1]-c[1],D=rx*sy-ry*sx;if(Math.abs(D)<1e-9)return false;const t=((c[0]-a[0])*sy-(c[1]-a[1])*sx)/D,u=((c[0]-a[0])*ry-(c[1]-a[1])*rx)/D,e=.03;return t>e&&t<1-e&&u>e&&u<1-e;},
+hits(path,sts){for(let i=0;i<path.length-1;i++){const a=path[i],b=path[i+1];for(const s of sts)for(let j=0;j<s.length-1;j++)if(G.cross(a,b,s[j],s[j+1]))return true;}return false;},
+nearest(st,t){let bi=0,bd=1e9;for(let i=0;i<st.length;i++){const d=G.d(st[i],t);if(d<bd){bd=d;bi=i;}}return{i:bi,d:bd};},
+/* Пересекает ли отрезок [a,b] «тело» буквы — ужатый на 14% внутрь bbox её
+ * штрихов? Прямые В ОБХОД (под буквой, справа от неё) не считаются телом,
+ * а диагональ сквозь букву (как лишний штрих у «в») — считается. */
+throughBox(a,b,x0,x1,y0,y1){const ix=(x1-x0)*.14,iy=(y1-y0)*.14;x0+=ix;x1-=ix;y0+=iy;y1-=iy;if(x1-x0<.01||y1-y0<.01)return false;const ins=p=>p[0]>x0&&p[0]<x1&&p[1]>y0&&p[1]<y1;if(ins(a)||ins(b))return true;const es=[[x0,y0,x1,y0],[x1,y0,x1,y1],[x1,y1,x0,y1],[x0,y1,x0,y0]];for(const e of es)if(G.cross(a,b,[e[0],e[1]],[e[2],e[3]]))return true;return false;},
+pick(ch,occ,n){if(n<2)return 0;let h=2166136261>>>0;const k=S.name+'|'+ch+'|'+occ+'|'+S.seedUsed;for(let i=0;i<k.length;i++){h^=k.charCodeAt(i);h=Math.imul(h,16777619)>>>0;}return h%n;},
+glyph(ch,occ){const g=S.glyphs[ch];if(!g)return null;const v=g.variants;if(v&&v.length){const x=v[G.pick(ch,occ,v.length)];return{advance:x.advance!=null?x.advance:g.advance,strokes:x.strokes||g.strokes||[],entry:x.entry||g.entry,exit:x.exit||g.exit};}return{advance:g.advance||400,strokes:g.strokes||[],entry:g.entry,exit:g.exit};},
+invalidate(){G.key=null;},
+params(){const sr=($('seed').value||'').trim();return{txt:$('txt').value||'',h:Math.max(2,+$('hMm').value||15),trk:+$('trk').value||0,pW:Math.max(40,+$('pW').value||190),pH:Math.max(40,+$('pH').value||297),mL:Math.max(0,+$('mL').value||10),bt:Math.max(0,+$('bt').value||0),useS:$('cSt').checked,useE:$('cEE').checked,seed:/^\d+$/.test(sr)?parseInt(sr,10):null,lw:+$('lw').value||2.2,spd:+$('spd').value||30};},
+build(){const P=G.params();const key=[P.txt,P.h,P.trk,P.useS,P.useE,P.bt,P.pW,P.pH,P.mL,P.seed,S.name,S.rev,G.traceTok||0,$('tFill')?$('tFill').value:'off',$('tHole')?$('tHole').value:'3'].join('|');if(G.key===key&&G.plan.length)return;G.key=key;
+if(P.seed!=null)S.seedUsed=P.seed;else if(!G._rand){S.seedUsed=Math.floor(Math.random()*2147483647);G._rand=true;}
+G.plan=[];G.miss=[];G.marks=[];const sc=P.h/700,maxX=P.pW-5,J=2.5;let cx0=P.mL,by=P.pH-P.mL-P.h*1.15;const lh=P.h*1.6,occ={};let prev=null,pen=null,pUp=false;const nl=()=>{cx0=P.mL;by-=lh;prev=null;pUp=false;};
+/* Выравнивание абзацев из Word (S.alignMap — текст строки → 'c'/'r', заполняется
+ * при импорте .docx по тегу w:jc). Ширина строки — по базовым advance глифов:
+ * 'c' — строка стартует от центра листа, 'r' — от правого края; длинный абзац
+ * заранее режется на визуальные строки по ширине листа (жадно, разрыв — по
+ * пробелу), и каждая строка центрируется отдельно. Лево или не влезло — от
+ * левого поля, как раньше. */
+const avail=maxX-P.mL;
+const advOf=c=>{if(c===' ')return(S.glyphs[' ']&&S.glyphs[' '].advance?S.glyphs[' '].advance*sc:P.h*.45)+P.trk;const g0=S.glyphs[c];return(!g0||!g0.strokes||!g0.strokes.length?P.h*.55:(g0.advance!=null?g0.advance:400)*sc)+P.trk;};
+const startOf=(s,al)=>{let w=0;for(const c of s)w+=advOf(c);w-=P.trk;if(w<=0||w>avail)return P.mL;return al==='c'?Math.max(P.mL,P.mL+(avail-w)/2):Math.max(P.mL,P.mL+avail-w);};
+const layout=(para,al)=>{if(!al||al==='l')return[{s:para,x:P.mL}];const out=[];let cur='',acc=0;const flush=()=>{if(cur){out.push({s:cur,x:startOf(cur,al)});cur='';acc=0;}};for(const c of para){const a=advOf(c);if(acc+(a-P.trk)>avail&&acc>0){const cut=cur.lastIndexOf(' ');if(cut>0){const tail=cur.slice(cut+1);out.push({s:cur.slice(0,cut),x:startOf(cur.slice(0,cut),al)});cur=tail;acc=0;for(const q of tail)acc+=advOf(q);}else flush();}if(c===' '&&!cur)continue;cur+=c;acc+=a;}flush();return out;};
+const paras=P.txt.split('\n');let pi=0;
+for(const para of paras){const al=S.alignMap&&S.alignMap[para.trim()],vls=layout(para,al);for(let vi=0;vi<vls.length;vi++){if(vi>0)nl();cx0=vls[vi].x;for(const ch of vls[vi].s){if(ch===' '){const a=(S.glyphs[' ']&&S.glyphs[' '].advance?S.glyphs[' '].advance*sc:P.h*.45);if(cx0+a+P.trk>maxX&&cx0>P.mL+.5)nl();else{cx0+=a+P.trk;prev=null;pUp=false;}continue;}
+occ[ch]=(occ[ch]||0)+1;const g=G.glyph(ch,occ[ch]);if(!g||!g.strokes.length){const a=P.h*.55;if(cx0+a>maxX&&cx0>P.mL+.5)nl();G.miss.push({x:cx0,y:by,w:a*.85,h:P.h*.9,ch});cx0+=a+P.trk;prev=null;pUp=false;continue;}
+const rs=g.strokes,lr=rs[rs.length-1],en=(P.useE&&g.entry)?g.entry:rs[0][0],ex=(P.useE&&g.exit)?g.exit:lr[lr.length-1],adv=(g.advance!=null?g.advance:400)*sc;
+if(cx0+adv>maxX&&cx0>P.mL+.5)nl();const dx=cx0,dy=by,E=[dx+en[0]*sc,dy+en[1]*sc],X=[dx+ex[0]*sc,dy+ex[1]*sc],ws=rs.map(s=>s.map(p=>[dx+p[0]*sc,dy+p[1]*sc])),app=P.useE?E:ws[0][0];G.marks.push({e:E,x:X});
+/* Заглавные: перелёт всегда ПЕРЕД заглавной (isUpChar(ch)) и между заглавными
+ * («АСУТП»). Исключение — заглавная → строчная внутри слова («От», «Бю»):
+ * сшивка разрешена, но коротким чистым росчерком — не длиннее 3/4 высоты буквы
+ * и не задевая следующую букву; длиннее или грязно — перелёт, без царапин. */
+if(pen===null)pen=app;else{const d=G.d(pen,app);let s=P.useS&&!!prev&&!isUpChar(ch);
+if(s&&pUp)s=d<=P.h*.75&&!G.hits([pen,app],ws);
+if(d>.02)G.plan.push({pts:[pen,app],down:s,kind:s?'stitch':'fly'});pen=app;}
+let last=[];for(const st of ws){if(!st||!st.length)continue;const d0=G.d(pen,st[0]);if(d0>.02){const j=d0<=J;G.plan.push({pts:[pen,st[0]],down:j,kind:j?'stitch':'fly'});}if(st.length>1)G.plan.push({pts:st,down:true,kind:'stroke'});pen=st[st.length-1];last=st;}
+if(P.useE){const dX=G.d(pen,X);if(dX>.02){const clean=!G.hits([pen,X],ws);let bx0=1e9,bx1=-1e9,by0=1e9,by1=-1e9;for(const s of ws)for(const p of s){if(p[0]<bx0)bx0=p[0];if(p[0]>bx1)bx1=p[0];if(p[1]<by0)by0=p[1];if(p[1]>by1)by1=p[1];}
+/* Буква закончилась СЛЕВА (хвост ушёл влево: перо левее точки входа, в
+ * левой трети буквы, или последний штрих кончился левее своего начала) —
+ * к маркеру ВЫХОДА только перелётом. Прямая с опущенным пером прорезает
+ * или искажает хвост («в», «В», «у», «з»), а возврат по штриху едет
+ * назад по хвосту и тоже меняет его вид — оба пути запрещены. */
+const endsLeft=pen[0]<E[0]-.3||pen[0]<bx0+(bx1-bx0)*.3||pen[0]<(last[0]?last[0][0]:pen[0]);
+/* Даже если прямая не задела ни один штрих (прошла через «окно» внутри
+ * буквы), она не должна пересекать тело буквы — проверяем ужатый bbox. */
+const through=G.throughBox([pen,X],bx0,bx1,by0,by1);
+
+/* Для букв, заканчивающихся слева — всегда перелёт (pen up), никаких швов.
+ * Это убирает лишние росчерки при движении к маркеру выхода. */
+if(endsLeft){
+  G.plan.push({pts:[pen,X],down:false,kind:'fly'});
+}else if(dX<=J||(clean&&!through)){
+  G.plan.push({pts:[pen,X],down:true,kind:'stitch'});
+}else{
+  let rolled=false;
+  const{i,d:snap}=G.nearest(last,X);
+  const rt=last.slice(i).reverse();
+  let L=snap;
+  for(let k=0;k<rt.length-1;k++)L+=G.d(rt[k],rt[k+1]);
+  if(snap<=1.5&&L<=P.bt&&rt.length>1){
+    const p=rt.slice();
+    if(snap>.02)p.push(X);
+    G.plan.push({pts:p,down:true,kind:'stitch'});
+    rolled=true;
+  }
+  if(!rolled)G.plan.push({pts:[pen,X],down:false,kind:'fly'});
+}
+pen=X;}}
+prev=pen;pUp=isUpChar(ch);cx0=dx+adv+P.trk;}}if(++pi<paras.length)nl();}
+/* 🎵 трассировка PDF/картинки: контуры — штрихами, пустоты — заливкой */
+if(G.trace&&G.trace.strokes.length){const TF=$('tFill')?$('tFill').value:'off',THv=$('tHole')?+$('tHole').value:3,TH=isNaN(THv)?3:THv;
+const seq=[];let penT=null;if(G.plan.length){const l=G.plan[G.plan.length-1];penT=l.pts[l.pts.length-1];}
+const fillsAt={};if(TF!=='off')for(const r of (G.trace.regions||[])){if(Math.min(r.bw,r.bh)<TH||r.bw/r.bh>2.3||r.bh/r.bw>2.3||r.bw*r.bh>45)continue;const f=TF==='sp'?spiralFillR(r):crossFillR(r);if(f.length){const a=Math.max(0,r.anchor|0);(fillsAt[a]=fillsAt[a]||[]).push(...f);}}
+for(let si=0;si<G.trace.strokes.length;si++){seq.push(G.trace.strokes[si]);if(fillsAt[si])seq.push(...fillsAt[si]);}
+for(const s of seq){if(!s||s.length<2)continue;if(penT&&G.d(penT,s[0])>.02)G.plan.push({pts:[penT,s[0]],down:false,kind:'fly'});G.plan.push({pts:s,down:true,kind:'stroke'});penT=s[s.length-1];}}
+let mn=1e9,mx=-1e9;for(const s of G.plan)for(const p of s.pts){if(p[1]<mn)mn=p[1];if(p[1]>mx)mx=p[1];}for(const b of G.miss){mn=Math.min(mn,b.y);mx=Math.max(mx,b.y+b.h);}
+if(mn<0){const u=-mn;for(const s of G.plan)for(const p of s.pts)p[1]+=u;for(const b of G.miss)b.y+=u;for(const m of G.marks){m.e[1]+=u;m.x[1]+=u;}mx+=u;G.up=u;}else G.up=0;
+G.warn=mx>P.pH+.5?'текст не влезает по высоте ('+Math.round(mx)+' > '+P.pH+' мм)':null;},
+stats(){let s=0,f=0,k=0;for(const x of G.plan){if(x.pts.length<2)continue;if(!x.down)f++;else if(x.kind==='stitch')k++;else s++;}let t='Штрихов: <b>'+s+'</b> · сшивок Z0: <b style="color:var(--acidD)">'+k+'</b> · перелётов Z5: <b style="color:var(--magD)">'+f+'</b> · пропусков: <b>'+G.miss.length+'</b>';if(G.up)t+=' · поднято на '+G.up.toFixed(1)+' мм';if(G.warn)t+=' · <b style="color:var(--red)">⚠ '+G.warn+'</b>';$('stats').innerHTML=t;},
+T(){let x0=0,x1=40,y0=0,y1=25;for(const s of G.plan)for(const p of s.pts){x0=Math.min(x0,p[0]);x1=Math.max(x1,p[0]);y0=Math.min(y0,p[1]);y1=Math.max(y1,p[1]);}for(const b of G.miss){x1=Math.max(x1,b.x+b.w);y1=Math.max(y1,b.y+b.h);y0=Math.min(y0,b.y);}
+const pad=22,W=Math.max(320,cvG.parentElement.clientWidth||540),sx=Math.max(20,x1-x0+10),sy=Math.max(15,y1-y0+10),k=Math.max(3.5,Math.min(20,(W-pad*2)/sx));cvG.width=Math.ceil(Math.max(W,sx*k+pad*2));cvG.height=Math.ceil(Math.max(170,sy*k+pad*2));return{p:v=>[pad+(v[0]-x0)*k,cvG.height-pad-(v[1]-y0)*k],k};},
+paint(T,upto,cur){const P=G.params();cg.clearRect(0,0,cvG.width,cvG.height);if($('cGr').checked){const o=T.p([0,0]);cg.save();cg.strokeStyle='#b9cbd8';cg.lineWidth=1;cg.setLineDash([4,4]);cg.beginPath();cg.moveTo(0,o[1]);cg.lineTo(cvG.width,o[1]);cg.moveTo(o[0],0);cg.lineTo(o[0],cvG.height);cg.stroke();cg.restore();}
+const seg=s=>{if(s.pts.length<2)return;cg.save();cg.lineCap='round';cg.lineJoin='round';if(!s.down){if(!$('cFl').checked){cg.restore();return;}cg.strokeStyle='#c026d3';cg.lineWidth=1.2;cg.setLineDash([5,5]);}else if(s.kind==='stitch'){cg.strokeStyle='#12b886';cg.lineWidth=P.lw*.92;}else{cg.strokeStyle='#10202b';cg.lineWidth=P.lw;}cg.beginPath();const a=T.p(s.pts[0]);cg.moveTo(a[0],a[1]);for(let i=1;i<s.pts.length;i++){const b=T.p(s.pts[i]);cg.lineTo(b[0],b[1]);}cg.stroke();cg.restore();};
+for(let i=0;i<upto;i++)seg(G.plan[i]);if(cur)seg(cur);
+if($('cMs').checked)for(const b of G.miss){const a=T.p([b.x,b.y+b.h]),c=T.p([b.x+b.w,b.y]);cg.save();cg.strokeStyle='#e8443a';cg.lineWidth=1.5;cg.strokeRect(a[0],a[1],c[0]-a[0],c[1]-a[1]);cg.fillStyle='#e8443a';cg.font='12px sans-serif';cg.fillText(b.ch,a[0]+4,c[1]-4);cg.restore();}
+if($('cMk').checked&&!G.anim)for(const m of G.marks)for(const[q,c]of[[m.e,'#12b886'],[m.x,'#f59f00']]){const p=T.p(q);cg.beginPath();cg.arc(p[0],p[1],3.4,0,7);cg.fillStyle=c;cg.fill();cg.lineWidth=1.2;cg.strokeStyle='#fff';cg.stroke();}},
+draw(){G.stop();G.build();const T=G.T();G.paint(T,G.plan.length,null);G.stats();},
+len(p){let L=0;for(let i=1;i<p.length;i++)L+=G.d(p[i-1],p[i]);return Math.max(L,.01);},
+at(p,t){let d=t*G.len(p);for(let i=1;i<p.length;i++){const s=G.d(p[i-1],p[i]);if(d<=s){const u=s<1e-6?0:d/s;return[p[i-1][0]+(p[i][0]-p[i-1][0])*u,p[i-1][1]+(p[i][1]-p[i-1][1])*u];}d-=s;}return p[p.length-1];},
+part(p,t){if(t>=1)return p.slice();if(t<=0)return[p[0]];let d=t*G.len(p);const o=[p[0]];for(let i=1;i<p.length;i++){const s=G.d(p[i-1],p[i]);if(d<=s){const u=s<1e-6?0:d/s;o.push([p[i-1][0]+(p[i][0]-p[i-1][0])*u,p[i-1][1]+(p[i][1]-p[i-1][1])*u]);return o;}o.push(p[i]);d-=s;}return o;},
+stop(){if(G.raf)cancelAnimationFrame(G.raf);G.raf=0;G.anim=null;$('gP').classList.remove('play');$('gP').textContent='▶ Анимация';},
+play(){if(G.anim){G.stop();G.draw();return;}G.build();const segs=G.plan.filter(s=>s.pts.length>1);if(!segs.length){G.st('Нечего анимировать');return;}const T=G.T();let last=0;G.anim={segs,i:0,t:0,T};$('gP').classList.add('play');$('gP').textContent='■ Стоп';
+const tick=ts=>{if(!G.anim)return;if(!last)last=ts;const dt=Math.min(.05,(ts-last)/1000);last=ts;const A=G.anim,s=A.segs[A.i];if(!s){G.stop();G.draw();G.st('▶ анимация завершена');return;}A.t+=G.params().spd*dt/G.len(s.pts);const cur={pts:G.part(s.pts,Math.min(1,A.t)),down:s.down,kind:s.kind};G.paint(T,A.i,cur);const pen=T.p(G.at(s.pts,Math.min(1,A.t)));cg.beginPath();cg.arc(pen[0],pen[1],6,0,7);cg.fillStyle=s.down?'#10202b':'#c026d3';cg.fill();cg.lineWidth=1.6;cg.strokeStyle='#fff';cg.stroke();cg.fillStyle='#132734';cg.font='bold 12px sans-serif';cg.fillText('шаг '+(A.i+1)+'/'+A.segs.length+' · '+(s.down?'Z0 пишет':'Z5 перелёт'),10,17);if(A.t>=1){A.i++;A.t=0;}G.raf=requestAnimationFrame(tick);};G.raf=requestAnimationFrame(tick);},
+gcode(){if(!nGlyph()&&!(G.trace&&G.trace.strokes.length)){G.st('Пусто: нет шрифта и нет картинки');$('out').value='; Нет шрифта и нет картинки — загрузи JSON или PDF/картинку';return;}G.build();G.stats();if(!G.plan.length){$('out').value='; Нет готовых линий';return;}
+const zD=+$('zD').value,zU=+$('zU').value,fXY=Math.max(10,+$('fXY').value||1500),fZ=Math.max(10,+$('fZ').value||800),raw=($('txt').value||'').replace(/\s+/g,' ').trim();
+const L=['; FluidNC pen plotter','; Font: '+String(S.name).slice(0,40),'; Text: '+(raw.length>44?raw.slice(0,44)+'…':(raw||'—')),'; Seed: '+S.seedUsed,...(G.trace&&G.trace.strokes.length?['; Картинка: '+G.trace.strokes.length+' контуров · пустот: '+(G.trace.holes||[]).length]:[]),'; Stitch: '+($('cSt').checked?'ON':'OFF'),...(G.warn?['; WARN: '+G.warn]:[]),'G21','G90','G94','G0 Z'+zU.toFixed(3)];
+let down=false,X=null,Y=null;const up=()=>{if(down){L.push('G1 Z'+zU.toFixed(3)+' F'+fZ);down=false;}};const dn=()=>{if(!down){L.push('G1 Z'+zD.toFixed(3)+' F'+fZ);down=true;}};const go=(x,y,r)=>{if(X!==null&&G.d([X,Y],[x,y])<=.002)return;L.push((r?'G0':'G1')+' X'+x.toFixed(3)+' Y'+y.toFixed(3)+(r?'':' F'+fXY));X=x;Y=y;};let first=true;
+for(const s of G.plan){if(s.pts.length<2)continue;if(!s.down){up();const e=s.pts[s.pts.length-1];go(e[0],e[1],true);}else{if(first&&X===null){up();go(s.pts[0][0],s.pts[0][1],true);}dn();for(let i=1;i<s.pts.length;i++)go(s.pts[i][0],s.pts[i][1],false);}first=false;}
+up();L.push('G0 X0.000 Y0.000','M2');$('out').value=L.join('\n');G.st('G-code: '+L.length+' строк');},
+refresh(){G.draw();G.gcode();}};
+function syncVals(){$('hMmV').textContent=(+$('hMm').value).toFixed(1);$('trkV').textContent=(+$('trk').value).toFixed(2);$('btV').textContent=(+$('bt').value).toFixed(1);$('spdV').textContent=$('spd').value;$('lwV').textContent=(+$('lw').value).toFixed(1);}
+['hMm','trk','bt','spd','lw'].forEach(id=>$(id).addEventListener('input',()=>{syncVals();G.invalidate();if(id==='spd'||id==='lw'){if(!G.anim)G.draw();}else G.refresh();}));
+['txt','pW','pH','mL','zD','zU','fXY','fZ','seed'].forEach(id=>$(id).addEventListener('input',()=>{G.invalidate();G.refresh();}));
+['cSt','cEE','cGr','cMk','cFl','cMs'].forEach(id=>$(id).addEventListener('change',()=>{G.invalidate();G.refresh();}));
+$('gD').onclick=()=>{G.invalidate();G._rand=false;G.refresh();toast('Вид обновлён');};$('gP').onclick=()=>G.play();$('gS').onclick=()=>{G.stop();G.draw();};
+$('gG').onclick=()=>{G.invalidate();G.gcode();toast('G-code готов');};$('gR').onclick=()=>{$('seed').value='';G._rand=false;G.invalidate();G.refresh();toast('Новая комбинация вариантов');};
+$('gX').onclick=()=>{const d={hMm:15,trk:0,pW:190,pH:297,mL:10,bt:10,zD:0,zU:5,fXY:1500,fZ:800,spd:30,lw:2.2};for(const k in d)$(k).value=d[k];$('seed').value='';['cSt','cEE','cGr','cMk','cFl','cMs'].forEach(i=>$(i).checked=true);syncVals();G._rand=false;G.invalidate();G.refresh();toast('Параметры сброшены');};
+$('gDl').onclick=()=>{const c=$('out').value;if(!hasCode(c)){G.st('Сначала сгенерируй G-code');return;}dl(new Blob([c],{type:'text/plain'}),S.name+'.gcode');toast('G-code скачан');};
+$('gC').onclick=async()=>{const c=$('out').value;if(!c)return;try{await navigator.clipboard.writeText(c);}catch(e){$('out').select();document.execCommand('copy');}toast('Скопировано');};
+function exportZip(){const font=buildFont(),fj=JSON.stringify(font);const readme='ПЕРО — рукопись → G-code → FluidNC\r\n====================================\r\n\r\nВ архиве:\r\n  index.html   — приложение (шрифт НЕ вшит).\r\n  '+S.name+'.json — твой шрифт отдельно.\r\n  README.txt   — этот файл.\r\n\r\nКак пользоваться:\r\n  1. Открой index.html в браузере.\r\n  2. На вкладке «Шрифт» загрузи '+S.name+'.json (кнопка или перетаскивание).\r\n  3. Вкладка «G-code» — текст, параметры, предпросмотр, генерация.\r\n  4. Вкладка «Станок» — WiFi FluidNC: ноль, джог, печать, SD.\r\n\r\nСшивка: перо доводится до маркера ВЫХОДА (по штриху в пределах\r\nлимита отката, либо перелётом; если буква закончилась слева или\r\nпрямая прорезает букву — всегда перелётом), опускается там, и\r\nлиния ВЫХОД → ВХОД следующей буквы рисуется всегда.\r\nИсключение — заглавные буквы: перелёт всегда перед заглавной\r\nи между заглавными («АСУТП»). От заглавной к строчной («От», «Бю»)\r\n— сшивка, если соединение короче 3/4 высоты буквы и не задевает\r\nследующую букву; иначе перелёт.\r\n\r\nБукв: '+nGlyph()+' · вариантов: '+nVar()+'\r\n';
+dl(makeZip([{name:'index.html',data:SELF_HTML},{name:S.name+'.json',data:fj},{name:'README.txt',data:readme}]),'pero_'+S.name+'.zip');toast('ZIP: приложение + JSON + README');}
+$('zip').onclick=exportZip;$('gZ').onclick=exportZip;
+async function inflateRaw(d){if(typeof DecompressionStream==='undefined')throw new Error('браузер без DecompressionStream');return new Uint8Array(await new Response(new Blob([d]).stream().pipeThrough(new DecompressionStream('deflate-raw'))).arrayBuffer());}
+async function zipFile(buf,want){const b=new Uint8Array(buf),v=new DataView(buf);let o=0;while(o+30<b.length){if(b[o]!==80||b[o+1]!==75){o++;continue;}if(b[o+2]===3&&b[o+3]===4){const m=v.getUint16(o+8,true),n=v.getUint32(o+18,true),nl=v.getUint16(o+26,true),el=v.getUint16(o+28,true),nm=new TextDecoder().decode(b.subarray(o+30,o+30+nl)),s=o+30+nl+el,d=b.subarray(s,s+n);if(nm===want||nm.endsWith('/'+want))return m===0?d.slice():await inflateRaw(d);o=s+n;continue;}if(b[o+2]===1||b[o+2]===5)break;o++;}return null;}
+function xmlText(x){const dec=s=>s.replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&quot;/g,'"').replace(/&#39;/g,"'").replace(/&#(\d+);/g,(_,n)=>String.fromCharCode(+n)).replace(/&#x([0-9a-f]+);/gi,(_,h)=>String.fromCharCode(parseInt(h,16))).replace(/&amp;/g,'&');const map={};const t=(x.match(/<w:p[\s>][\s\S]*?<\/w:p>/g)||[x]).map(b=>{const jv=(b.match(/<w:jc[^>]*?w:val="([^"]+)"/)||[])[1],al=jv==='center'?'c':(jv==='right'||jv==='end')?'r':null;let l='',m;const re=/<w:t(?:\s[^>]*)?>([\s\S]*?)<\/w:t>|<w:tab\s*\/>|<w:br\s*\/>|<w:cr\s*\/>/g;while((m=re.exec(b)))l+=m[1]!==undefined?dec(m[1]):(m[0].indexOf('<w:tab')===0?' ':'\n');if(al)l.split('\n').forEach(s=>{const k=s.trim();if(k&&!(k in map))map[k]=al;});return l;}).join('\n').replace(/\n{3,}/g,'\n\n').trim();return{t:t,map:map};}
+$('fDoc').onchange=async e=>{const f=e.target.files[0];e.target.value='';if(!f)return;G.st('Читаю «'+f.name+'»…');try{let t='',am={};const n=f.name.toLowerCase();if(n.endsWith('.txt')||(f.type||'').startsWith('text/'))t=await f.text();else{const x=await zipFile(await f.arrayBuffer(),'word/document.xml');if(!x)throw new Error('это не .docx');const r=xmlText(new TextDecoder().decode(x));t=r.t;am=r.map;}t=(t||'').replace(/\r\n?/g,'\n').trim();if(!t){G.st('В файле нет текста');return;}$('txt').value=t;S.alignMap=am;G.invalidate();G.refresh();toast('Загружено · '+t.length+' символов'+(Object.keys(am).length?', выравнивание: '+Object.keys(am).length+' стр.':''));}catch(x){G.st('Ошибка: '+x.message);}};/* ---- 🎵 PDF / картинка: трассировка «как есть» + заливка пустот ---- */
+G.trace=null;G.traceSrc=null;G.traceTok=0;G._traceLbl='';
+function loadPdfJs(){return new Promise((res,rej)=>{if(window.pdfjsLib)return res(window.pdfjsLib);const s=document.createElement('script');s.src='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js';s.onload=()=>{window.pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';res(window.pdfjsLib);};s.onerror=()=>rej(new Error('нет интернета — не скачать pdf.js; сохрани скан в PNG'));document.head.appendChild(s);});}
+function otsu(g){const h=new Array(256).fill(0);for(let i=0;i<g.length;i++)h[g[i]]++;const n=g.length;let sum=0;for(let i=0;i<256;i++)sum+=i*h[i];let sB=0,wB=0,mx=0,thr=128;for(let t=0;t<256;t++){wB+=h[t];if(!wB)continue;const wF=n-wB;if(!wF)break;sB+=t*h[t];const mB=sB/wB,mF=(sum-sB)/wF,v=wB*wF*(mB-mF)*(mB-mF);if(v>mx){mx=v;thr=t;}}return thr;}
+function segDist(a,b,p){const vx=b[0]-a[0],vy=b[1]-a[1],wx=p[0]-a[0],wy=p[1]-a[1],L=vx*vx+vy*vy;let t=L?Math.max(0,Math.min(1,(wx*vx+wy*vy)/L)):0;return Math.hypot(a[0]+vx*t-p[0],a[1]+vy*t-p[1]);}
+function dpSimp(pts,eps){const n=pts.length;if(n<5)return pts.map(p=>[p[0],p[1]]);const keep=new Uint8Array(n);keep[0]=keep[n-1]=1;const st=[[0,n-1]];while(st.length){const sg=st.pop(),a=sg[0],b2=sg[1];if(b2-a<2)continue;const A=pts[a],B=pts[b2];let mx=-1,mi=-1;for(let i=a+1;i<b2;i++){const d=segDist(A,B,pts[i]);if(d>mx){mx=d;mi=i;}}if(mx>eps){keep[mi]=1;st.push([a,mi],[mi,b2]);}}const o=[];for(let i=0;i<n;i++)if(keep[i])o.push([pts[i][0],pts[i][1]]);return o;}
+function traceLoops(b,w,h){const W=w+1,DX={1:1,2:0,3:-1,4:0},DY={1:0,2:1,3:0,4:-1},NXT={1:[2,1,4,3],2:[3,2,1,4],3:[4,3,2,1],4:[1,4,3,2]};
+const E=new Map();const add=(k,d)=>{let a=E.get(k);if(!a){a=[];E.set(k,a);}a.push(d);};
+const F=(x,y)=>x>=0&&y>=0&&x<w&&y<h&&b[y*w+x]===1;
+for(let y=0;y<h;y++)for(let x=0,i0=y*w;x<w;x++){if(!b[i0+x])continue;if(!F(x,y-1))add(y*W+x,1);if(!F(x+1,y))add(y*W+x+1,2);if(!F(x,y+1))add((y+1)*W+x+1,3);if(!F(x-1,y))add((y+1)*W+x,4);}
+const loops=[];
+for(const[k0,arr0]of E){while(arr0.length){let k=k0,d=arr0[0];const pts=[];
+for(;;){pts.push(k);const a=E.get(k),i=a.indexOf(d);if(i<0)break;a.splice(i,1);if(!a.length)E.delete(k);k+=DX[d]+DY[d]*W;if(k===k0)break;const a2=E.get(k);if(!a2)break;let nd=0;for(const c of NXT[d])if(a2.indexOf(c)>=0){nd=c;break;}d=nd;}
+if(pts.length>3)loops.push(pts);}}
+return loops;}
+function pInPoly(p,poly){let inn=false;for(let i=0,j=poly.length-1;i<poly.length;j=i++){const a=poly[i],b2=poly[j];if((a[1]>p[1])!==(b2[1]>p[1])&&p[0]<(b2[0]-a[0])*(p[1]-a[1])/(b2[1]-a[1])+a[0])inn=!inn;}return inn;}
+/* Области заливки: одиночная пустота ≥ порога — сразу; пустота, разрезанная
+ * тонкой линией (целая нота под линейкой стана — два «блина» ~1.5 мм), склеивается
+ * обратно: соседние по вертикали (зазор ≤1.6 мм) с перекрытием по X и сужением
+ * формы к разрезу (конусность ≤0.62). Просветы между линейками (прямоугольные,
+ * без конусности) и длинные цепочки не склеиваются и не заливаются. */
+function buildRegions(holes){const hs=holes.slice().sort((a,b)=>a.by0-b.by0),used=new Uint8Array(hs.length),regions=[];
+const wAt=(h,y)=>{let x0=1e9,x1=-1e9;for(let i=0,j=h.pts.length-1;i<h.pts.length;j=i++){const a=h.pts[j],b2=h.pts[i];
+if((a[1]>y)!==(b2[1]>y)){const xx=a[0]+(b2[0]-a[0])*(y-a[1])/(b2[1]-a[1]);if(xx<x0)x0=xx;if(xx>x1)x1=xx;}}
+return x1-x0;};
+const midW=h=>{const w=wAt(h,(h.by0+h.by1)/2);return w>0.01?w:0.01;};
+/* ширина части у края (для проверки непрерывности через разрез) */
+const jw=(h,atTop)=>{const hh=h.by1-h.by0;return wAt(h,atTop?h.by1-Math.max(.05,hh*.15):h.by0+Math.max(.05,hh*.15));};
+const emit=(chain)=>{const parts=chain.map(ci=>hs[ci]);
+if(chain.length>1){
+let bx0=1e9,bx1=-1e9,by0=1e9,by1=-1e9;for(const p of parts){bx0=Math.min(bx0,p.bx0);bx1=Math.max(bx1,p.bx1);by0=Math.min(by0,p.by0);by1=Math.max(by1,p.by1);}
+const bands=[];for(let k=0;k<parts.length-1;k++){const a=parts[k],b2=parts[k+1];
+bands.push([Math.max(a.bx0,b2.bx0)-0.4,a.by1-0.12,Math.min(a.bx1,b2.bx1)+0.4,b2.by0+0.12]);}
+/* профиль овала: ширина области на 25% высоты от концов заметно меньше средней.
+ * У просветов между линейками ширина постоянна (~1.0) — они отбраковываются. */
+const bh=by1-by0,maxMid=Math.max.apply(null,parts.map(p=>midW(p)));
+const wR=y=>{for(const p of parts){if(y>=p.by0-.05&&y<=p.by1+.05){const w=wAt(p,y);if(w>0)return w;}}
+for(const b of bands)if(y>=b[1]&&y<=b[3])return b[2]-b[0];return 0;};
+/* глубина пробы: несколько уровней от края крайнего «блина», берём минимум —
+ * у овала ширина заметно падает к концу (мин ~0.6), у прямых просветов ~1.0 */
+const p0=parts[0],pn=parts[parts.length-1],h0=p0.by1-p0.by0,hn=pn.by1-pn.by0;
+let wLo=1e9,wHi=1e9;
+for(const fr of[0.12,0.2,0.3,0.4,0.5]){const v1=wR(p0.by0+fr*h0);if(v1>0&&v1<wLo)wLo=v1;const v2=wR(pn.by1-fr*hn);if(v2>0&&v2<wHi)wHi=v2;}
+const mx=Math.max(maxMid,0.01);
+if(wLo/mx>0.85||wHi/mx>0.85){for(const p of parts)emitSingle(p);return;}
+regions.push({parts:parts.map(p=>p.pts),bands:bands,bw:bx1-bx0,bh:bh,cx:(bx0+bx1)/2,cy:(by0+by1)/2,anchor:Math.min.apply(null,parts.map(p=>p.idx))});return;}
+emitSingle(parts[0]);};
+const emitSingle=p=>regions.push({parts:[p.pts],bands:[],bw:p.w,bh:p.h,cx:p.cx,cy:p.cy,anchor:p.idx});
+for(let i=0;i<hs.length;i++){if(used[i])continue;used[i]=1;const chain=[i];
+for(;;){const last=hs[chain[chain.length-1]];let best=-1,bg=1e9;
+for(let j=0;j<hs.length;j++){if(used[j])continue;const h2=hs[j],gap=h2.by0-last.by1;
+if(gap<-0.2||gap>1.6)continue;
+const ov=Math.min(last.bx1,h2.bx1)-Math.max(last.bx0,h2.bx0);
+if(ov<Math.max(1,0.35*Math.min(midW(last),midW(h2))))continue;
+/* непрерывность через разрез: ширины обеих частей у линии разреза близки */
+const wa=jw(last,true),wb=jw(h2,false),sim=Math.min(wa,wb)/Math.max(wa,wb,.01);
+if(sim>=0.55&&gap<bg){bg=gap;best=j;}}
+if(best<0)break;used[best]=1;chain.push(best);}
+emit(chain);}
+return regions;}
+function regInside(r){const bands=r.bands;return p=>{for(let i=0;i<r.parts.length;i++)if(pInPoly(p,r.parts[i]))return true;
+for(let i=0;i<bands.length;i++){const b=bands[i];if(p[0]>=b[0]&&p[0]<=b[2]&&p[1]>=b[1]&&p[1]<=b[3])return true;}return false;};}
+function spiralFillR(r){const out=[],A=Math.max(0.25,r.bw/2-0.8),B=Math.max(0.25,r.bh/2-0.8),ins=regInside(r);
+const turns=Math.max(2,Math.round(B/0.9)),THm=Math.PI*2*turns;let run=null;
+for(let t=0;t<=THm;t+=0.2){const a=A*t/THm,b2=B*t/THm,p=[r.cx+Math.cos(t)*a,r.cy+Math.sin(t)*b2];
+if(ins(p)){if(!run)run=[];run.push(p);}else if(run){if(run.length>1)out.push(run);run=null;}}
+if(run&&run.length>1)out.push(run);return out;}
+function crossFillR(r){const out=[],ins=regInside(r),x0=r.cx-r.bw/2-0.5,y0=r.cy-r.bh/2-0.5,x1=r.cx+r.bw/2+0.5,y1=r.cy+r.bh/2+0.5;
+const line=(p,q)=>{const L=Math.hypot(q[0]-p[0],q[1]-p[1]),n=Math.max(2,Math.ceil(L/0.25));let run=null;
+for(let i=0;i<=n;i++){const u=i/n,p2=[p[0]+(q[0]-p[0])*u,p[1]+(q[1]-p[1])*u];
+if(ins(p2)){if(!run)run=[p2];else run.push(p2);}else if(run){if(run.length>1)out.push(run);run=null;}}
+if(run&&run.length>1)out.push(run);};
+const sp=1.2*Math.SQRT2;
+for(let c=y0+x0;c<=y1+x1;c+=sp)line([x0,c-x0],[x1,c-x1]);
+for(let c=x0-y1;c<=x1-y0;c+=sp)line([x0,x0-c],[x1,x1-c]);
+return out;}
+function composeTrace(cvs,szs,mmPx,lbl){const gap=Math.round(8/mmPx);
+const W=Math.max.apply(null,szs.map(s=>s[0]));let H=0;for(const s of szs)H+=s[1]+gap;H-=gap;
+const c=document.createElement('canvas');c.width=W;c.height=H;const ctx=c.getContext('2d',{willReadFrequently:true});
+ctx.fillStyle='#fff';ctx.fillRect(0,0,W,H);let y=0;cvs.forEach((cc,i)=>{ctx.drawImage(cc,0,y);y+=szs[i][1]+gap;});
+const id=ctx.getImageData(0,0,W,H).data,g=new Uint8Array(W*H);
+for(let i=0,j=0;i<g.length;i++,j+=4)g[i]=(id[j]*77+id[j+1]*150+id[j+2]*29)>>8;
+G.traceSrc={g:g,w:W,h:H,mmPx:mmPx};retrace(lbl);}
+/* ─── РАСТРОВЫЙ СЛЕД: монохром → сетка → прогонки → «ближайший прогон» ───
+ * Чернила = всё темнее авто-порога (Otsu): растру важна масса чернил, а не
+ * тонкость обводки — светлая печать попадает сама собой. Одиночные пиксели
+ * скана чистятся. Сетка шагом ~0.75 пера: ячейка с ≥10% чернил рисуется —
+ * порог низкий сознательно: тонкая линейка занимает лишь 15–20% ячейки, а
+ * физическое перо закрасит её всю; шум отсеян ещё на пиксельном уровне.
+ * полоса подряд идущих ячеек = один прямой штрих (линейка нотоносца = один
+ * штрих, а не сотня точек). Порядок штрихов — жадный «ближайший прогон» от
+ * текущей позиции пера (корзины ~24 мм, поиск по растущим кольцам).
+ * Пустые ноты остаются пустыми, сплошные головки — сплошными: заливка-спираль
+ * не нужна вовсе. */
+function retraceRaster(lbl){const S0=G.traceSrc;if(!S0)return;const t0=performance.now();
+const th=otsu(S0.g),W=S0.w,H=S0.h,g=S0.g,N=W*H;
+let b=new Uint8Array(N);for(let i=0;i<N;i++)if(g[i]<th)b[i]=1;
+const b2=new Uint8Array(N);
+for(let y=1;y<H-1;y++){const r=y*W;
+for(let x=1;x<W-1;x++){const i=r+x;if(!b[i])continue;
+const n=b[i-1]+b[i+1]+b[i-W]+b[i+W]+b[i-W-1]+b[i-W+1]+b[i+W-1]+b[i+W+1];
+if(n>=3)b2[i]=1;}}
+const mmPx=S0.mmPx,Hmm=H*mmPx;
+const stepMm=Math.max(0.4,+$('tStep').value||Math.max(0.4,(G.params().lw||1)*0.75));
+const P=Math.max(1,Math.round(stepMm/mmPx)),CX=Math.ceil(W/P),CY=Math.ceil(H/P);
+const cov=new Uint32Array(CX*CY);
+for(let y=0;y<H;y++){const ro=((y/P)|0)*CX;
+for(let x=0;x<W;x++)if(b2[y*W+x])cov[ro+((x/P)|0)]++;}
+const need=Math.max(1,Math.round(P*P*0.1)),raw=[];
+for(let cy=0;cy<CY;cy++){const base=cy*CX,ym=Hmm-(cy*P+P/2)*mmPx;
+let cx=0;
+while(cx<CX){if(cov[base+cx]>=need){let x1=cx;
+while(x1+1<CX&&cov[base+x1+1]>=need)x1++;
+raw.push([[cx*P*mmPx,ym],[Math.min((x1+1)*P,W)*mmPx,ym]]);cx=x1+1;}else cx++;}}
+const ordered=[],Cell=24,sw=W*mmPx,nbx=Math.ceil(sw/Cell)+2,nby=Math.ceil(Hmm/Cell)+2;
+const bk=new Map();
+const key=(x,y)=>((x/Cell)|0)+((y/Cell)|0)*nbx;
+for(const r of raw){const k=key((r[0][0]+r[1][0])/2,(r[0][1]+r[1][1])/2);
+let a=bk.get(k);if(!a){a=[];bk.set(k,a);}a.push(r);}
+let total=raw.length,pen=null;
+while(total){
+let br=null,brev=false,ba=null,bd=1e18;
+if(pen===null){for(const a of bk.values()){if(a.length){br=a[0];ba=a;break;}}}
+else{const bx=(pen[0]/Cell)|0,by=(pen[1]/Cell)|0,mr=Math.max(nbx,nby);
+for(let ring=1;ring<=mr&&!br;ring++){
+const x0=Math.max(0,bx-ring),x1=Math.min(nbx-1,bx+ring),y0=Math.max(0,by-ring),y1=Math.min(nby-1,by+ring);
+for(let gx=x0;gx<=x1&&!br;gx++)for(let gy=y0;gy<=y1&&!br;gy++){
+const a=bk.get(gx+gy*nbx);if(!a)continue;
+for(const cand of a){const d0=G.d(pen,cand[0]),d1=G.d(pen,cand[1]);
+if(d0<bd){bd=d0;br=cand;brev=false;ba=a;}
+if(d1<bd){bd=d1;br=cand;brev=true;ba=a;}}}}}
+if(!br){for(const a of bk.values()){if(a.length){br=a[0];ba=a;break;}}}
+ba.splice(ba.indexOf(br),1);total--;
+if(brev)br=[br[1],br[0]];
+ordered.push([br[0],br[1]]);pen=br[1];}
+G.trace={strokes:ordered,holes:[],regions:[]};G.traceTok++;G._traceLbl=lbl||'растр';
+$('traceRow').style.display='flex';
+$('traceInfo').textContent=G._traceLbl+' · растр: прогонов: '+ordered.length+' · порог авто (Otsu): '+th+' · шаг: '+stepMm.toFixed(2)+' мм · '+Math.round(performance.now()-t0)+' мс';
+G.invalidate();G.refresh();}
+function retrace(lbl){const S0=G.traceSrc;if(!S0)return;if($('tMode')&&$('tMode').value==='ras')return retraceRaster(lbl);const t0=performance.now();
+/* двойной порог: «порог» — жирность следа пера, «порог дырок» — где искать пустоты
+ * под заливку (при жёстком следе тонкий овал ноты рвётся и пустота «утекает»).
+ * Белое при большем пороге — подмножество белого при меньшем, поэтому заливка по
+ * «дырочному» бинарному всегда лежит внутри следа.
+ * Светлая печать: при жёстком «пороге» серые элементы (головки, половинные ноты,
+ * лиги, часть текста) выпадают из следа целиком. Поэтому след = тёмные чернила
+ * ПЛЮС светлые из «дырочного» бинарного, кроме мест в 2px от тёмных (иначе
+ * контур задваивается). */
+const thv=+$('tThr').value||0,th=thv>0?thv:otsu(S0.g);
+const hv=$('tThrH')?+$('tThrH').value||0:0;
+const thH=hv>0?hv:(thv>0?Math.min(otsu(S0.g),thv+90):otsu(S0.g));
+const b=new Uint8Array(S0.w*S0.h);for(let i=0;i<b.length;i++)if(S0.g[i]<th)b[i]=1;
+const sameH=thH===th;let bH=null,bS=b;
+if(!sameH){bH=new Uint8Array(S0.w*S0.h);for(let i=0;i<bH.length;i++)if(S0.g[i]<thH)bH[i]=1;
+const dil=new Uint8Array(S0.w*S0.h),R=2;
+for(let y=0;y<S0.h;y++){const row=y*S0.w;
+for(let x=0;x<S0.w;x++){if(!b[row+x])continue;for(let dx=-R;dx<=R;dx++){const xx=x+dx;if(xx>=0&&xx<S0.w)dil[row+xx]=1;}}}
+for(let x=0;x<S0.w;x++){
+for(let y=0;y<S0.h;y++){const i=y*S0.w+x;if(!dil[i])continue;for(let dy=-R;dy<=R;dy++){const yy=y+dy;if(yy>=0&&yy<S0.h)dil[yy*S0.w+x]=1;}}}
+bS=new Uint8Array(S0.w*S0.h);for(let i=0;i<bS.length;i++)bS[i]=(b[i]||(bH[i]&&!dil[i]))?1:0;}
+const W=S0.w+1,mmPx=S0.mmPx,Hmm=S0.h*mmPx,strokes=[],holes=[];
+const mk=(P0,A)=>{if(Math.abs(A)*mmPx*mmPx<0.08)return;
+let bx0=1e9,bx1=-1e9,by0=1e9,by1=-1e9;for(const p of P0){if(p[0]<bx0)bx0=p[0];if(p[0]>bx1)bx1=p[0];if(p[1]<by0)by0=p[1];if(p[1]>by1)by1=p[1];}
+const pts=dpSimp(P0,1.1).map(p=>[p[0]*mmPx,Hmm-p[1]*mmPx]);
+if(A<0)holes.push({pts:pts,w:(bx1-bx0)*mmPx,h:(by1-by0)*mmPx,cx:(bx0+bx1)/2*mmPx,cy:Hmm-(by0+by1)/2*mmPx,bx0:bx0*mmPx,bx1:bx1*mmPx,by0:Hmm-by1*mmPx,by1:Hmm-by0*mmPx,idx:-1});
+else strokes.push(pts);};
+const loopA=lp=>{const Q0=lp.map(k=>[k%W,(k-k%W)/W]);let A=0;
+for(let i=0;i<Q0.length;i++){const p=Q0[i],q=Q0[(i+1)%Q0.length];A+=p[0]*q[1]-q[0]*p[1];}return A/2;};
+for(const lp of traceLoops(bS,S0.w,S0.h)){const P0=lp.map(k=>[k%W,(k-k%W)/W]),A=loopA(lp);
+if(A>=0||sameH)mk(P0,A);}
+if(!sameH)for(const lp of traceLoops(bH,S0.w,S0.h)){const P0=lp.map(k=>[k%W,(k-k%W)/W]),A=loopA(lp);
+if(A<0)mk(P0,A);}
+/* обход по ближайшему соседу: замкнутый контур можно повернуть точкой старта к перу и развернуть */
+const rem=strokes.slice(),ordered=[];let pen=null;
+while(rem.length){let bi=0,bp=0,bd=1e9;
+for(let i=0;i<rem.length;i++){const s=rem[i];if(!pen){bd=0;bi=i;bp=0;break;}
+const d0=G.d(pen,s[0]),d1=G.d(pen,s[s.length-1]);if(d0<bd){bd=d0;bi=i;bp=0;}if(d1<bd){bd=d1;bi=i;bp=1;}}
+let s=rem.splice(bi,1)[0];if(pen&&bp===1)s.reverse();
+if(pen){let mi=0,md=1e9;for(let i=0;i<s.length;i++){const d=G.d(pen,s[i]);if(d<md){md=d;mi=i;}}s=s.slice(mi).concat(s.slice(0,mi));}
+if(s.length>2)s.push([s[0][0],s[0][1]]);
+ordered.push(s);pen=s[s.length-1];}
+for(const h of holes)for(let i=0;i<ordered.length;i++)if(pInPoly([h.cx,h.cy],ordered[i])){h.idx=i;break;}
+const regions=buildRegions(holes);
+G.trace={strokes:ordered,holes:holes,regions:regions};G.traceTok++;G._traceLbl=lbl||'картинка';
+$('traceRow').style.display='flex';$('traceInfo').textContent=G._traceLbl+' · контуров: '+ordered.length+' · пустот: '+holes.length+' · областей заливки: '+regions.length+' · порог следа/дырок: '+th+'/'+thH+' · '+Math.round(performance.now()-t0)+' мс';
+G.invalidate();G.refresh();}
+async function importPdf(f){G.st('Читаю PDF…');
+const pdfjs=await loadPdfJs();
+const pdf=await pdfjs.getDocument({data:new Uint8Array(await f.arrayBuffer())}).promise;
+const n=Math.min(pdf.numPages,8),scale=150/72,mmPx=25.4/150,cvs=[],szs=[];
+for(let p=1;p<=n;p++){const pg=await pdf.getPage(p),vp=pg.getViewport({scale});
+const c=document.createElement('canvas');c.width=Math.ceil(vp.width);c.height=Math.ceil(vp.height);
+await pg.render({canvasContext:c.getContext('2d',{willReadFrequently:true}),viewport:vp}).promise;
+cvs.push(c);szs.push([c.width,c.height]);}
+composeTrace(cvs,szs,mmPx,'PDF «'+f.name.slice(0,24)+'» · стр.: '+n);}
+async function importImg(f){G.st('Читаю картинку…');
+const img=new Image();img.src=URL.createObjectURL(f);
+await new Promise((res,rej)=>{img.onload=res;img.onerror=()=>rej(new Error('не удалось прочитать картинку'));});
+const k=Math.min(1,3200/img.naturalWidth),c=document.createElement('canvas');
+c.width=Math.max(1,Math.round(img.naturalWidth*k));c.height=Math.max(1,Math.round(img.naturalHeight*k));
+const ctx=c.getContext('2d',{willReadFrequently:true});ctx.fillStyle='#fff';ctx.fillRect(0,0,c.width,c.height);ctx.drawImage(img,0,0,c.width,c.height);
+URL.revokeObjectURL(img.src);
+composeTrace([c],[[c.width,c.height]],G.params().pW/c.width,'Картинка «'+f.name.slice(0,24)+'»');}
+$('fPdf').onchange=async e=>{const f=e.target.files[0];e.target.value='';if(!f)return;
+try{const n=f.name.toLowerCase();
+if(n.endsWith('.pdf')||(f.type||'')==='application/pdf')await importPdf(f);
+else if((f.type||'').startsWith('image/')||/\.(png|jpe?g|webp|bmp|gif)$/.test(n))await importImg(f);
+else throw new Error('нужен PDF или картинка');}
+catch(x){G.st('Ошибка: '+x.message);toast('⚠ '+x.message);}};
+$('tFill').addEventListener('input',()=>{G.invalidate();G.refresh();});
+$('tHole').addEventListener('input',()=>{G.invalidate();G.refresh();});
+$('tThr').addEventListener('change',()=>{if(G.traceSrc)retrace(G._traceLbl);});
+$('tThrH').addEventListener('change',()=>{if(G.traceSrc)retrace(G._traceLbl);});
+$('tMode').addEventListener('change',()=>{rasUI();if(G.traceSrc)retrace(G._traceLbl);});
+$('tStep').addEventListener('change',()=>{if(G.traceSrc)retrace(G._traceLbl);});
+function rasUI(){const ras=$('tMode').value==='ras';
+for(const id of ['tFill','tHole','tThrH','tThr']){$(id).disabled=ras;$(id).style.opacity=ras?'.4':'1';}}
+rasUI();
+$('tClr').onclick=()=>{G.trace=null;G.traceSrc=null;G.traceTok++;G._traceLbl='';$('traceRow').style.display='none';G.invalidate();G.refresh();toast('Картинка убрана');};
+(()=>{const HOLD='!',RES='~',RST='\x18',JC='\x85';
+const clean=s=>{let o=String(s).replace(/\([^)]*\)/g,'');const i=o.indexOf(';');if(i>=0)o=o.slice(0,i);o=o.trim();return!o||o==='%'?'':o;};
+const r3=n=>String(Math.round(+n*1000)/1000);
+const xy=l=>{if(!/^G[01](?![\d.])/.test(l))return null;const a=l.match(/X(-?\d*\.?\d+)/),b=l.match(/Y(-?\d*\.?\d+)/);return!a&&!b?null:{x:a?+a[1]:null,y:b?+b[1]:null};};
+function WS(host){this.host=host;this.ws=null;this.raw=false;this.buf='';this.enc=new TextEncoder();this.dec=new TextDecoder();}
+WS.prototype.open=async function(){for(const p of['/','/ws']){const w=await this._try('ws://'+this.host+p,4500);if(w){this.ws=w;this._pump();return;}}throw new Error('нет связи с ws://'+this.host+' — проверь адрес и WiFi');};
+WS.prototype._try=function(u,ms){return new Promise(r=>{let done=false,w;try{w=new WebSocket(u);}catch(e){return r(null);}w.binaryType='arraybuffer';const f=o=>{if(!done){done=true;r(o?w:null);}};w.onopen=()=>f(1);w.onerror=()=>f(0);w.onclose=()=>{if(!done)f(0);};setTimeout(()=>f(w.readyState===1),ms);});};
+WS.prototype._pump=function(){const s=this;this.ws.onmessage=e=>{const b=typeof e.data==='string'?s.enc.encode(e.data):new Uint8Array(e.data);if(s.raw){s.onRaw&&s.onRaw(b);return;}s.buf+=s.dec.decode(b,{stream:true});let i;while((i=s.buf.indexOf('\n'))>=0){const l=s.buf.slice(0,i).replace(/\r$/,'');s.buf=s.buf.slice(i+1);s.onLine&&s.onLine(l);}if(s.buf.length>4000){s.onLine&&s.onLine(s.buf);s.buf='';}};this.ws.onclose=()=>s.onClosed&&s.onClosed();this.ws.onerror=()=>{};};
+WS.prototype.write=async function(t){this.ws.send(t);};WS.prototype.bytes=async function(u){this.ws.send(u);};WS.prototype.close=async function(){try{this.ws&&this.ws.close();}catch(e){}this.ws=null;};
+function Link(o){o=o||{};this.log=o.log||(()=>{});this.ev=o.onEvent||(()=>{});this.W=6;this.t=null;this.connected=false;this.ready=false;this.fw='';this.state='?';this.pos=null;this.src='';this.g92={x:0,y:0,z:0};this.q=[];this.polling=false;this.job=null;this.last=null;this.busy=false;}
+Link.prototype.connect=async function(t){this.t=t;t.onLine=l=>this._line(l);t.onClosed=()=>this._closed();await t.open();this.connected=true;this.log('— сокет открыт, жду контроллер…');await this.write('\n');await this._ready(2500);if(!this.ready){await this.write('\n');await this._ready(1500);}if(!this.ready)this.log('! контроллер молчит — адрес верный?');else{try{await this.cmd('$I',5000);}catch(e){}this.log('• связь есть: '+(this.fw||'отвечает'));this.ev({type:'ready'});}this.ev({type:'connected'});};
+Link.prototype._ready=function(ms){return new Promise(r=>{const t=Date.now();const i=setInterval(()=>{if(this.ready||Date.now()-t>ms){clearInterval(i);r();}},50);});};
+Link.prototype.write=async function(s){if(this.t)await this.t.write(s);};
+Link.prototype.cmd=function(l,to){return new Promise((res,rej)=>{const it={res,rej,timer:setTimeout(()=>{this.q=this.q.filter(q=>q!==it);rej(new Error('нет ответа: '+l));},to||15000)};this.q.push(it);this.write(l+'\n').catch(e=>{clearTimeout(it.timer);this.q=this.q.filter(q=>q!==it);rej(e);});});};
+Link.prototype._ack=function(e){const i=this.q.shift();if(!i)return;clearTimeout(i.timer);e?i.rej(new Error(e)):i.res();};
+Link.prototype._flush=function(w){const q=this.q;this.q=[];q.forEach(i=>{clearTimeout(i.timer);i.rej(new Error(w));});};
+Link.prototype._line=function(raw){const l=(raw||'').trim();if(!l)return;if(l==='ok')return this._ack(null);if(/^error:/i.test(l)){this.log('! '+l);return this._ack(l);}if(l[0]==='<'&&l[l.length-1]==='>')return this._status(l);if(/^ALARM:/i.test(l)){this.state='Alarm';this.ev({type:'state'});this.log('! '+l+' — нажми «Разблок $X»');return;}const v=l.match(/^\[VER:([^\]]*)\]/i);if(v){this.fw=v[1].trim();return this.log(l);}if(/grbl|fluidnc/i.test(l)&&l[0]!=='['){this.ready=true;if(!this.fw)this.fw=l;return this.log(l);}this.log(l);};
+Link.prototype._status=function(l){const p=l.slice(1,-1).split('|');const s=(p[0]||'').split(':')[0];if(s)this.state=s;let pos=null,src='',sd=null;for(const q of p){const m=q.match(/^SD:([\d.]+)/);if(m){sd=+m[1];continue;}let a=q.match(/^WPos:(-?[\d.]+),(-?[\d.]+),(-?[\d.]+)/);if(a&&!pos){pos={x:+a[1],y:+a[2],z:+a[3]};src='WPos';continue;}a=q.match(/^MPos:(-?[\d.]+),(-?[\d.]+),(-?[\d.]+)/);if(a&&!pos){pos={x:+a[1]-this.g92.x,y:+a[2]-this.g92.y,z:+a[3]-this.g92.z};src='MPos';}}if(pos){this.pos=pos;this.src=src;}this.ev({type:'status',sd});};
+Link.prototype.poll=function(){if(!this.connected||this.polling||this.busy)return;this.polling=true;this.write('?').catch(()=>{}).finally(()=>{this.polling=false;});};
+Link.prototype._closed=function(){this.connected=false;this.ready=false;this._abort('сокет закрылся');this._flush('сокет закрылся');this.ev({type:'closed'});};
+Link.prototype.disconnect=async function(){const t=this.t;this.t=null;this.connected=false;this.ready=false;this._abort('отключено');this._flush('отключено');if(t)await t.close();this.ev({type:'closed'});};
+Link.prototype.home=function(){return this.cmd('$H',240000);};Link.prototype.unlock=function(){return this.cmd('$X',8000);};
+Link.prototype.zero=async function(a){const k=String(a||'xy').toLowerCase(),ax=k==='xy'?['x','y']:[k];await this.cmd('G92 '+ax.map(s=>s.toUpperCase()+'0').join(' '),8000);if(this.src==='WPos'||!this.pos)this.g92={x:0,y:0,z:0};else ax.forEach(s=>{this.g92[s]=this.pos[s]+this.g92[s];});};
+Link.prototype.goZero=function(f){return this.cmd('G90',5000).then(()=>this.cmd('G0 X0 Y0 F'+r3(f||9000),120000));};
+Link.prototype.goSoft=function(zu,ff,fs,m){m=Math.max(0,+m||0);let s=this.cmd('G90',5000).then(()=>this.cmd('G0 Z'+r3(zu||5),60000));if(m>.01)s=s.then(()=>this.cmd('G0 X'+r3(m)+' Y'+r3(m)+' F'+r3(ff||9000),120000));return s.then(()=>this.cmd('G0 X0 Y0 F'+r3(fs||600),120000));};
+Link.prototype.jog=function(dx,dy,dz,f){const p=[];if(dx)p.push('X'+r3(dx));if(dy)p.push('Y'+r3(dy));if(dz)p.push('Z'+r3(dz));return p.length?this.cmd('$J=G91 G21 '+p.join(' ')+' F'+r3(f||3000),120000):Promise.resolve();};
+Link.prototype.jogStop=function(){return this.write(JC);};Link.prototype.penUp=function(z){return this.cmd('G0 Z'+r3(z),60000);};Link.prototype.penDn=function(z,f){return this.cmd('G1 Z'+r3(z)+' F'+r3(f||3000),60000);};
+Link.prototype.run=function(lines,cb,start){cb=cb||{};const all=(lines||[]).map(clean).filter(Boolean),s=Math.max(0,Math.min(start|0,all.length));const j={total:all.length,sent:s,i:s,fly:0,paused:false,aborted:false,finished:false,err:null,lastXY:null,all,prog:cb.onProgress||(()=>{}),done:cb.onDone||(()=>{}),error:cb.onError||(()=>{})};this.job=j;this.last=null;const pr=()=>j.prog({sent:j.sent,total:j.total,pct:j.total?Math.round(100*j.sent/j.total):100,paused:j.paused});j.pr=pr;
+const pump=()=>{if(j.finished||j.aborted||j.err||j.paused)return;while(j.i<j.total&&j.fly<this.W){const l=all[j.i++];j.fly++;this.cmd(l,120000).then(()=>{j.fly--;j.sent++;const p=xy(l);if(p)j.lastXY={x:p.x!=null?p.x:(j.lastXY?j.lastXY.x:null),y:p.y!=null?p.y:(j.lastXY?j.lastXY.y:null)};pr();pump();}).catch(e=>{j.fly--;j.err=e;pr();this._stash(j);this.log('! ошибка на «'+l+'»: '+e.message);this.write(HOLD).catch(()=>{});j.error(e);});}if(j.i>=j.total&&!j.fly&&!j.err&&!j.finished){j.finished=true;pr();j.done();}};j.pump=pump;pump();return j;};
+Link.prototype._stash=function(j){if(!j||j.finished||!j.all)return;this.last={all:j.all,at:Math.min(j.sent,j.all.length),xy:j.lastXY,total:j.total};try{localStorage.setItem(LSJ,JSON.stringify(this.last));}catch(e){}};
+Link.prototype.pause=function(){const j=this.job;if(j&&!j.paused&&!j.finished&&!j.err){j.paused=true;this.write(HOLD).catch(()=>{});j.pr();}};
+Link.prototype.resume=function(){const j=this.job;if(j&&j.paused){j.paused=false;this.write(RES).catch(()=>{});j.pr();j.pump();}};
+Link.prototype._abort=function(w){const j=this.job;if(j&&!j.finished){j.aborted=true;this._stash(j);j.pr();}this.job=null;if(w)this.log('— '+w);};
+Link.prototype.resumeJob=async function(cb){const l=this.last;if(!l||!(l.at<l.all.length))return null;await this.cmd('G0 Z'+r3(cb.zu!=null?cb.zu:5),60000);if(l.xy&&l.xy.x!=null&&l.xy.y!=null)await this.cmd('G0 X'+r3(l.xy.x)+' Y'+r3(l.xy.y)+' F'+r3(cb.ff||9000),120000);return this.run(l.all,cb,l.at);};
+Link.prototype.sdRun=function(n){return this.cmd('$SD/Run=/sd/'+n,12000);};
+Link.prototype.sdUpload=function(name,text,onp){const t=this.t;if(!t||!this.connected)return Promise.reject(new Error('нет связи'));if(this.busy)return Promise.reject(new Error('передача уже идёт'));const self=this;return new Promise((resolve,reject)=>{(async()=>{const data=new TextEncoder().encode(String(text)),buf=[],wait=[];t.raw=true;self.busy=true;t.onRaw=a=>{for(let i=0;i<a.length;i++)buf.push(a[i]);wait.splice(0).forEach(f=>f());};const cleanup=()=>{t.raw=false;t.onRaw=null;self.busy=false;};const getc=ms=>new Promise(r=>{if(buf.length)return r(buf.shift());let d=false;const to=setTimeout(()=>{if(!d){d=true;r(null);}},ms);wait.push(()=>{if(!d&&buf.length){d=true;clearTimeout(to);r(buf.shift());}});});const sleep=ms=>new Promise(r=>setTimeout(r,ms));let ls='';const feed=b=>{if(b===10){const s=ls.replace(/\r$/,'');ls='';if(s)self.log(s);return s;}if(b===67&&!ls)return'C';ls+=String.fromCharCode(b);if(ls.length>160){self.log(ls);ls='';}return null;};
+try{await self.write('$Xmodem/Receive=/sd/'+name+'\n');let got=false,crcM=true;const t0=Date.now();while(Date.now()-t0<20000&&!got){if(!self.connected)throw new Error('связь оборвалась');const b=await getc(1000);if(b==null)continue;if(b===67)got=true;else if(b===21){got=true;crcM=false;}else if(feed(b)==='C')got=true;}if(!got)throw new Error('станок не начал приём — проверь SD');
+let size=crcM?1024:128,useCrc=crcM,seq=1,pos=0,ack1=0,log=0;const tu=Date.now();while(pos<data.length){const end=Math.min(pos+size,data.length),f=new Uint8Array(size+(useCrc?5:4));f[0]=size===1024?2:1;f[1]=seq&255;f[2]=255-(seq&255);f.set(data.subarray(pos,end),3);for(let i=end-pos;i<size;i++)f[3+i]=26;if(useCrc){const c=crc16x(f.subarray(3,3+size),0,size);f[3+size]=c>>8;f[4+size]=c&255;}else{let s=0;for(let i=0;i<size;i++)s=(s+f[3+i])&255;f[3+size]=s;}
+let ok=false,tries=0,nak=0;const dead=Date.now()+90000;while(!ok&&tries<20&&Date.now()<dead){tries++;await t.bytes(f);for(let w=0;w<12&&!ok;w++){const a=await getc(4000);if(!self.connected)throw new Error('связь оборвалась');if(a==null)break;if(a===6)ok=true;else if(a===21){nak++;break;}else feed(a);}}if(ok&&size===1024)ack1++;if(!ok&&size===1024&&!ack1&&nak>=3){size=128;self.log('— перехожу на 128 байт');continue;}if(!ok)throw new Error('блок '+seq+' не подтверждён');pos=end;seq=(seq+1)&255;const pct=Math.round(100*pos/data.length);if(pct>=log+20||pos===data.length){const s=Math.max((Date.now()-tu)/1000,.1);self.log('— '+pct+'% ('+Math.round(pos/1024)+' КБ, '+(pos/1024/s).toFixed(1)+' КБ/с)');log=pct-pct%20;}onp&&onp({pct});}
+let eot=false;for(let i=0;i<6&&!eot;i++){await t.bytes(new Uint8Array([4]));if(await getc(4000)===6)eot=true;}if(!eot)throw new Error('нет подтверждения конца');let okS=false;const t3=Date.now();while(Date.now()-t3<10000&&!okS){const b=await getc(1000);if(b==null)continue;const r=feed(b);if(typeof r==='string'&&/^ok$/i.test(r))okS=true;}await sleep(300);resolve({bytes:data.length,name});
+}catch(e){try{await sleep(300);await t.bytes(new Uint8Array([24,24,24]));await sleep(400);await self.write('\n'+RST);self.ready=false;self.log('— контроллер сброшен');await self._ready(2500);}catch(_){}reject(e);}finally{cleanup();}})().catch(reject);});};
+Link.prototype.stop=async function(){this._abort('СТОП');this._flush('сброс');await this.write(RST).catch(()=>{});this.ready=false;this.log('— перезапуск контроллера…');await this._ready(2000);this.ev({type:'reset'});};
+const M={link:null,tr:null,host:'',conn:false,ing:false,timer:0,step:5,feed:3000,zu:5,zd:0,marg:10,ff:9000,fs:600,soft:false,prog:{run:false,pct:0},sd:{run:false,name:'',pct:0,up:false,upp:0},files:[],err:'',mode:'wifi',baud:115200,serOk:typeof PlotterSerial!=='undefined'&&PlotterSerial.isSupported(),lastPort:null};
+try{const v=JSON.parse(localStorage.getItem(LSM)||'{}');for(const k in v)if(k in M)M[k]=v[k];}catch(e){} M.serOk=typeof PlotterSerial!=='undefined'&&PlotterSerial.isSupported();
+const save=()=>{try{localStorage.setItem(LSM,JSON.stringify({host:$('mHost').value.trim(),step:M.step,feed:M.feed,zu:M.zu,zd:M.zd,marg:M.marg,ff:M.ff,fs:M.fs,soft:M.soft,mode:M.mode,baud:M.baud}));}catch(e){}};
+const logs=[];const log=m=>{logs.push(String(m));if(logs.length>240)logs.splice(0,logs.length-240);$('mLog').textContent=logs.join('\n');$('mLog').scrollTop=1e9;};
+function render(){$('mSt').textContent=M.conn?(M.link&&M.link.state)||'…':'не подключено';$('mSt').className='mono '+(M.conn&&M.link?'s-'+M.link.state:'');$('mPo').textContent=M.conn&&M.link&&M.link.pos?'X'+M.link.pos.x.toFixed(2)+' Y'+M.link.pos.y.toFixed(2)+' Z'+M.link.pos.z.toFixed(2):'';$('mFw').textContent=M.conn&&M.link?(M.link.fw||''):'';$('mModeLbl').textContent=M.conn?(M.mode==='serial'?'USB':'WiFi'):'';const wifi=M.mode==='wifi', ser=M.mode==='serial';$('mWifiBox').style.display=wifi?'':'none';$('mSerBox').style.display=ser?'':'none';$('mModeWifi').classList.toggle('on',wifi);$('mModeSer').classList.toggle('on',ser);
+$('mCn').disabled=M.ing||M.conn||!wifi;$('mDs').disabled=!M.conn||!wifi;$('mHost').disabled=M.conn||!wifi;
+$('mCnSer').disabled=M.ing||M.conn||!ser||!M.serOk;$('mDsSer').disabled=!M.conn||!ser;$('mBaud').disabled=M.conn||!ser;
+$('mCnSerLast').style.display=(ser&&M.lastPort&&!M.conn&&!M.ing)?'':'none';
+if(!M.serOk&&ser)$('mSerHint').textContent='Web Serial недоступен. Откройте в Chrome или Edge на компьютере.';
+$('mPan').style.display=M.conn?'block':'none';
+const j=M.link&&M.link.job;$('pBar').style.width=(M.sd.run?M.sd.pct:M.prog.pct)+'%';$('pTx').textContent=M.sd.run?'SD: '+M.sd.name+' · '+Math.round(M.sd.pct)+'%':(j&&j.total&&!j.finished?'строк '+j.sent+' / '+j.total+' ('+Math.round(100*j.sent/j.total)+'%)'+(j.paused?' · пауза':''):'');$('pau').style.display=j&&!j.paused&&M.prog.run?'':'none';$('res').style.display=j&&j.paused?'':'none';$('stp').disabled=!(M.prog.run||M.sd.run||(j&&!j.finished));$('sdW').disabled=!M.conn||M.sd.up;$('sdW').textContent=M.sd.up?'Пишу… '+M.sd.upp+'%':'На SD';$('sdP').disabled=!M.conn||!M.sd.name||M.sd.run||M.prog.run;$('sdP').textContent=M.sd.name?'ПЕЧАТЬ С SD ▶ '+M.sd.name:'ПЕЧАТЬ С SD ▶';$('rBox').style.display=M.conn&&M.link&&M.link.last?'block':'none';if(M.link&&M.link.last){$('rAt').textContent=M.link.last.at;$('rTo').textContent=M.link.last.total;}
+/* SD-list only makes sense over WiFi HTTP */
+const sdCard=$('fH')&&$('fH').closest('.card');if(sdCard)sdCard.style.display=M.mode==='serial'&&M.conn?'none':'';
+}
+function ev(e){if(e.type==='status'){if(e.sd!=null){M.sd.pct=e.sd;M.sd.seen=true;}else if(M.sd.run&&M.sd.seen&&M.link.state==='Idle'){M.sd.run=false;M.sd.seen=false;log('• файл с SD проигран');}}if(e.type==='closed'||e.type==='reset'){M.conn=false;clearInterval(M.timer);if(e.type==='reset'){M.sd.run=false;M.prog.run=false;}}if(e.type==='ready')M.conn=true;render();}
+function connect(){if(M.conn||M.ing)return;const h=$('mHost').value.trim().replace(/^https?:\/\//,'').replace(/\/+$/,'');if(!h){log('! впиши адрес станка');return;}M.host=h;M.mode='wifi';M.ing=true;$('mEr').textContent='';render();log('— подключаюсь к '+h+' (WiFi)…');M.link=new Link({log,onEvent:ev});M.tr=new WS(h);M.link.connect(M.tr).then(()=>{M.ing=false;M.conn=true;clearInterval(M.timer);M.timer=setInterval(()=>M.link&&M.link.poll(),300);try{const l=JSON.parse(localStorage.getItem(LSJ)||'null');if(l&&l.all&&l.at<l.all.length)M.link.last=l;}catch(e){}render();toast('Станок на связи (WiFi)');save();}).catch(e=>{M.ing=false;M.conn=false;$('mEr').textContent=e.message;log('! '+e.message);render();});}
+function wrapPlotterLink(pl){
+/* Унифицируем API PlotterLink под то, что ждут render/print/sdWrite (как у Link). */
+pl.src=pl.posSrc||'';pl.last=pl.lastJob;pl.busy=pl.busyRaw;
+const _stash=pl._stash.bind(pl);
+pl._stash=function(j){_stash(j);pl.last=pl.lastJob;};
+/* lastJob поля: stopIndex → at для UI */
+Object.defineProperty(pl,'last',{get:function(){const lj=this.lastJob;if(!lj)return null;return{all:lj.all,at:lj.stopIndex,xy:lj.xy,total:lj.total};},set:function(v){if(!v){this.lastJob=null;return;}this.lastJob={all:v.all,stopIndex:v.at!=null?v.at:v.stopIndex,xy:v.xy,total:v.total};}});
+/* алиасы методов */
+pl.zero=function(a){return this.setZeroAxis(a);};
+pl.goZero=function(f){return this.goZeroXY(f);};
+pl.goSoft=function(zu,ff,fs,m){return this.goZeroSoft(zu,ff,fs,m);};
+pl.jogStop=function(){return this.jogCancel();};
+pl.penDn=function(z,f){return this.penDown(z,f);};
+pl.run=function(lines,cb,start){
+  const mapped={onProgress:function(p){cb&&cb.onProgress&&cb.onProgress(p);},onDone:function(){cb&&cb.onDone&&cb.onDone();},onError:function(e){cb&&cb.onError&&cb.onError(e);}};
+  const j=this.runJob(lines,mapped,start);
+  /* job.sent/total/finished/paused уже есть */
+  return j;
+};
+pl.resumeJob=async function(cb){
+  const r=await PlotterSerial.PlotterLink.prototype.resumeJob.call(this,{
+    zUp:cb&&cb.zu,fTravel:cb&&cb.ff,
+    onProgress:cb&&cb.onProgress,onDone:cb&&cb.onDone,onError:cb&&cb.onError
+  });
+  return r;
+};
+return pl;
+}
+function connectSerial(reuse){if(M.conn||M.ing)return;if(!M.serOk){log('! Web Serial недоступен — нужен Chrome/Edge');$('mEr').textContent='Web Serial недоступен';return;}M.mode='serial';M.baud=+$('mBaud').value||115200;M.ing=true;$('mEr').textContent='';render();log('— открываю COM-порт ('+M.baud+' бод)…');
+const tr=new PlotterSerial.WebSerialTransport();
+(async()=>{try{
+await tr.request(reuse?M.lastPort:null);
+M.lastPort=tr.port;
+const pl=new PlotterSerial.PlotterLink({log:log,onEvent:function(e){
+  if(e.type==='status'){/* posSrc */}
+  if(e.type==='fw'&&e.fw){}
+  ev(e);
+}});
+M.link=wrapPlotterLink(pl);
+await M.link.connect(tr,M.baud);
+M.tr=tr;
+M.ing=false;M.conn=true;clearInterval(M.timer);M.timer=setInterval(()=>M.link&&M.link.poll(),300);
+try{const l=JSON.parse(localStorage.getItem(LSJ)||'null');if(l&&l.all&&l.at<l.all.length){M.link.last=l;}}catch(e){}
+render();toast('Станок на связи (USB)');save();
+}catch(e){M.ing=false;M.conn=false;try{await tr.close();}catch(_){}
+const msg=(e&&e.message)||String(e);$('mEr').textContent=msg;log('! '+msg);render();}})();}
+function disc(){clearInterval(M.timer);M.link&&M.link.disconnect().catch(()=>{});M.conn=false;M.ing=false;M.link=null;M.tr=null;render();}
+const busy=()=>M.prog.run||M.sd.run||(M.link&&M.link.job&&!M.link.job.finished);
+function guard(){if(!M.conn){log('! сначала подключись');return true;}if(busy()){log('! идёт движение — Стоп или дождись конца');return true;}if(M.link.state==='Alarm'){log('! Alarm — нажми «Разблок $X»');return true;}return false;}
+function print(){if(guard())return;G.invalidate();G.gcode();const c=$('out').value||'';if(!hasCode(c)){log('! '+(String(c).split('\n')[0]||'нет G-code')+' — сначала сгенерируй G-code');return;}const lines=c.split('\n'),zu=+$('zU').value||M.zu;M.prog.run=true;M.prog.pct=0;render();(M.soft?M.link.goSoft(zu,M.ff,M.fs,M.marg):Promise.resolve()).then(()=>M.link.run(lines,{onProgress:p=>{M.prog.pct=p.pct;render();},onDone:()=>{M.prog.run=false;render();log('• печать закончена · '+lines.length+' строк');M.link.penUp(zu).catch(()=>{});},onError:()=>{M.prog.run=false;render();}})).catch(e=>{M.prog.run=false;log('! '+e.message);render();});}
+function sdWrite(){if(!M.conn)return;G.invalidate();G.gcode();const c=$('out').value||'';if(!hasCode(c)){log('! '+(String(c).split('\n')[0]||'нет G-code')+' — сначала сгенерируй G-code');return;}const d=new Date(),p=n=>('0'+n).slice(-2),nm=(S.name.replace(/[^\w\-]+/g,'_').slice(0,22)||'gcode')+'_'+p(d.getHours())+p(d.getMinutes())+p(d.getSeconds())+'.gcode';M.sd.up=true;M.sd.upp=0;M.sd.name=nm;render();log('— пишу «'+nm+'» на SD…');M.link.sdUpload(nm,c,x=>{M.sd.upp=x.pct;render();}).then(r=>{M.sd.up=false;log('• записано: '+r.name+' ('+Math.round(r.bytes/1024)+' КБ)');if(M.mode!=='serial')fmRefresh();/* по USB HTTP-списка нет — не дёргаем fetch */render();toast('Файл на SD');}).catch(e=>{M.sd.up=false;log('! '+e.message);render();});}
+function sdPrint(){if(guard())return;if(!M.sd.name){log('! сначала запиши файл');return;}log('— играю с SD: '+M.sd.name);M.sd.run=true;M.sd.seen=false;M.link.sdRun(M.sd.name).then(render).catch(e=>{M.sd.run=false;log('! '+e.message);render();});}
+const base=()=>'http://'+(M.host||$('mHost').value.trim().replace(/^https?:\/\//,'').replace(/\/+$/,''));
+const same=()=>location.protocol.startsWith('http')&&location.host.toLowerCase()===String(M.host).toLowerCase();
+function fmRender(){$('fH').textContent=same()?'Страница открыта со станка — файлы SD доступны полностью.':'Страница открыта как файл: браузер скрывает ответ станка (CORS). Запись на SD работает всегда; список — надёжнее с SD: /sd/ui/plot/index.html';const b=$('fL');b.innerHTML='';if(M.err){const e=document.createElement('div');e.className='err';e.textContent=M.err;b.appendChild(e);return;}if(!M.files.length){const e=document.createElement('div');e.className='err';e.textContent='Список пуст (или ещё не читали)';b.appendChild(e);return;}
+for(const f of M.files){const r=document.createElement('div');r.className='fr';const n=document.createElement('span');n.className='fn mono';n.textContent=f.name;r.appendChild(n);const s=document.createElement('span');s.className='fs';s.textContent=Math.round(f.size/1024)+' КБ';r.appendChild(s);const p=document.createElement('button');p.textContent='▶';p.title='Играть';p.onclick=()=>{if(guard())return;M.sd.name=f.name;M.sd.run=true;M.sd.seen=false;render();M.link.sdRun(f.name).catch(e=>{M.sd.run=false;log('! '+e.message);render();});};r.appendChild(p);const d=document.createElement('a');d.textContent='⬇';d.href=base()+'/sd/'+encodeURIComponent(f.name);d.target='_blank';r.appendChild(d);const x=document.createElement('button');x.textContent='🗑';x.onclick=async()=>{if(!confirm('Удалить «'+f.name+'»?'))return;try{await fetch(base()+'/upload?path=/sd&filename='+encodeURIComponent(f.name)+'&action=delete',{cache:'no-store'});}catch(e){}fmRefresh();};r.appendChild(x);b.appendChild(r);}}
+async function fmRefresh(){M.err='';M.files=[];fmRender();try{const r=await fetch(base()+'/upload?path=/sd',{cache:'no-store'});if(!r.ok)throw new Error('HTTP '+r.status);const d=await r.json();if(d.status&&/no sd/i.test(d.status))throw new Error('SD не найдена');M.files=(d.files||[]).map(f=>({name:f.name,size:f.size||0}));log('— на SD '+M.files.length+' файл(ов)');}catch(e){M.err='Список не прочитан ('+e.message+'). См. подсказку выше.';log('! '+e.message);}fmRender();}
+$('mCn').onclick=connect;$('mDs').onclick=disc;$('mDsSer').onclick=disc;$('mCnSer').onclick=()=>connectSerial(false);$('mCnSerLast').onclick=()=>connectSerial(true);
+$('mHost').onchange=save;$('mHost').oninput=()=>{const h=$('mHost').value.trim().replace(/^https?:\/\//,'').replace(/\/+$/,'');$('web').href=h?'http://'+h+'/':'#';};
+$('mBaud').onchange=()=>{M.baud=+$('mBaud').value||115200;save();};
+function setMode(mode){if(M.conn){toast('Сначала отключись');return;}M.mode=mode;save();render();}
+$('mModeWifi').onclick=()=>setMode('wifi');$('mModeSer').onclick=()=>setMode('serial');
+
+$('mSp').value=M.step;$('mFd').value=M.feed;$('mZu').value=M.zu;$('mZd').value=M.zd;$('mMg').value=M.marg;$('mFf').value=M.ff;$('mFs').value=M.fs;$('sft').checked=!!M.soft;if(M.host)$('mHost').value=M.host;if(M.baud)$('mBaud').value=String(M.baud);if(M.mode!=='serial')M.mode='wifi';
+['mSp','mFd','mZu','mZd','mMg','mFf','mFs','sft'].forEach(id=>$(id).onchange=()=>{M.step=Math.max(.01,+$('mSp').value||5);M.feed=Math.max(10,+$('mFd').value||3000);M.zu=+$('mZu').value;M.zd=+$('mZd').value;M.marg=Math.max(0,+$('mMg').value||0);M.ff=Math.max(10,+$('mFf').value||9000);M.fs=Math.max(10,+$('mFs').value||600);M.soft=$('sft').checked;save();});
+document.querySelectorAll('[data-dx]').forEach(b=>b.onclick=()=>{if(guard())return;M.link.jog(+b.dataset.dx*M.step,+b.dataset.dy*M.step,+b.dataset.dz*M.step,M.feed).catch(e=>log('! '+e.message));});
+$('jS').onclick=()=>M.link&&M.link.jogStop().catch(()=>{});
+$('zXY').onclick=()=>{if(!guard())M.link.zero('xy').then(()=>toast('Ноль листа XY')).catch(e=>log('! '+e.message));};$('zX').onclick=()=>{if(!guard())M.link.zero('x').catch(e=>log('! '+e.message));};$('zY').onclick=()=>{if(!guard())M.link.zero('y').catch(e=>log('! '+e.message));};$('zZ').onclick=()=>{if(!guard())M.link.zero('z').catch(e=>log('! '+e.message));};
+const fast=()=>{if(guard())return;M.link.goZero(M.ff).then(()=>log('• перо в нуле')).catch(e=>log('! '+e.message));};$('goF').onclick=fast;$('goF2').onclick=fast;
+$('goS').onclick=()=>{if(guard())return;M.link.goSoft(M.zu,M.ff,M.fs,M.marg).then(()=>log('• плавно в нуле')).catch(e=>log('! '+e.message));};
+$('unl').onclick=()=>{if(!M.conn)return;M.link.unlock().then(()=>{log('• разблокировано');render();}).catch(e=>log('! '+e.message));};$('hom').onclick=()=>{if(!M.conn)return;log('— поиск дома…');M.link.home().then(()=>log('• дом найден')).catch(e=>log('! '+e.message));};
+$('pU').onclick=()=>{if(!M.conn)return;M.link.penUp(M.zu).then(()=>log('• перо ↑')).catch(e=>log('! '+e.message));};$('pD').onclick=()=>{if(!M.conn)return;M.link.penDn(M.zd,M.ff).then(()=>log('• перо ↓')).catch(e=>log('! '+e.message));};
+$('mPr').onclick=print;$('pau').onclick=()=>{M.link&&M.link.pause();render();};$('res').onclick=()=>{M.link&&M.link.resume();render();};$('stp').onclick=async()=>{if(!M.link)return;M.sd.run=false;M.prog.run=false;await M.link.stop().catch(()=>{});render();};$('sdW').onclick=sdWrite;$('sdP').onclick=sdPrint;
+$('rGo').onclick=async()=>{if(guard())return;const l=M.link.last;if(!l)return;log('— возобновляю со строки '+l.at);M.prog.run=true;render();await M.link.resumeJob({zu:+$('zU').value||M.zu,ff:M.ff,onProgress:p=>{M.prog.pct=p.pct;render();},onDone:()=>{M.prog.run=false;try{localStorage.removeItem(LSJ);}catch(e){}render();log('• печать закончена');},onError:()=>{M.prog.run=false;render();}}).catch(e=>{M.prog.run=false;log('! '+e.message);return null;});render();};
+$('rNo').onclick=()=>{if(M.link)M.link.last=null;try{localStorage.removeItem(LSJ);}catch(e){}render();};$('fR').onclick=fmRefresh;
+$('fSd').onchange=async e=>{const f=e.target.files[0];e.target.value='';if(!f)return;log('— загружаю «'+f.name+'»…');try{const fd=new FormData();fd.append('path','/sd/');fd.append('file',f,f.name);const r=await fetch(base()+'/upload',{method:'POST',body:fd});log(r.ok?'• записан':'! HTTP '+r.status);}catch(x){log('— ответ скрыт браузером, проверь списком');}fmRefresh();};
+render();fmRender();})();
+(function init(){const loaded=readLS();S.alpha=(+$('alpha').value||34)/100;S.cL=+$('cL').value||40;S.entry={x:cL(),y:BL};S.exit={x:cR(),y:BL};syncVals();loadGlyph();syncImg();G.refresh();st1(loaded?'Шрифт из памяти · '+nGlyph()+' букв':'Загрузи my_hand.json — шрифт не вшит в файл');let rt=0;addEventListener('resize',()=>{clearTimeout(rt);rt=setTimeout(()=>{if($('p2').classList.contains('on')&&!G.anim)G.draw();redraw();},180);});})();
+</script>
+</body>
+</html>
