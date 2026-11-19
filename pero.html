@@ -176,7 +176,7 @@ button:disabled{opacity:.42;cursor:not-allowed;transform:none;box-shadow:none}
 </div>
 <div class="chips"><label class="chk"><input type="checkbox" id="cSt" checked> сшивка</label><label class="chk"><input type="checkbox" id="cEE" checked> маркеры E/X</label><label class="chk"><input type="checkbox" id="cGr" checked> сетка</label><label class="chk"><input type="checkbox" id="cMk" checked> точки E/X</label><label class="chk"><input type="checkbox" id="cFl" checked> перелёты</label><label class="chk"><input type="checkbox" id="cMs" checked> пропуски</label></div>
 <div class="btns"><button id="gR" class="wr">🎲 Варианты</button><button id="gX">↺ Сброс</button><button id="gZ" class="ok">⬇ ZIP проекта</button></div>
-<div class="note">💡 Перо <b>всегда доводится до маркера выхода</b>: чистой линией, возвратом по штриху (в пределах лимита отката) или перелётом. Если буква закончилась слева (хвост влево, как у «в», «В», «у», «з») или прямая прорезает букву — до выхода будет <b>перелёт</b>: перо не поедет к маркеру и назад по хвосту с опущенным пером, лишних штрихов и искажения хвоста не будет. В точке выхода перо <b>опускается</b>, и линия <b>выход → вход</b> следующей буквы рисуется всегда. Исключение — <b>заглавные буквы</b>: перелёт всегда перед заглавной и между заглавными; от заглавной к строчной («От», «Бю») перо сшивает коротким чистым росчерком — не длиннее 3/4 высоты буквы и не задевая следующую букву, иначе перелёт. Выравнивание абзацев из Word (по центру / по правому краю) подхватывается при импорте .docx. Кнопка <b>🎵 PDF / картинка</b>: скан (ноты, рисунок) трассируется и рисуется пером «как есть» в истинном размере, а пустоты внутри контуров (например, целая нота) закрашиваются спиралью или «крестиком»; мелкие дырки отсеиваются по размеру. Порогов два: <b>порог</b> — жирность следа (ваш рабочий, напр. 27), <b>порог дырок</b> — где искать пустоты под заливку (0 — авто; если при жёстком следе тонкий овал ноты рвётся и пустота не находится — поставьте 90–120). PDF рендерится через pdf.js (CDN — при первом импорте нужен интернет; PNG/JPG работают офлайн). Режим следа: <b>контуры</b> — обводит линии «как есть» (сплошные головки станут контуром — заливайте пустоты или используйте растр); <b>растр</b> — ваша идея в работе: монохром по авто-порогу, чернила рисуются прогонками по сетке («шаг, мм»; 0 — авто 0.75 × перо), порядок штрихов — жадный «ближайший прогон». В растре головки сплошные, пустые ноты пустые, заливка и пороги не нужны; для мелких деталей берите тонкое перо 0.5–1 мм — жирное перо делает ноты грубее и может слипать линейки.</div></div>
+<div class="note">💡 Перо <b>всегда доводится до маркера выхода</b>: чистой линией, возвратом по штриху (в пределах лимита отката) или перелётом. Если буква закончилась слева (хвост влево, как у «в», «В», «у», «з») или прямая прорезает букву — до выхода будет <b>перелёт</b>: перо не поедет к маркеру и назад по хвосту с опущенным пером, лишних штрихов и искажения хвоста не будет. В точке выхода перо <b>опускается</b>, и линия <b>выход → вход</b> следующей буквы рисуется всегда. Исключение — <b>заглавные буквы</b>: перелёт всегда перед заглавной и между заглавными; от заглавной к строчной («От», «Бю») перо сшивает коротким чистым росчерком — не длиннее 3/4 высоты буквы и не задевая следующую букву, иначе перелёт. Выравнивание абзацев из Word (по центру / по правому краю) подхватывается при импорте .docx. Кнопка <b>🎵 PDF / картинка</b>: скан (ноты, рисунок) трассируется и рисуется пером «как есть» в истинном размере, а пустоты внутри контуров (например, целая нота) закрашиваются спиралью или «крестиком»; мелкие дырки отсеиваются по размеру. Порогов два: <b>порог</b> — жирность следа (ваш рабочий, напр. 27), <b>порог дырок</b> — где искать пустоты под заливку (0 — авто; если при жёстком следе тонкий овал ноты рвётся и пустота не находится — поставьте 90–120). PDF рендерится через pdf.js (CDN — при первом импорте нужен интернет; PNG/JPG работают офлайн). Режим следа: <b>контуры</b> — обводит линии «как есть» (сплошные головки станут контуром — заливайте пустоты или используйте растр); <b>растр</b> — ваша идея в работе: монохром по авто-порогу, чернила рисуются прогонками по сетке («шаг, мм»; 0 — авто 0.75 × перо), порядок штрихов — секторный «ленивый сосед»: лист делится на сектора 5×5 мм — квадраты тетрадки (шаблон/фон, сетка от нуля листа), штрихи режутся по границам секторов, сектор дорисовывается до конца (жадная ближайшая точка) и только потом перо едет в следующий сектор; строки секторов снизу вверх, каждая начинается с края, где перо сейчас, — перелёты через весь лист исчезают; стыки соседних кусков чернил короче 0.75 × пера сшиваются опущенным пером — лишних подъёмов нет (в превью включите «сетку», чтобы видеть квадраты секторов; в статусе — макс. перелёт). В растре головки сплошные, пустые ноты пустые, заливка и пороги не нужны; для мелких деталей берите тонкое перо 0.5–1 мм — жирное перо делает ноты грубее и может слипать линейки.</div></div>
 <div class="leg"><span><i class="sw" style="border-color:#10202b"></i>штрих Z0</span><span><i class="sw" style="border-color:#12b886"></i>сшивка Z0</span><span><i class="sw" style="border-color:#c026d3;border-top-style:dashed"></i>перелёт Z5</span><span><i class="sw" style="border-color:#e8443a"></i>нет буквы</span></div>
 <div class="wrap"><canvas id="cg" width="720" height="280"></canvas></div>
 <p class="st" id="s2">Готово</p><div class="stats" id="stats">—</div>
@@ -1329,14 +1329,16 @@ if(G.trace&&G.trace.strokes.length){const TF=$('tFill')?$('tFill').value:'off',T
 const seq=[];let penT=null;if(G.plan.length){const l=G.plan[G.plan.length-1];penT=l.pts[l.pts.length-1];}
 const fillsAt={};if(TF!=='off')for(const r of (G.trace.regions||[])){if(Math.min(r.bw,r.bh)<TH||r.bw/r.bh>2.3||r.bh/r.bw>2.3||r.bw*r.bh>45)continue;const f=TF==='sp'?spiralFillR(r):crossFillR(r);if(f.length){const a=Math.max(0,r.anchor|0);(fillsAt[a]=fillsAt[a]||[]).push(...f);}}
 for(let si=0;si<G.trace.strokes.length;si++){seq.push(G.trace.strokes[si]);if(fillsAt[si])seq.push(...fillsAt[si]);}
-for(const s of seq){if(!s||s.length<2)continue;if(penT&&G.d(penT,s[0])>.02)G.plan.push({pts:[penT,s[0]],down:false,kind:'fly'});G.plan.push({pts:s,down:true,kind:'stroke'});penT=s[s.length-1];}}
+for(const s of seq){if(!s||s.length<2)continue;if(penT){const gap=G.d(penT,s[0]);if(gap>.02){/* растр: стыки соседних кусков чернил короче 0.75×пера сшиваем опущенным пером — линия целиком под толщиной пера, лишний подъём не нужен; в контурах пустоты белые — только перелёт */const st=G._rasGrid&&gap<=(+$('lw').value||2.2)*.75;G.plan.push({pts:[penT,s[0]],down:st,kind:st?'stitch':'fly'});}}G.plan.push({pts:s,down:true,kind:'stroke'});penT=s[s.length-1];}}
 let mn=1e9,mx=-1e9;for(const s of G.plan)for(const p of s.pts){if(p[1]<mn)mn=p[1];if(p[1]>mx)mx=p[1];}for(const b of G.miss){mn=Math.min(mn,b.y);mx=Math.max(mx,b.y+b.h);}
 if(mn<0){const u=-mn;for(const s of G.plan)for(const p of s.pts)p[1]+=u;for(const b of G.miss)b.y+=u;for(const m of G.marks){m.e[1]+=u;m.x[1]+=u;}mx+=u;G.up=u;}else G.up=0;
 G.warn=mx>P.pH+.5?'текст не влезает по высоте ('+Math.round(mx)+' > '+P.pH+' мм)':null;},
 stats(){let s=0,f=0,k=0;for(const x of G.plan){if(x.pts.length<2)continue;if(!x.down)f++;else if(x.kind==='stitch')k++;else s++;}let t='Штрихов: <b>'+s+'</b> · сшивок Z0: <b style="color:var(--acidD)">'+k+'</b> · перелётов Z5: <b style="color:var(--magD)">'+f+'</b> · пропусков: <b>'+G.miss.length+'</b>';if(G.up)t+=' · поднято на '+G.up.toFixed(1)+' мм';if(G.warn)t+=' · <b style="color:var(--red)">⚠ '+G.warn+'</b>';$('stats').innerHTML=t;},
 T(){let x0=0,x1=40,y0=0,y1=25;for(const s of G.plan)for(const p of s.pts){x0=Math.min(x0,p[0]);x1=Math.max(x1,p[0]);y0=Math.min(y0,p[1]);y1=Math.max(y1,p[1]);}for(const b of G.miss){x1=Math.max(x1,b.x+b.w);y1=Math.max(y1,b.y+b.h);y0=Math.min(y0,b.y);}
-const pad=22,W=Math.max(320,cvG.parentElement.clientWidth||540),sx=Math.max(20,x1-x0+10),sy=Math.max(15,y1-y0+10),k=Math.max(3.5,Math.min(20,(W-pad*2)/sx));cvG.width=Math.ceil(Math.max(W,sx*k+pad*2));cvG.height=Math.ceil(Math.max(170,sy*k+pad*2));return{p:v=>[pad+(v[0]-x0)*k,cvG.height-pad-(v[1]-y0)*k],k};},
+const pad=22,W=Math.max(320,cvG.parentElement.clientWidth||540),sx=Math.max(20,x1-x0+10),sy=Math.max(15,y1-y0+10),k=Math.max(3.5,Math.min(20,(W-pad*2)/sx));cvG.width=Math.ceil(Math.max(W,sx*k+pad*2));cvG.height=Math.ceil(Math.max(170,sy*k+pad*2));return{p:v=>[pad+(v[0]-x0)*k,cvG.height-pad-(v[1]-y0)*k],k,rng:{x0,x1,y0,y1}};},
 paint(T,upto,cur){const P=G.params();cg.clearRect(0,0,cvG.width,cvG.height);if($('cGr').checked){const o=T.p([0,0]);cg.save();cg.strokeStyle='#b9cbd8';cg.lineWidth=1;cg.setLineDash([4,4]);cg.beginPath();cg.moveTo(0,o[1]);cg.lineTo(cvG.width,o[1]);cg.moveTo(o[0],0);cg.lineTo(o[0],cvG.height);cg.stroke();cg.restore();}
+/* сетка секторов 5×5 мм (квадраты тетрадки) — только для растрового следа */
+if($('cGr').checked&&G._rasGrid&&T.rng){cg.save();cg.strokeStyle='#c9d9e6';cg.lineWidth=1;cg.beginPath();for(let gx=Math.ceil((T.rng.x0-.1)/5)*5;gx<=T.rng.x1;gx+=5){const a=T.p([gx,T.rng.y0]),b=T.p([gx,T.rng.y1]);cg.moveTo(a[0],a[1]);cg.lineTo(b[0],b[1]);}for(let gy=Math.ceil((T.rng.y0-.1)/5)*5;gy<=T.rng.y1;gy+=5){const a=T.p([T.rng.x0,gy]),b=T.p([T.rng.x1,gy]);cg.moveTo(a[0],a[1]);cg.lineTo(b[0],b[1]);}cg.stroke();cg.restore();}
 const seg=s=>{if(s.pts.length<2)return;cg.save();cg.lineCap='round';cg.lineJoin='round';if(!s.down){if(!$('cFl').checked){cg.restore();return;}cg.strokeStyle='#c026d3';cg.lineWidth=1.2;cg.setLineDash([5,5]);}else if(s.kind==='stitch'){cg.strokeStyle='#12b886';cg.lineWidth=P.lw*.92;}else{cg.strokeStyle='#10202b';cg.lineWidth=P.lw;}cg.beginPath();const a=T.p(s.pts[0]);cg.moveTo(a[0],a[1]);for(let i=1;i<s.pts.length;i++){const b=T.p(s.pts[i]);cg.lineTo(b[0],b[1]);}cg.stroke();cg.restore();};
 for(let i=0;i<upto;i++)seg(G.plan[i]);if(cur)seg(cur);
 if($('cMs').checked)for(const b of G.miss){const a=T.p([b.x,b.y+b.h]),c=T.p([b.x+b.w,b.y]);cg.save();cg.strokeStyle='#e8443a';cg.lineWidth=1.5;cg.strokeRect(a[0],a[1],c[0]-a[0],c[1]-a[1]);cg.fillStyle='#e8443a';cg.font='12px sans-serif';cg.fillText(b.ch,a[0]+4,c[1]-4);cg.restore();}
@@ -1371,7 +1373,7 @@ async function inflateRaw(d){if(typeof DecompressionStream==='undefined')throw n
 async function zipFile(buf,want){const b=new Uint8Array(buf),v=new DataView(buf);let o=0;while(o+30<b.length){if(b[o]!==80||b[o+1]!==75){o++;continue;}if(b[o+2]===3&&b[o+3]===4){const m=v.getUint16(o+8,true),n=v.getUint32(o+18,true),nl=v.getUint16(o+26,true),el=v.getUint16(o+28,true),nm=new TextDecoder().decode(b.subarray(o+30,o+30+nl)),s=o+30+nl+el,d=b.subarray(s,s+n);if(nm===want||nm.endsWith('/'+want))return m===0?d.slice():await inflateRaw(d);o=s+n;continue;}if(b[o+2]===1||b[o+2]===5)break;o++;}return null;}
 function xmlText(x){const dec=s=>s.replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&quot;/g,'"').replace(/&#39;/g,"'").replace(/&#(\d+);/g,(_,n)=>String.fromCharCode(+n)).replace(/&#x([0-9a-f]+);/gi,(_,h)=>String.fromCharCode(parseInt(h,16))).replace(/&amp;/g,'&');const map={};const t=(x.match(/<w:p[\s>][\s\S]*?<\/w:p>/g)||[x]).map(b=>{const jv=(b.match(/<w:jc[^>]*?w:val="([^"]+)"/)||[])[1],al=jv==='center'?'c':(jv==='right'||jv==='end')?'r':null;let l='',m;const re=/<w:t(?:\s[^>]*)?>([\s\S]*?)<\/w:t>|<w:tab\s*\/>|<w:br\s*\/>|<w:cr\s*\/>/g;while((m=re.exec(b)))l+=m[1]!==undefined?dec(m[1]):(m[0].indexOf('<w:tab')===0?' ':'\n');if(al)l.split('\n').forEach(s=>{const k=s.trim();if(k&&!(k in map))map[k]=al;});return l;}).join('\n').replace(/\n{3,}/g,'\n\n').trim();return{t:t,map:map};}
 $('fDoc').onchange=async e=>{const f=e.target.files[0];e.target.value='';if(!f)return;G.st('Читаю «'+f.name+'»…');try{let t='',am={};const n=f.name.toLowerCase();if(n.endsWith('.txt')||(f.type||'').startsWith('text/'))t=await f.text();else{const x=await zipFile(await f.arrayBuffer(),'word/document.xml');if(!x)throw new Error('это не .docx');const r=xmlText(new TextDecoder().decode(x));t=r.t;am=r.map;}t=(t||'').replace(/\r\n?/g,'\n').trim();if(!t){G.st('В файле нет текста');return;}$('txt').value=t;S.alignMap=am;G.invalidate();G.refresh();toast('Загружено · '+t.length+' символов'+(Object.keys(am).length?', выравнивание: '+Object.keys(am).length+' стр.':''));}catch(x){G.st('Ошибка: '+x.message);}};/* ---- 🎵 PDF / картинка: трассировка «как есть» + заливка пустот ---- */
-G.trace=null;G.traceSrc=null;G.traceTok=0;G._traceLbl='';
+G.trace=null;G.traceSrc=null;G.traceTok=0;G._traceLbl='';G._rasGrid=false;
 function loadPdfJs(){return new Promise((res,rej)=>{if(window.pdfjsLib)return res(window.pdfjsLib);const s=document.createElement('script');s.src='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js';s.onload=()=>{window.pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';res(window.pdfjsLib);};s.onerror=()=>rej(new Error('нет интернета — не скачать pdf.js; сохрани скан в PNG'));document.head.appendChild(s);});}
 function otsu(g){const h=new Array(256).fill(0);for(let i=0;i<g.length;i++)h[g[i]]++;const n=g.length;let sum=0;for(let i=0;i<256;i++)sum+=i*h[i];let sB=0,wB=0,mx=0,thr=128;for(let t=0;t<256;t++){wB+=h[t];if(!wB)continue;const wF=n-wB;if(!wF)break;sB+=t*h[t];const mB=sB/wB,mF=(sum-sB)/wF,v=wB*wF*(mB-mF)*(mB-mF);if(v>mx){mx=v;thr=t;}}return thr;}
 function segDist(a,b,p){const vx=b[0]-a[0],vy=b[1]-a[1],wx=p[0]-a[0],wy=p[1]-a[1],L=vx*vx+vy*vy;let t=L?Math.max(0,Math.min(1,(wx*vx+wy*vy)/L)):0;return Math.hypot(a[0]+vx*t-p[0],a[1]+vy*t-p[1]);}
@@ -1453,12 +1455,17 @@ ctx.fillStyle='#fff';ctx.fillRect(0,0,W,H);let y=0;cvs.forEach((cc,i)=>{ctx.draw
 const id=ctx.getImageData(0,0,W,H).data,g=new Uint8Array(W*H);
 for(let i=0,j=0;i<g.length;i++,j+=4)g[i]=(id[j]*77+id[j+1]*150+id[j+2]*29)>>8;
 G.traceSrc={g:g,w:W,h:H,mmPx:mmPx};retrace(lbl);}
-/* ─── РАСТРОВЫЙ СЛЕД: монохром → сетка → прогонки → секторный обход (слева направо) ───
+/* ─── РАСТРОВЫЙ СЛЕД: монохром → сетка → прогонки → секторный обход «ленивый сосед» ───
  * Чернила = всё темнее авто-порога (Otsu). Сетка шагом ~0.75 пера.
  * Ячейка с ≥10% чернил рисуется. Полоса подряд идущих ячеек = один прямой штрих.
- * Порядок штрихов — секторный обход: лист делится на сектора 5×5 ячеек,
- * внутри сектора — жадный «ближайший сосед» (минимизируем подъёмы пера),
- * сектора обходим слева направо, снизу вверх (по строкам).
+ * Порядок штрихов — секторный обход: лист делится на СЕКТОРА 5×5 мм — квадраты
+ * тетрадки в клеточку (шаблон/фон), сетка от нуля листа (0,0). Прогонки режутся
+ * по границам секторов — в секторе только свои куски. Сектор дорисовывается ДО
+ * КОНЦА («ленивый сосед» — жадная ближайшая точка, штрих можно обратить), и только
+ * потом перо едет в следующий сектор: длинных перелётов через лист нет, любой
+ * переход ≤ диагонали сектора плюс зазор до соседнего штриха. Строки секторов
+ * идут снизу вверх; строка начинается с того края, где перо сейчас (при равных —
+ * слева направо), иначе каждый переход на новую строку был бы перелётом через лист.
  * Пустые ноты остаются пустыми, сплошные головки — сплошными. */
 function retraceRaster(lbl){const S0=G.traceSrc;if(!S0)return;const t0=performance.now();
 const th=otsu(S0.g),W=S0.w,H=S0.h,g=S0.g,N=W*H;
@@ -1481,88 +1488,176 @@ while(cx<CX){if(cov[base+cx]>=need){let x1=cx;
 while(x1+1<CX&&cov[base+x1+1]>=need)x1++;
 raw.push([[cx*P*mmPx,ym],[Math.min((x1+1)*P,W)*mmPx,ym]]);cx=x1+1;}else cx++;}}
 
-/* Ограничиваем рисунок полями листа (pW, pH, mL) */
+/* Ограничиваем рисунок полями листа (pW, pH, mL) — масштабируем в A4 вместо обрезки */
 const Pparams=G.params();
 const maxX=Pparams.pW - Pparams.mL;
 const minX=Pparams.mL;
 const maxY=Pparams.pH - Pparams.mL;
 const minY=Pparams.mL;
+const printableW = maxX - minX;
+const printableH = maxY - minY;
 
-/* Отсекаем штрихи за пределами листа и разбиваем пересекающие границу */
+/* Сначала собираем все штрихи, находим bbox, масштабируем если не влезает */
+let allStrokes = raw.slice();
+let minSX=1e9, maxSX=-1e9, minSY=1e9, maxSY=-1e9;
+for(const s of allStrokes){
+  for(const p of s){
+    if(p[0]<minSX)minSX=p[0];
+    if(p[0]>maxSX)maxSX=p[0];
+    if(p[1]<minSY)minSY=p[1];
+    if(p[1]>maxSY)maxSY=p[1];
+  }
+}
+const contentW = maxSX - minSX;
+const contentH = maxSY - minSY;
+let scale = 1;
+if(contentW > printableW || contentH > printableH){
+  scale = Math.min(printableW / contentW, printableH / contentH);
+  // Центрируем после масштабирования
+  const scaledW = contentW * scale;
+  const scaledH = contentH * scale;
+  const offsetX = minX + (printableW - scaledW) / 2 - minSX * scale;
+  const offsetY = minY + (printableH - scaledH) / 2 - minSY * scale;
+  for(const s of allStrokes){
+    for(const p of s){
+      p[0] = p[0] * scale + offsetX;
+      p[1] = p[1] * scale + offsetY;
+    }
+  }
+}
+
+/* Отсекаем штрихи за пределами листа (на случай погрешностей) и разбиваем пересекающие границу */
 const clipped=[];
-for(const s of raw){
+for(const s of allStrokes){
   let x0=s[0][0], y0=s[0][1], x1=s[1][0], y1=s[1][1];
   if(x1<x0){const t=x0;x0=x1;x1=t;const u=y0;y0=y1;y1=u;}
   if(x1<minX || x0>maxX) continue; // полностью вне по X
   if(y0<minY && y1<minY) continue; // полностью вне по Y (y0<=y1 так как горизонтальные)
   if(y0>maxY && y1>maxY) continue;
-  // Клиппинг по X
+  // Клиппинг по X (страховка)
   if(x0<minX){const t=(minX-x0)/(x1-x0);x0=minX;y0=y0+(y1-y0)*t;}
   if(x1>maxX){const t=(maxX-x0)/(x1-x0);x1=maxX;y1=y0+(y1-y0)*t;}
-  // Клиппинг по Y
+  // Клиппинг по Y (страховка)
   if(y0<minY){const t=(minY-y0)/(y1-y0);y0=minY;x0=x0+(x1-x0)*t;}
   if(y1>maxY){const t=(maxY-y0)/(y1-y0);y1=maxY;x1=x0+(x1-x0)*t;}
   if(Math.hypot(x1-x0,y1-y0)>0.05) clipped.push([[x0,y0],[x1,y1]]);
 }
 
-/* СЕКТОРНЫЙ ОБХОД: делим область на секторы 5×5 ячеек сетки */
-const sectorCells=5; // 5×5 ячеек = сектор
-const sectW=Math.ceil(CX/sectorCells);
-const sectH=Math.ceil(CY/sectorCells);
-
-/* Группируем штрихи по секторам */
-const sectors=new Map(); // key: "sx,sy" -> array of strokes
+/* СЕКТОРА — квадраты тетрадки 5×5 мм (шаблон/фон), сетка от нуля листа (0,0).
+ * Сначала режем прогонки по границам секторов: в секторе только свои куски,
+ * концы соседних кусков совпадают точно — при обходе подряд они рисуются
+ * одной непрерывной линией (перо на стыке не поднимается). */
+const SECTOR_MM=5;
+const pieces=[];
 for(const s of clipped){
-  // Центр штриха в ячейках сетки
-  const cxCell=((s[0][0]+s[1][0])/2)/mmPx/P;
-  const cyCell=(CY-1-((s[0][1]+s[1][1])/2)/mmPx/P); // переводим в индекс строки (0 сверху)
-  const sx=Math.floor(cxCell/sectorCells);
-  const sy=Math.floor(cyCell/sectorCells);
+  let x0=s[0][0],x1=s[1][0];const y=s[0][1];
+  if(x1<x0){const t=x0;x0=x1;x1=t;}
+  const k0=Math.floor((x0+1e-9)/SECTOR_MM),k1=Math.floor((x1-1e-9)/SECTOR_MM);
+  for(let k=k0;k<=k1;k++){
+    const a=Math.max(x0,k*SECTOR_MM),b2=Math.min(x1,(k+1)*SECTOR_MM);
+    if(b2-a>1e-4)pieces.push([[a,y],[b2,y]]);
+  }
+}
+/* Группируем куски по секторам (сетка 5 мм от нуля листа) */
+const sectors=new Map(); // key: "sx,sy" -> array of strokes
+for(const p of pieces){
+  const sx=Math.floor(((p[0][0]+p[1][0])/2)/SECTOR_MM);
+  const sy=Math.floor(p[0][1]/SECTOR_MM);
   const key=sx+','+sy;
   let arr=sectors.get(key);
   if(!arr){arr=[];sectors.set(key,arr);}
-  arr.push(s);
+  arr.push(p);
 }
-
-/* Порядок секторов: слева направо, снизу вверх (по строкам) */
-const sectorOrder=[];
-for(let sy=sectH-1;sy>=0;sy--){
-  for(let sx=0;sx<sectW;sx++){
-    if(sectors.has(sx+','+sy)) sectorOrder.push({sx,sy,strokes:sectors.get(sx+','+sy)});
+/* Порядок секторов — «ЛЕНИВЫЙ СОСЕД — БЛИЖАЙШАЯ ТОЧКА», три фазы:
+ * A) жадный выбор сектора: ближайший к перу (расстояние до прямоугольника
+ *    сектора); продолжению текущей строки секторов даётся преимущество
+ *    ROW_BIAS_MM, но не дальше ROW_GAP_MAX_MM — плотные ряды рисуются сплошным
+ *    проходом (обычно слева направо, старт с края, где перо), а разреженный ряд
+ *    не заставляет перо прыгать между своими одинокими кусочками. Первый сектор —
+ *    нижняя строка, слева.
+ * B) or-opt по центрам секторов: «отставший» сектор, за которым в конце пришлось
+ *    бы лететь через лист, переставляется рядом со своими соседями.
+ * C) отрисовка: СЕКТОР ДОРИСЫВАЕТСЯ ДО КОНЦА («ленивый сосед» внутри сектора —
+ *    жадная ближайшая точка, штрих можно обратить) — к следующему сектору не
+ *    приступаем, пока в текущем остался хоть один штрих. */
+const ROW_BIAS_MM=8,ROW_GAP_MAX_MM=15;
+const unfinished=new Map();for(const [k,arr] of sectors)unfinished.set(k,arr);
+const rectDist=(pen,sx,sy)=>{if(!pen)return 0;const dx=Math.max(sx*SECTOR_MM,Math.min(pen[0],(sx+1)*SECTOR_MM))-pen[0],dy=Math.max(sy*SECTOR_MM,Math.min(pen[1],(sy+1)*SECTOR_MM))-pen[1];return Math.hypot(dx,dy);};
+const rowSxs=sy=>{const a=[];for(const k of unfinished.keys()){const kv=k.split(',').map(Number);if(kv[1]===sy)a.push(kv[0]);}return a.sort((x,y)=>x-y);};
+const Gd=(a,b)=>Math.hypot(b[0]-a[0],b[1]-a[1]);
+/* ФАЗА A: жадный порядок секторов. Продолжению строки секторов — преимущество
+ * ROW_BIAS_MM, но не дальше ROW_GAP_MAX_MM (иначе разреженный ряд заставил бы
+ * перо прыгать между одинокими кусочками). Первый сектор — нижняя строка, слева. */
+const seq=[];let penC=null,act=null;
+while(unfinished.size){
+  let pick=null,cont=false;
+  if(act){
+    act.sxs=act.sxs.filter(sx=>unfinished.has(sx+','+act.sy));
+    if(!act.sxs.length)act=null;
   }
+  if(act){
+    const nx=act.dir>0?act.sxs[0]:act.sxs[act.sxs.length-1];
+    let bd=1e18,bs=null;
+    for(const k of unfinished.keys()){const kv=k.split(',').map(Number);const dd=rectDist(penC,kv[0],kv[1]);if(dd<bd){bd=dd;bs=kv;}}
+    if(rectDist(penC,nx,act.sy)<=bd+ROW_BIAS_MM&&rectDist(penC,nx,act.sy)<=ROW_GAP_MAX_MM){pick=[nx,act.sy];cont=true;}
+  }
+  if(!cont){
+    let bd=1e18,bs=null;
+    for(const k of unfinished.keys()){const kv=k.split(',').map(Number);const dd=rectDist(penC,kv[0],kv[1]);if(dd<bd){bd=dd;bs=kv;}}
+    if(!penC){bs=null;for(const k of unfinished.keys()){const kv=k.split(',').map(Number);if(!bs||kv[1]<bs[1]||(kv[1]===bs[1]&&kv[0]<bs[0]))bs=kv;}}
+    pick=bs;
+    const sxs=rowSxs(pick[1]);
+    const lo=sxs[0]*SECTOR_MM,hi=(sxs[sxs.length-1]+1)*SECTOR_MM;
+    act={sy:pick[1],sxs,dir:(!penC||Gd(penC,[lo,pick[1]*SECTOR_MM])<=Gd(penC,[hi,(pick[1]+1)*SECTOR_MM]))?1:-1};
+  }
+  seq.push(pick[0]+','+pick[1]);
+  penC=[pick[0]*SECTOR_MM+SECTOR_MM/2,pick[1]*SECTOR_MM+SECTOR_MM/2];
+  unfinished.delete(pick[0]+','+pick[1]);
 }
-
-/* Внутри сектора — жадный ближайший сосед (минимизируем перелёты) */
+/* ФАЗА B: подтягиваем «отставших». Жадный порядок оставляет редкие сектора на
+ * самый конец — за ними пришлось бы лететь через лист. Or-opt по центрам:
+ * сектор переставляется к своим соседям, если это сокращает путь. */
+const ctr=seq.map(k=>{const kv=k.split(',').map(Number);return[kv[0]*SECTOR_MM+SECTOR_MM/2,kv[1]*SECTOR_MM+SECTOR_MM/2];});
+for(let i=1;i<ctr.length;i++){
+  const ci=ctr[i],key=seq[i];
+  const prevC=ctr[i-1],nextC=i+1<ctr.length?ctr[i+1]:null;
+  const curCost=nextC?Gd(prevC,ci)+Gd(ci,nextC):Gd(prevC,ci);
+  let bestJ=-1,bestGain=0;
+  for(let j=1;j<i;j++){
+    const gain=curCost+Gd(ctr[j-1],ctr[j])-(Gd(ctr[j-1],ci)+Gd(ci,ctr[j]));
+    if(gain>bestGain){bestGain=gain;bestJ=j;}
+  }
+  if(bestJ>0){ctr.splice(i,1);ctr.splice(bestJ,0,ci);seq.splice(i,1);seq.splice(bestJ,0,key);}
+}
+/* ФАЗА C: рисуем по секторам. Внутри сектора — «ленивый сосед»: жадная ближайшая
+ * точка (штрих можно обратить). СЕКТОР ДОРИСЫВАЕТСЯ ДО КОНЦА — к следующему
+ * сектору не приступаем, пока в текущем остался хоть один штрих. */
 const ordered=[];
-let pen=null;
-for(const sect of sectorOrder){
-  let strokes=sect.strokes.slice();
-  // Сортируем штрихи в секторе по X (слева направо) как начальную эвристику
-  strokes.sort((a,b)=>((a[0][0]+a[1][0])-(b[0][0]+b[1][0]))/2);
-  
+let pen=null,maxFly=0;
+for(const key of seq){
+  const strokes=sectors.get(key).slice();
   while(strokes.length){
     let bestIdx=-1,bestDist=1e18,bestRev=false;
     for(let i=0;i<strokes.length;i++){
       const s=strokes[i];
-      if(pen===null){
-        bestIdx=i;bestDist=0;bestRev=false;break;
-      }
-      const d0=G.d(pen,s[0]);
-      const d1=G.d(pen,s[1]);
+      if(pen===null){bestIdx=i;bestDist=0;bestRev=false;break;}
+      const d0=Gd(pen,s[0]);
+      const d1=Gd(pen,s[1]);
       if(d0<bestDist){bestDist=d0;bestIdx=i;bestRev=false;}
       if(d1<bestDist){bestDist=d1;bestIdx=i;bestRev=true;}
     }
     if(bestIdx<0) break;
     let s=strokes.splice(bestIdx,1)[0];
     if(bestRev) s=[s[1],s[0]];
+    if(pen){const fly=Gd(pen,s[0]);if(fly>maxFly)maxFly=fly;}
     ordered.push(s);
     pen=s[1];
   }
 }
 
-G.trace={strokes:ordered,holes:[],regions:[]};G.traceTok++;G._traceLbl=lbl||'растр';
+G.trace={strokes:ordered,holes:[],regions:[]};G.traceTok++;G._traceLbl=lbl||'растр';G._rasGrid=true;
 $('traceRow').style.display='flex';
-$('traceInfo').textContent=G._traceLbl+' · растр: прогонов: '+ordered.length+' · порог авто (Otsu): '+th+' · шаг: '+stepMm.toFixed(2)+' мм · секторов: '+sectorOrder.length+' · '+Math.round(performance.now()-t0)+' мс';
+$('traceInfo').textContent=G._traceLbl+' · растр: прогонов: '+ordered.length+' · порог авто (Otsu): '+th+' · шаг: '+stepMm.toFixed(2)+' мм · секторов 5×5 мм: '+sectors.size+' · макс. перелёт: '+maxFly.toFixed(1)+' мм · '+Math.round(performance.now()-t0)+' мс';
 G.invalidate();G.refresh();}
 function retrace(lbl){const S0=G.traceSrc;if(!S0)return;if($('tMode')&&$('tMode').value==='ras')return retraceRaster(lbl);const t0=performance.now();
 /* двойной порог: «порог» — жирность следа пера, «порог дырок» — где искать пустоты
@@ -1608,7 +1703,7 @@ if(s.length>2)s.push([s[0][0],s[0][1]]);
 ordered.push(s);pen=s[s.length-1];}
 for(const h of holes)for(let i=0;i<ordered.length;i++)if(pInPoly([h.cx,h.cy],ordered[i])){h.idx=i;break;}
 const regions=buildRegions(holes);
-G.trace={strokes:ordered,holes:holes,regions:regions};G.traceTok++;G._traceLbl=lbl||'картинка';
+G.trace={strokes:ordered,holes:holes,regions:regions};G.traceTok++;G._traceLbl=lbl||'картинка';G._rasGrid=false;
 $('traceRow').style.display='flex';$('traceInfo').textContent=G._traceLbl+' · контуров: '+ordered.length+' · пустот: '+holes.length+' · областей заливки: '+regions.length+' · порог следа/дырок: '+th+'/'+thH+' · '+Math.round(performance.now()-t0)+' мс';
 G.invalidate();G.refresh();}
 async function importPdf(f){G.st('Читаю PDF…');
@@ -1643,7 +1738,7 @@ $('tStep').addEventListener('change',()=>{if(G.traceSrc)retrace(G._traceLbl);});
 function rasUI(){const ras=$('tMode').value==='ras';
 for(const id of ['tFill','tHole','tThrH','tThr']){$(id).disabled=ras;$(id).style.opacity=ras?'.4':'1';}}
 rasUI();
-$('tClr').onclick=()=>{G.trace=null;G.traceSrc=null;G.traceTok++;G._traceLbl='';$('traceRow').style.display='none';G.invalidate();G.refresh();toast('Картинка убрана');};
+$('tClr').onclick=()=>{G.trace=null;G.traceSrc=null;G.traceTok++;G._traceLbl='';G._rasGrid=false;$('traceRow').style.display='none';G.invalidate();G.refresh();toast('Картинка убрана');};
 (()=>{const HOLD='!',RES='~',RST='\x18',JC='\x85';
 const clean=s=>{let o=String(s).replace(/\([^)]*\)/g,'');const i=o.indexOf(';');if(i>=0)o=o.slice(0,i);o=o.trim();return!o||o==='%'?'':o;};
 const r3=n=>String(Math.round(+n*1000)/1000);
