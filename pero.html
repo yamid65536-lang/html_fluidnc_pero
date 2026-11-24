@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -143,7 +141,7 @@ button:disabled{opacity:.42;cursor:not-allowed;transform:none;box-shadow:none}
 <div class="btns" id="bgOpt" style="display:none"><button id="bMv">✥ Двигать</button><button id="bMi">−</button><button id="bPl">+</button><button id="bFit">⤢ Вписать</button></div></div>
 <div class="card"><h2>Алфавит</h2>
 <div class="tabs" id="sets"><button class="on" data-s="ru">а–я</button><button data-s="RU">А–Я</button><button data-s="d">0–9</button><button data-s="la">a–z</button><button data-s="LA">A–Z</button><button data-s="ex">знаки</button><button data-s="ok">готовые</button></div>
-<div class="grid" id="alpha"></div><p class="sm" style="margin-top:.42rem">Готово: <b id="nG">0</b> · вариантов: <b id="nV">0</b></p></div>
+<div class="grid" id="alGrid"></div><p class="sm" style="margin-top:.42rem">Готово: <b id="nG">0</b> · вариантов: <b id="nV">0</b></p></div>
 <div class="row" style="margin-bottom:.45rem"><label>Буква<input id="ch" class="ns" style="text-align:center;font-size:1.2rem;font-weight:800" maxlength="2" value="а"></label><label>Шрифт<input id="fn" style="width:7rem" value="my_hand"></label><label>Край<input id="cL" class="ns" type="number" value="40" step="5"></label><label>Клетка<input id="cW" class="ns" type="number" value="160" step="10"></label></div>
 <div class="card" id="vBox" style="display:none"><h2>Варианты «<span id="vCh">а</span>»</h2><div class="vl" id="vList"></div></div>
 <div class="wrap"><canvas id="cv" width="400" height="360"></canvas></div>
@@ -157,7 +155,24 @@ button:disabled{opacity:.42;cursor:not-allowed;transform:none;box-shadow:none}
 <section class="pane" id="p2">
 <div class="card"><h2>Текст</h2><textarea id="txt">Привет ва ВА Ва Ав</textarea>
 <div class="btns"><button id="gD" class="pri">Обновить</button><button id="gP" class="mg">▶ Анимация</button><button id="gS">Стоп</button><label class="btn wr" for="fDoc">📄 Word / TXT</label><input type="file" id="fDoc" class="hide" accept=".docx,.txt,text/plain,application/vnd.openxmlformats-officedocument.wordprocessingml.document"><label class="btn wr" for="fPdf">🎵 PDF / картинка</label><input type="file" id="fPdf" class="hide" accept=".pdf,image/*"></div>
-<div class="btns" id="traceRow" style="display:none;gap:.4rem .55rem;align-items:center"><span id="traceInfo" style="font-size:.84rem;color:var(--mut);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"></span><label>след</label><select id="tMode"><option value="cnt">контуры</option><option value="ras">растр</option></select><label>шаг, мм</label><input type="number" id="tStep" value="0" min="0" step="0.1" style="width:56px" title="0 — авто (0.75 × перо); растр: мельче шаг — мельче детали, но больше штрихов"><label>заливка пустот</label><select id="tFill"><option value="sp">спираль</option><option value="cr">крестик</option><option value="off">нет</option></select><label>пустоты от, мм</label><input type="number" id="tHole" value="3" min="0" step="0.5" style="width:64px"><label>порог</label><input type="number" id="tThr" value="0" min="0" max="255" style="width:64px" title="0 — авто (Otsu)"><label>порог дырок</label><input type="number" id="tThrH" value="0" min="0" max="255" style="width:64px" title="Порог поиска пустот под заливку; 0 — авто (Otsu)"><button id="tClr" class="mg">✕ убрать</button></div></div>
+<div class="btns" id="traceRow" style="display:none;gap:.4rem .55rem;align-items:center">
+<span id="traceInfo" style="font-size:.84rem;color:var(--mut);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"></span>
+<label>след</label><select id="tMode"><option value="cnt">контуры</option><option value="ras">растр</option></select><label>маршрут</label><select id="tSort" title="Порядок обхода штрихов растра для сравнения времени и перелётов"><option value="sec">сектора 5×5 + сосед</option><option value="sec2">сектора 5×5 + 2-opt</option><option value="sec25">сектора 2.5×2.5 + сосед</option><option value="hilb">кривая Гильберта (целиком)</option><option value="nn">ближайший сосед (целиком)</option><option value="scan">змейка по строкам</option></select>
+<label>шаг, мм</label><input type="number" id="tStep" value="0" min="0" step="0.1" style="width:56px" title="0 — авто (0.75 × перо); растр: мельче шаг — мельче детали, но больше штрихов">
+<label>заливка пустот</label><select id="tFill"><option value="sp">спираль</option><option value="cr">крестик</option><option value="off">нет</option></select>
+<label>пустоты от, мм</label><input type="number" id="tHole" value="3" min="0" step="0.5" style="width:64px">
+<label>порог</label><input type="number" id="tThr" value="0" min="0" max="255" style="width:64px" title="0 — авто (Otsu)">
+<label>порог дырок</label><input type="number" id="tThrH" value="0" min="0" max="255" style="width:64px" title="Порог поиска пустот под заливку; 0 — авто (Otsu)">
+<span style="width:100%;height:0"></span>
+<label>масштаб X, %</label><input type="number" id="tSx" value="100" min="5" max="1000" step="5" style="width:62px" title="Растянуть/сжать по ширине, %">
+<label>масштаб Y, %</label><input type="number" id="tSy" value="100" min="5" max="1000" step="5" style="width:62px" title="Растянуть/сжать по высоте, %">
+<label class="chk" style="margin:0 .2rem"><input type="checkbox" id="tLock" checked> пропорц.</label>
+<label>смещ. X, мм</label><input type="number" id="tDx" value="0" step="1" style="width:62px" title="Сдвиг по X в мм">
+<label>смещ. Y, мм</label><input type="number" id="tDy" value="0" step="1" style="width:62px" title="Сдвиг по Y в мм">
+<button id="tSelBtn" type="button" title="Выделить прямоугольную область на превью мышкой/пальцем">⬚ Выделить</button>
+<button id="tCropReset" type="button" title="Сбросить выделение, масштаб и сдвиг">↺ Сброс растра</button>
+<button id="tClr" class="mg">✕ убрать</button>
+</div><div id="routeCmpBox" style="display:none;margin-top:.42rem;padding:.42rem .55rem;border-radius:10px;background:var(--surf2);border:1.5px solid var(--line);font-size:.73rem;line-height:1.45"></div></div>
 <div class="card"><h2>Пульт предпросмотра — всё живое</h2>
 <div class="rail">
 <div class="fld"><label>Высота букв, мм</label><input type="range" id="hMm" min="4" max="60" step="0.5" value="15"><span class="val" id="hMmV">15.0</span></div>
@@ -1153,7 +1168,7 @@ function cL(){return Math.max(0,Number(S.cL)||40);}
 function cR(){return cL()+Math.max(60,Number(S.cW)||160);}
 function clampEE(){for(const p of[S.entry,S.exit]){p.x=Math.max(8,Math.min(cv.width-8,p.x));p.y=Math.max(8,Math.min(cv.height-8,p.y));}}
 function vars(ch){const g=S.glyphs[ch];if(!g)return[];if(g.variants&&g.variants.length)return g.variants;if(g.strokes&&g.strokes.length)return[{advance:g.advance,strokes:g.strokes,entry:g.entry,exit:g.exit}];return[];}
-function renderAlpha(){const el=$('alpha');el.innerHTML='';let list;
+function renderAlpha(){const el=$('alGrid');el.innerHTML='';let list;
 if(S.set==='ok'){list=Object.keys(S.glyphs).filter(c=>c!==' '&&vc(c)).sort((a,b)=>a.localeCompare(b,'ru'));if(!list.length){el.innerHTML='<span style="grid-column:1/-1;font-size:.82rem;color:var(--mut2)">Пока пусто — загрузи JSON или нарисуй букву</span>';return;}}
 else list=[...(SETS[S.set]||SETS.ru)];
 for(const ch of list){const b=document.createElement('button');b.type='button';b.className='g'+(vc(ch)?' dn':'')+(ch===S.ch?' on':'');b.textContent=ch;const n=vc(ch);if(n){const v=document.createElement('span');v.className='v';v.textContent=n;b.appendChild(v);}b.onclick=()=>{stopEd();S.ch=ch;$('ch').value=ch;loadGlyph();};el.appendChild(b);}}
@@ -1329,20 +1344,27 @@ if(G.trace&&G.trace.strokes.length){const TF=$('tFill')?$('tFill').value:'off',T
 const seq=[];let penT=null;if(G.plan.length){const l=G.plan[G.plan.length-1];penT=l.pts[l.pts.length-1];}
 const fillsAt={};if(TF!=='off')for(const r of (G.trace.regions||[])){if(Math.min(r.bw,r.bh)<TH||r.bw/r.bh>2.3||r.bh/r.bw>2.3||r.bw*r.bh>45)continue;const f=TF==='sp'?spiralFillR(r):crossFillR(r);if(f.length){const a=Math.max(0,r.anchor|0);(fillsAt[a]=fillsAt[a]||[]).push(...f);}}
 for(let si=0;si<G.trace.strokes.length;si++){seq.push(G.trace.strokes[si]);if(fillsAt[si])seq.push(...fillsAt[si]);}
-for(const s of seq){if(!s||s.length<2)continue;if(penT){const gap=G.d(penT,s[0]);if(gap>.02){/* растр: стыки соседних кусков чернил короче 0.75×пера сшиваем опущенным пером — линия целиком под толщиной пера, лишний подъём не нужен; в контурах пустоты белые — только перелёт */const st=G._rasGrid&&gap<=(+$('lw').value||2.2)*.75;G.plan.push({pts:[penT,s[0]],down:st,kind:st?'stitch':'fly'});}}G.plan.push({pts:s,down:true,kind:'stroke'});penT=s[s.length-1];}}
+for(const s of seq){if(!s||s.length<2)continue;if(penT){const gap=G.d(penT,s[0]);if(gap>.02){/* растр: стыки соседних кусков чернил короче 0.75×пера сшиваем опущенным пером — линия целиком под толщиной пера, лишний подъём не нужен; в контурах пустоты белые — только перелёт */const st=G._rasGrid&&$('cSt').checked&&gap<=(+$('lw').value||2.2)*.75;G.plan.push({pts:[penT,s[0]],down:st,kind:st?'stitch':'fly'});}}G.plan.push({pts:s,down:true,kind:'stroke'});penT=s[s.length-1];}}
 let mn=1e9,mx=-1e9;for(const s of G.plan)for(const p of s.pts){if(p[1]<mn)mn=p[1];if(p[1]>mx)mx=p[1];}for(const b of G.miss){mn=Math.min(mn,b.y);mx=Math.max(mx,b.y+b.h);}
-if(mn<0){const u=-mn;for(const s of G.plan)for(const p of s.pts)p[1]+=u;for(const b of G.miss)b.y+=u;for(const m of G.marks){m.e[1]+=u;m.x[1]+=u;}mx+=u;G.up=u;}else G.up=0;
+if(mn<0){const u=-mn;/* текст ниже нуля поднимается на лист (G.up — «поднято на N мм»).
+ * Точки плана — ОБЩИЕ ссылки: pen/app/X лежат сразу в нескольких сегментах и в
+ * маркерах E/X. Сдвигать нужно каждую уникальную точку ровно один раз, иначе
+ * концы штрихов и маркеры уезжают на 2-3 подъёма: превью покрывается вертикальным
+ * мусором, а G-code пишет поперёк листа (баг «сломался Word/TXT»). */
+const seen=new Set();for(const s of G.plan)for(const p of s.pts){if(!seen.has(p)){p[1]+=u;seen.add(p);}}for(const b of G.miss)b.y+=u;for(const m of G.marks){if(!seen.has(m.e)){m.e[1]+=u;seen.add(m.e);}if(!seen.has(m.x)){m.x[1]+=u;seen.add(m.x);}}mx+=u;G.up=u;}else G.up=0;
 G.warn=mx>P.pH+.5?'текст не влезает по высоте ('+Math.round(mx)+' > '+P.pH+' мм)':null;},
-stats(){let s=0,f=0,k=0;for(const x of G.plan){if(x.pts.length<2)continue;if(!x.down)f++;else if(x.kind==='stitch')k++;else s++;}let t='Штрихов: <b>'+s+'</b> · сшивок Z0: <b style="color:var(--acidD)">'+k+'</b> · перелётов Z5: <b style="color:var(--magD)">'+f+'</b> · пропусков: <b>'+G.miss.length+'</b>';if(G.up)t+=' · поднято на '+G.up.toFixed(1)+' мм';if(G.warn)t+=' · <b style="color:var(--red)">⚠ '+G.warn+'</b>';$('stats').innerHTML=t;},
+stats(){let s=0,f=0,k=0;for(const x of G.plan){if(x.pts.length<2)continue;if(!x.down)f++;else if(x.kind==='stitch')k++;else s++;}const rm=G.routeMetrics();const mmStr=tSec=>{const sec=Math.max(1,Math.round(tSec));return sec>=60?(Math.floor(sec/60)+' мин '+(sec%60)+' с'):(sec+' с');};
+let t='Штрихов: <b>'+s+'</b> · сшивок Z0: <b style="color:var(--acidD)">'+k+'</b> · перелётов Z5: <b style="color:var(--magD)">'+f+'</b> · пропусков: <b>'+G.miss.length+'</b> · путь: <b>'+Math.round(rm.drawMm)+'</b> / <b>'+Math.round(rm.flyMm)+' мм</b> · подъёмов: <b>'+rm.lifts+'</b> · ~<b>'+mmStr(rm.estSec)+'</b>';if(G.up)t+=' · поднято на '+G.up.toFixed(1)+' мм';if(G.warn)t+=' · <b style="color:var(--red)">⚠ '+G.warn+'</b>';$('stats').innerHTML=t;},
 T(){let x0=0,x1=40,y0=0,y1=25;for(const s of G.plan)for(const p of s.pts){x0=Math.min(x0,p[0]);x1=Math.max(x1,p[0]);y0=Math.min(y0,p[1]);y1=Math.max(y1,p[1]);}for(const b of G.miss){x1=Math.max(x1,b.x+b.w);y1=Math.max(y1,b.y+b.h);y0=Math.min(y0,b.y);}
-const pad=22,W=Math.max(320,cvG.parentElement.clientWidth||540),sx=Math.max(20,x1-x0+10),sy=Math.max(15,y1-y0+10),k=Math.max(3.5,Math.min(20,(W-pad*2)/sx));cvG.width=Math.ceil(Math.max(W,sx*k+pad*2));cvG.height=Math.ceil(Math.max(170,sy*k+pad*2));return{p:v=>[pad+(v[0]-x0)*k,cvG.height-pad-(v[1]-y0)*k],k,rng:{x0,x1,y0,y1}};},
+const pad=22,W=Math.max(320,cvG.parentElement.clientWidth||540),sx=Math.max(20,x1-x0+10),sy=Math.max(15,y1-y0+10),k=Math.max(3.5,Math.min(20,(W-pad*2)/sx));cvG.width=Math.ceil(Math.max(W,sx*k+pad*2));cvG.height=Math.ceil(Math.max(170,sy*k+pad*2));const resT={p:v=>[pad+(v[0]-x0)*k,cvG.height-pad-(v[1]-y0)*k],inv:px=>[x0+(px[0]-pad)/k,y0+(cvG.height-pad-px[1])/k],k,rng:{x0,x1,y0,y1}};G._lastT=resT;return resT;},
 paint(T,upto,cur){const P=G.params();cg.clearRect(0,0,cvG.width,cvG.height);if($('cGr').checked){const o=T.p([0,0]);cg.save();cg.strokeStyle='#b9cbd8';cg.lineWidth=1;cg.setLineDash([4,4]);cg.beginPath();cg.moveTo(0,o[1]);cg.lineTo(cvG.width,o[1]);cg.moveTo(o[0],0);cg.lineTo(o[0],cvG.height);cg.stroke();cg.restore();}
 /* сетка секторов 5×5 мм (квадраты тетрадки) — только для растрового следа */
-if($('cGr').checked&&G._rasGrid&&T.rng){cg.save();cg.strokeStyle='#c9d9e6';cg.lineWidth=1;cg.beginPath();for(let gx=Math.ceil((T.rng.x0-.1)/5)*5;gx<=T.rng.x1;gx+=5){const a=T.p([gx,T.rng.y0]),b=T.p([gx,T.rng.y1]);cg.moveTo(a[0],a[1]);cg.lineTo(b[0],b[1]);}for(let gy=Math.ceil((T.rng.y0-.1)/5)*5;gy<=T.rng.y1;gy+=5){const a=T.p([T.rng.x0,gy]),b=T.p([T.rng.x1,gy]);cg.moveTo(a[0],a[1]);cg.lineTo(b[0],b[1]);}cg.stroke();cg.restore();}
+if($('cGr').checked&&G._rasSec&&T.rng){cg.save();cg.strokeStyle='#c9d9e6';cg.lineWidth=1;cg.beginPath();for(let gx=Math.ceil((T.rng.x0-.1)/G._rasSec)*G._rasSec;gx<=T.rng.x1;gx+=G._rasSec){const a=T.p([gx,T.rng.y0]),b=T.p([gx,T.rng.y1]);cg.moveTo(a[0],a[1]);cg.lineTo(b[0],b[1]);}for(let gy=Math.ceil((T.rng.y0-.1)/G._rasSec)*G._rasSec;gy<=T.rng.y1;gy+=G._rasSec){const a=T.p([T.rng.x0,gy]),b=T.p([T.rng.x1,gy]);cg.moveTo(a[0],a[1]);cg.lineTo(b[0],b[1]);}cg.stroke();cg.restore();}
 const seg=s=>{if(s.pts.length<2)return;cg.save();cg.lineCap='round';cg.lineJoin='round';if(!s.down){if(!$('cFl').checked){cg.restore();return;}cg.strokeStyle='#c026d3';cg.lineWidth=1.2;cg.setLineDash([5,5]);}else if(s.kind==='stitch'){cg.strokeStyle='#12b886';cg.lineWidth=P.lw*.92;}else{cg.strokeStyle='#10202b';cg.lineWidth=P.lw;}cg.beginPath();const a=T.p(s.pts[0]);cg.moveTo(a[0],a[1]);for(let i=1;i<s.pts.length;i++){const b=T.p(s.pts[i]);cg.lineTo(b[0],b[1]);}cg.stroke();cg.restore();};
 for(let i=0;i<upto;i++)seg(G.plan[i]);if(cur)seg(cur);
 if($('cMs').checked)for(const b of G.miss){const a=T.p([b.x,b.y+b.h]),c=T.p([b.x+b.w,b.y]);cg.save();cg.strokeStyle='#e8443a';cg.lineWidth=1.5;cg.strokeRect(a[0],a[1],c[0]-a[0],c[1]-a[1]);cg.fillStyle='#e8443a';cg.font='12px sans-serif';cg.fillText(b.ch,a[0]+4,c[1]-4);cg.restore();}
-if($('cMk').checked&&!G.anim)for(const m of G.marks)for(const[q,c]of[[m.e,'#12b886'],[m.x,'#f59f00']]){const p=T.p(q);cg.beginPath();cg.arc(p[0],p[1],3.4,0,7);cg.fillStyle=c;cg.fill();cg.lineWidth=1.2;cg.strokeStyle='#fff';cg.stroke();}},
+if($('cMk').checked&&!G.anim)for(const m of G.marks)for(const[q,c]of[[m.e,'#12b886'],[m.x,'#f59f00']]){const p=T.p(q);cg.beginPath();cg.arc(p[0],p[1],3.4,0,7);cg.fillStyle=c;cg.fill();cg.lineWidth=1.2;cg.strokeStyle='#fff';cg.stroke();}
+if(G.tXform&&G.tXform.selDrag){const d=G.tXform.selDrag,a=T.p([d.x0,d.y0]),b=T.p([d.x1,d.y1]);cg.save();cg.strokeStyle='#1f6feb';cg.fillStyle='rgba(31,111,235,0.12)';cg.lineWidth=1.8;cg.setLineDash([5,4]);const rx=Math.min(a[0],b[0]),ry=Math.min(a[1],b[1]),rw=Math.abs(b[0]-a[0]),rh=Math.abs(b[1]-a[1]);cg.fillRect(rx,ry,rw,rh);cg.strokeRect(rx,ry,rw,rh);cg.restore();}},
 draw(){G.stop();G.build();const T=G.T();G.paint(T,G.plan.length,null);G.stats();},
 len(p){let L=0;for(let i=1;i<p.length;i++)L+=G.d(p[i-1],p[i]);return Math.max(L,.01);},
 at(p,t){let d=t*G.len(p);for(let i=1;i<p.length;i++){const s=G.d(p[i-1],p[i]);if(d<=s){const u=s<1e-6?0:d/s;return[p[i-1][0]+(p[i][0]-p[i-1][0])*u,p[i-1][1]+(p[i][1]-p[i-1][1])*u];}d-=s;}return p[p.length-1];},
@@ -1356,12 +1378,13 @@ const L=['; FluidNC pen plotter','; Font: '+String(S.name).slice(0,40),'; Text: 
 let down=false,X=null,Y=null;const up=()=>{if(down){L.push('G1 Z'+zU.toFixed(3)+' F'+fZ);down=false;}};const dn=()=>{if(!down){L.push('G1 Z'+zD.toFixed(3)+' F'+fZ);down=true;}};const go=(x,y,r)=>{if(X!==null&&G.d([X,Y],[x,y])<=.002)return;L.push((r?'G0':'G1')+' X'+x.toFixed(3)+' Y'+y.toFixed(3)+(r?'':' F'+fXY));X=x;Y=y;};let first=true;
 for(const s of G.plan){if(s.pts.length<2)continue;if(!s.down){up();const e=s.pts[s.pts.length-1];go(e[0],e[1],true);}else{if(first&&X===null){up();go(s.pts[0][0],s.pts[0][1],true);}dn();for(let i=1;i<s.pts.length;i++)go(s.pts[i][0],s.pts[i][1],false);}first=false;}
 up();L.push('G0 X0.000 Y0.000','M2');$('out').value=L.join('\n');G.st('G-code: '+L.length+' строк');},
+routeMetrics(){let drawMm=0,flyMm=0,lifts=0,prevDown=false;for(const s of G.plan){if(s.pts.length<2)continue;const segLen=G.len(s.pts);if(s.down){drawMm+=segLen;}else{flyMm+=segLen;}if(prevDown&&!s.down)lifts++;prevDown=s.down;}const fXY=Math.max(10,+$('fXY').value||1500),estSec=(drawMm/Math.max(1,fXY/60))+(flyMm/Math.max(1,(fXY*2)/60))+(lifts*0.25);return{drawMm,flyMm,lifts,estSec};},
 refresh(){G.draw();G.gcode();}};
 function syncVals(){$('hMmV').textContent=(+$('hMm').value).toFixed(1);$('trkV').textContent=(+$('trk').value).toFixed(2);$('btV').textContent=(+$('bt').value).toFixed(1);$('spdV').textContent=$('spd').value;$('lwV').textContent=(+$('lw').value).toFixed(1);}
 ['hMm','trk','bt','spd','lw'].forEach(id=>$(id).addEventListener('input',()=>{syncVals();G.invalidate();if(id==='spd'||id==='lw'){if(!G.anim)G.draw();}else G.refresh();}));
-['txt','pW','pH','mL','zD','zU','fXY','fZ','seed'].forEach(id=>$(id).addEventListener('input',()=>{G.invalidate();G.refresh();}));
+['txt','pW','pH','mL','zD','zU','fXY','fZ','seed'].forEach(id=>$(id).addEventListener('input',()=>{if(G.traceSrc&&$('tMode')&&$('tMode').value==='ras'&&(id==='fXY'||id==='fZ'||id==='zU'||id==='zD')){retrace(G._traceLbl);return;}G.invalidate();G.refresh();}));
 ['cSt','cEE','cGr','cMk','cFl','cMs'].forEach(id=>$(id).addEventListener('change',()=>{G.invalidate();G.refresh();}));
-$('gD').onclick=()=>{G.invalidate();G._rand=false;G.refresh();toast('Вид обновлён');};$('gP').onclick=()=>G.play();$('gS').onclick=()=>{G.stop();G.draw();};
+$('gD').onclick=()=>{if(G.traceSrc){retrace(G._traceLbl);}else{G.invalidate();G._rand=false;G.refresh();}toast('Вид и G-code обновлены');};$('gP').onclick=()=>G.play();$('gS').onclick=()=>{G.stop();G.draw();};
 $('gG').onclick=()=>{G.invalidate();G.gcode();toast('G-code готов');};$('gR').onclick=()=>{$('seed').value='';G._rand=false;G.invalidate();G.refresh();toast('Новая комбинация вариантов');};
 $('gX').onclick=()=>{const d={hMm:15,trk:0,pW:190,pH:297,mL:10,bt:10,zD:0,zU:5,fXY:1500,fZ:800,spd:30,lw:2.2};for(const k in d)$(k).value=d[k];$('seed').value='';['cSt','cEE','cGr','cMk','cFl','cMs'].forEach(i=>$(i).checked=true);syncVals();G._rand=false;G.invalidate();G.refresh();toast('Параметры сброшены');};
 $('gDl').onclick=()=>{const c=$('out').value;if(!hasCode(c)){G.st('Сначала сгенерируй G-code');return;}dl(new Blob([c],{type:'text/plain'}),S.name+'.gcode');toast('G-code скачан');};
@@ -1372,10 +1395,19 @@ $('zip').onclick=exportZip;$('gZ').onclick=exportZip;
 async function inflateRaw(d){if(typeof DecompressionStream==='undefined')throw new Error('браузер без DecompressionStream');return new Uint8Array(await new Response(new Blob([d]).stream().pipeThrough(new DecompressionStream('deflate-raw'))).arrayBuffer());}
 async function zipFile(buf,want){const b=new Uint8Array(buf),v=new DataView(buf);let o=0;while(o+30<b.length){if(b[o]!==80||b[o+1]!==75){o++;continue;}if(b[o+2]===3&&b[o+3]===4){const m=v.getUint16(o+8,true),n=v.getUint32(o+18,true),nl=v.getUint16(o+26,true),el=v.getUint16(o+28,true),nm=new TextDecoder().decode(b.subarray(o+30,o+30+nl)),s=o+30+nl+el,d=b.subarray(s,s+n);if(nm===want||nm.endsWith('/'+want))return m===0?d.slice():await inflateRaw(d);o=s+n;continue;}if(b[o+2]===1||b[o+2]===5)break;o++;}return null;}
 function xmlText(x){const dec=s=>s.replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&quot;/g,'"').replace(/&#39;/g,"'").replace(/&#(\d+);/g,(_,n)=>String.fromCharCode(+n)).replace(/&#x([0-9a-f]+);/gi,(_,h)=>String.fromCharCode(parseInt(h,16))).replace(/&amp;/g,'&');const map={};const t=(x.match(/<w:p[\s>][\s\S]*?<\/w:p>/g)||[x]).map(b=>{const jv=(b.match(/<w:jc[^>]*?w:val="([^"]+)"/)||[])[1],al=jv==='center'?'c':(jv==='right'||jv==='end')?'r':null;let l='',m;const re=/<w:t(?:\s[^>]*)?>([\s\S]*?)<\/w:t>|<w:tab\s*\/>|<w:br\s*\/>|<w:cr\s*\/>/g;while((m=re.exec(b)))l+=m[1]!==undefined?dec(m[1]):(m[0].indexOf('<w:tab')===0?' ':'\n');if(al)l.split('\n').forEach(s=>{const k=s.trim();if(k&&!(k in map))map[k]=al;});return l;}).join('\n').replace(/\n{3,}/g,'\n\n').trim();return{t:t,map:map};}
-$('fDoc').onchange=async e=>{const f=e.target.files[0];e.target.value='';if(!f)return;G.st('Читаю «'+f.name+'»…');try{let t='',am={};const n=f.name.toLowerCase();if(n.endsWith('.txt')||(f.type||'').startsWith('text/'))t=await f.text();else{const x=await zipFile(await f.arrayBuffer(),'word/document.xml');if(!x)throw new Error('это не .docx');const r=xmlText(new TextDecoder().decode(x));t=r.t;am=r.map;}t=(t||'').replace(/\r\n?/g,'\n').trim();if(!t){G.st('В файле нет текста');return;}$('txt').value=t;S.alignMap=am;G.invalidate();G.refresh();toast('Загружено · '+t.length+' символов'+(Object.keys(am).length?', выравнивание: '+Object.keys(am).length+' стр.':''));}catch(x){G.st('Ошибка: '+x.message);}};/* ---- 🎵 PDF / картинка: трассировка «как есть» + заливка пустот ---- */
+$('fDoc').onchange=async e=>{const f=e.target.files[0];e.target.value='';if(!f)return;G.st('Читаю «'+f.name+'»…');try{let t='',am={};const n=f.name.toLowerCase();if(n.endsWith('.txt')||(f.type||'').startsWith('text/'))t=await f.text();else{const x=await zipFile(await f.arrayBuffer(),'word/document.xml');if(!x)throw new Error('это не .docx');const r=xmlText(new TextDecoder().decode(x));t=r.t;am=r.map;}t=(t||'').replace(/\r\n?/g,'\n').replace(/(?:\n[ \t]*){2,}/g,'\n\n').trim();if(!t){G.st('В файле нет текста');return;}$('txt').value=t;S.alignMap=am;G.invalidate();G.refresh();toast('Загружено · '+t.length+' символов'+(Object.keys(am).length?', выравнивание: '+Object.keys(am).length+' стр.':''));}catch(x){G.st('Ошибка: '+x.message);}};/* ---- 🎵 PDF / картинка: трассировка «как есть» + заливка пустот ---- */
 G.trace=null;G.traceSrc=null;G.traceTok=0;G._traceLbl='';G._rasGrid=false;
+G.tXform={sx:100,sy:100,dx:0,dy:0,crop:null,selecting:false,selDrag:null};
+function resetTraceXform(){
+  G.tXform={sx:100,sy:100,dx:0,dy:0,crop:null,selecting:false,selDrag:null};
+  if($('tSx'))$('tSx').value=100;
+  if($('tSy'))$('tSy').value=100;
+  if($('tDx'))$('tDx').value=0;
+  if($('tDy'))$('tDy').value=0;
+  if($('tSelBtn'))$('tSelBtn').classList.remove('ton');
+}
 function loadPdfJs(){return new Promise((res,rej)=>{if(window.pdfjsLib)return res(window.pdfjsLib);const s=document.createElement('script');s.src='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js';s.onload=()=>{window.pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';res(window.pdfjsLib);};s.onerror=()=>rej(new Error('нет интернета — не скачать pdf.js; сохрани скан в PNG'));document.head.appendChild(s);});}
-function otsu(g){const h=new Array(256).fill(0);for(let i=0;i<g.length;i++)h[g[i]]++;const n=g.length;let sum=0;for(let i=0;i<256;i++)sum+=i*h[i];let sB=0,wB=0,mx=0,thr=128;for(let t=0;t<256;t++){wB+=h[t];if(!wB)continue;const wF=n-wB;if(!wF)break;sB+=t*h[t];const mB=sB/wB,mF=(sum-sB)/wF,v=wB*wF*(mB-mF)*(mB-mF);if(v>mx){mx=v;thr=t;}}return thr;}
+function otsu(g){const h=new Array(256).fill(0);for(let i=0;i<g.length;i++)h[g[i]]++;const n=g.length;let sum=0;for(let i=0;i<256;i++)sum+=i*h[i];let sB=0,wB=0,mx=0,thr=128;for(let t=0;t<256;t++){wB+=h[t];if(!wB)continue;const wF=n-wB;if(!wF)break;sB+=t*h[t];const mB=sB/wB,mF=(sum-sB)/wF,v=wB*wF*(mB-mF)*(mB-mF);if(v>=mx){mx=v;thr=t;}}return thr;}
 function segDist(a,b,p){const vx=b[0]-a[0],vy=b[1]-a[1],wx=p[0]-a[0],wy=p[1]-a[1],L=vx*vx+vy*vy;let t=L?Math.max(0,Math.min(1,(wx*vx+wy*vy)/L)):0;return Math.hypot(a[0]+vx*t-p[0],a[1]+vy*t-p[1]);}
 function dpSimp(pts,eps){const n=pts.length;if(n<5)return pts.map(p=>[p[0],p[1]]);const keep=new Uint8Array(n);keep[0]=keep[n-1]=1;const st=[[0,n-1]];while(st.length){const sg=st.pop(),a=sg[0],b2=sg[1];if(b2-a<2)continue;const A=pts[a],B=pts[b2];let mx=-1,mi=-1;for(let i=a+1;i<b2;i++){const d=segDist(A,B,pts[i]);if(d>mx){mx=d;mi=i;}}if(mx>eps){keep[mi]=1;st.push([a,mi],[mi,b2]);}}const o=[];for(let i=0;i<n;i++)if(keep[i])o.push([pts[i][0],pts[i][1]]);return o;}
 function traceLoops(b,w,h){const W=w+1,DX={1:1,2:0,3:-1,4:0},DY={1:0,2:1,3:0,4:-1},NXT={1:[2,1,4,3],2:[3,2,1,4],3:[4,3,2,1],4:[1,4,3,2]};
@@ -1466,7 +1498,85 @@ G.traceSrc={g:g,w:W,h:H,mmPx:mmPx};retrace(lbl);}
  * переход ≤ диагонали сектора плюс зазор до соседнего штриха. Строки секторов
  * идут снизу вверх; строка начинается с того края, где перо сейчас (при равных —
  * слева направо), иначе каждый переход на новую строку был бы перелётом через лист.
+ * «Сектора + 2-opt»: поверх секторного порядка кусок маршрута разворачивается,
+ * если это сокращает холостой ход (окно и число проходов ограничены).
+ * «Сектора 2.5×2.5» — та же логика на мелкой сетке: меньше холостых в плотных местах.
+ * Сшивка стыков (проезд не отрывая пера) при печати доступна любому растровому
+ * маршруту и управляется галкой «сшивка».
  * Пустые ноты остаются пустыми, сплошные головки — сплошными. */
+function applyTraceXform(strokes, holes, regions){
+  const xf = G.tXform || {sx:100,sy:100,dx:0,dy:0,crop:null};
+  const sx = Math.max(0.05, (+xf.sx||100)/100);
+  const sy = Math.max(0.05, (+xf.sy||100)/100);
+  const dx = +xf.dx||0;
+  const dy = +xf.dy||0;
+  const cr = xf.crop; // {x0, y0, x1, y1} в координатах ДО трансформации (или уже в мм растра)
+  // Находим текущий центр или нижний левый угол для стабильного масштабирования
+  let bx0=1e9, by0=1e9, bx1=-1e9, by1=-1e9;
+  for(const s of strokes) for(const p of s){
+    if(p[0]<bx0)bx0=p[0]; if(p[0]>bx1)bx1=p[0];
+    if(p[1]<by0)by0=p[1]; if(p[1]>by1)by1=p[1];
+  }
+  if(bx0>bx1){bx0=0;by0=0;}
+  // Если задан crop — сначала фильтруем/обрезаем отрезки по прямоугольнику crop
+  let outStrokes = strokes;
+  if(cr){
+    const cx0=Math.min(cr.x0,cr.x1), cx1=Math.max(cr.x0,cr.x1);
+    const cy0=Math.min(cr.y0,cr.y1), cy1=Math.max(cr.y0,cr.y1);
+    const clipped = [];
+    for(const s of outStrokes){
+      if(s.length===2){
+        // Отрезок (растр): клиппинг по прямоугольнику
+        let x0=s[0][0],y0=s[0][1],x1=s[1][0],y1=s[1][1];
+        if(Math.max(x0,x1)<cx0||Math.min(x0,x1)>cx1||Math.max(y0,y1)<cy0||Math.min(y0,y1)>cy1) continue;
+        if(x1!==x0){
+          if(x0<cx0){const t=(cx0-x0)/(x1-x0);x0=cx0;y0+=t*(y1-y0);}
+          if(x0>cx1){const t=(cx1-x0)/(x1-x0);x0=cx1;y0+=t*(y1-y0);}
+          if(x1<cx0){const t=(cx0-x1)/(x0-x1);x1=cx0;y1+=t*(y0-y1);}
+          if(x1>cx1){const t=(cx1-x1)/(x0-x1);x1=cx1;y1+=t*(y0-y1);}
+        }
+        if(y1!==y0){
+          if(y0<cy0){const t=(cy0-y0)/(y1-y0);y0=cy0;x0+=t*(x1-x0);}
+          if(y0>cy1){const t=(cy1-y0)/(y1-y0);y0=cy1;x0+=t*(x1-x0);}
+          if(y1<cy0){const t=(cy0-y1)/(y0-y1);y1=cy0;x1+=t*(x0-x1);}
+          if(y1>cy1){const t=(cy1-y1)/(y0-y1);y1=cy1;x1+=t*(x0-x1);}
+        }
+        if(Math.hypot(x1-x0,y1-y0)>0.05) clipped.push([[x0,y0],[x1,y1]]);
+      } else {
+        // Полилиния (контуры): оставляем куски, попадающие внутрь crop
+        let run=[];
+        for(const p of s){
+          if(p[0]>=cx0&&p[0]<=cx1&&p[1]>=cy0&&p[1]<=cy1) run.push([p[0],p[1]]);
+          else { if(run.length>1) clipped.push(run); run=[]; }
+        }
+        if(run.length>1) clipped.push(run);
+      }
+    }
+    outStrokes = clipped;
+    if(holes) holes = holes.filter(h=>h.cx>=cx0&&h.cx<=cx1&&h.cy>=cy0&&h.cy<=cy1);
+    if(regions) regions = regions.filter(r=>r.cx>=cx0&&r.cx<=cx1&&r.cy>=cy0&&r.cy<=cy1);
+    bx0=cx0; by0=cy0;
+  }
+  const mapPt = p => [bx0 + (p[0]-bx0)*sx + dx, by0 + (p[1]-by0)*sy + dy];
+  const trStrokes = outStrokes.map(s => s.map(mapPt));
+  const trHoles = (holes||[]).map(h => ({
+    ...h,
+    pts: h.pts.map(mapPt),
+    w: h.w*sx, h: h.h*sy,
+    cx: bx0+(h.cx-bx0)*sx+dx, cy: by0+(h.cy-by0)*sy+dy,
+    bx0: bx0+(h.bx0-bx0)*sx+dx, bx1: bx0+(h.bx1-bx0)*sx+dx,
+    by0: by0+(h.by0-by0)*sy+dy, by1: by0+(h.by1-by0)*sy+dy
+  }));
+  const trRegions = (regions||[]).map(r => ({
+    ...r,
+    parts: r.parts.map(ptArr => ptArr.map(mapPt)),
+    bands: (r.bands||[]).map(b => [bx0+(b[0]-bx0)*sx+dx, by0+(b[1]-by0)*sy+dy, bx0+(b[2]-bx0)*sx+dx, by0+(b[3]-by0)*sy+dy]),
+    bw: r.bw*sx, bh: r.bh*sy,
+    cx: bx0+(r.cx-bx0)*sx+dx, cy: by0+(r.cy-by0)*sy+dy
+  }));
+  return {strokes: trStrokes, holes: trHoles, regions: trRegions};
+}
+
 function retraceRaster(lbl){const S0=G.traceSrc;if(!S0)return;const t0=performance.now();
 const th=otsu(S0.g),W=S0.w,H=S0.h,g=S0.g,N=W*H;
 let b=new Uint8Array(N);for(let i=0;i<N;i++)if(g[i]<th)b[i]=1;
@@ -1508,10 +1618,10 @@ for(const s of allStrokes){
     if(p[1]>maxSY)maxSY=p[1];
   }
 }
-const contentW = maxSX - minSX;
-const contentH = maxSY - minSY;
+const contentW = Math.max(0.001, maxSX - minSX);
+const contentH = Math.max(0.001, maxSY - minSY);
 let scale = 1;
-if(contentW > printableW || contentH > printableH){
+if(printableW > 1 && printableH > 1 && (contentW > printableW || contentH > printableH)){
   scale = Math.min(printableW / contentW, printableH / contentH);
   // Центрируем после масштабирования
   const scaledW = contentW * scale;
@@ -1543,121 +1653,331 @@ for(const s of allStrokes){
   if(Math.hypot(x1-x0,y1-y0)>0.05) clipped.push([[x0,y0],[x1,y1]]);
 }
 
-/* СЕКТОРА — квадраты тетрадки 5×5 мм (шаблон/фон), сетка от нуля листа (0,0).
- * Сначала режем прогонки по границам секторов: в секторе только свои куски,
- * концы соседних кусков совпадают точно — при обходе подряд они рисуются
- * одной непрерывной линией (перо на стыке не поднимается). */
-const SECTOR_MM=5;
-const pieces=[];
-for(const s of clipped){
-  let x0=s[0][0],x1=s[1][0];const y=s[0][1];
-  if(x1<x0){const t=x0;x0=x1;x1=t;}
-  const k0=Math.floor((x0+1e-9)/SECTOR_MM),k1=Math.floor((x1-1e-9)/SECTOR_MM);
-  for(let k=k0;k<=k1;k++){
-    const a=Math.max(x0,k*SECTOR_MM),b2=Math.min(x1,(k+1)*SECTOR_MM);
-    if(b2-a>1e-4)pieces.push([[a,y],[b2,y]]);
-  }
-}
-/* Группируем куски по секторам (сетка 5 мм от нуля листа) */
-const sectors=new Map(); // key: "sx,sy" -> array of strokes
-for(const p of pieces){
-  const sx=Math.floor(((p[0][0]+p[1][0])/2)/SECTOR_MM);
-  const sy=Math.floor(p[0][1]/SECTOR_MM);
-  const key=sx+','+sy;
-  let arr=sectors.get(key);
-  if(!arr){arr=[];sectors.set(key,arr);}
-  arr.push(p);
-}
-/* Порядок секторов — «ЛЕНИВЫЙ СОСЕД — БЛИЖАЙШАЯ ТОЧКА», три фазы:
- * A) жадный выбор сектора: ближайший к перу (расстояние до прямоугольника
- *    сектора); продолжению текущей строки секторов даётся преимущество
- *    ROW_BIAS_MM, но не дальше ROW_GAP_MAX_MM — плотные ряды рисуются сплошным
- *    проходом (обычно слева направо, старт с края, где перо), а разреженный ряд
- *    не заставляет перо прыгать между своими одинокими кусочками. Первый сектор —
- *    нижняя строка, слева.
- * B) or-opt по центрам секторов: «отставший» сектор, за которым в конце пришлось
- *    бы лететь через лист, переставляется рядом со своими соседями.
- * C) отрисовка: СЕКТОР ДОРИСЫВАЕТСЯ ДО КОНЦА («ленивый сосед» внутри сектора —
- *    жадная ближайшая точка, штрих можно обратить) — к следующему сектору не
- *    приступаем, пока в текущем остался хоть один штрих. */
-const ROW_BIAS_MM=8,ROW_GAP_MAX_MM=15;
-const unfinished=new Map();for(const [k,arr] of sectors)unfinished.set(k,arr);
-const rectDist=(pen,sx,sy)=>{if(!pen)return 0;const dx=Math.max(sx*SECTOR_MM,Math.min(pen[0],(sx+1)*SECTOR_MM))-pen[0],dy=Math.max(sy*SECTOR_MM,Math.min(pen[1],(sy+1)*SECTOR_MM))-pen[1];return Math.hypot(dx,dy);};
-const rowSxs=sy=>{const a=[];for(const k of unfinished.keys()){const kv=k.split(',').map(Number);if(kv[1]===sy)a.push(kv[0]);}return a.sort((x,y)=>x-y);};
 const Gd=(a,b)=>Math.hypot(b[0]-a[0],b[1]-a[1]);
-/* ФАЗА A: жадный порядок секторов. Продолжению строки секторов — преимущество
- * ROW_BIAS_MM, но не дальше ROW_GAP_MAX_MM (иначе разреженный ряд заставил бы
- * перо прыгать между одинокими кусочками). Первый сектор — нижняя строка, слева. */
-const seq=[];let penC=null,act=null;
-while(unfinished.size){
-  let pick=null,cont=false;
-  if(act){
-    act.sxs=act.sxs.filter(sx=>unfinished.has(sx+','+act.sy));
-    if(!act.sxs.length)act=null;
-  }
-  if(act){
-    const nx=act.dir>0?act.sxs[0]:act.sxs[act.sxs.length-1];
-    let bd=1e18,bs=null;
-    for(const k of unfinished.keys()){const kv=k.split(',').map(Number);const dd=rectDist(penC,kv[0],kv[1]);if(dd<bd){bd=dd;bs=kv;}}
-    if(rectDist(penC,nx,act.sy)<=bd+ROW_BIAS_MM&&rectDist(penC,nx,act.sy)<=ROW_GAP_MAX_MM){pick=[nx,act.sy];cont=true;}
-  }
-  if(!cont){
-    let bd=1e18,bs=null;
-    for(const k of unfinished.keys()){const kv=k.split(',').map(Number);const dd=rectDist(penC,kv[0],kv[1]);if(dd<bd){bd=dd;bs=kv;}}
-    if(!penC){bs=null;for(const k of unfinished.keys()){const kv=k.split(',').map(Number);if(!bs||kv[1]<bs[1]||(kv[1]===bs[1]&&kv[0]<bs[0]))bs=kv;}}
-    pick=bs;
-    const sxs=rowSxs(pick[1]);
-    const lo=sxs[0]*SECTOR_MM,hi=(sxs[sxs.length-1]+1)*SECTOR_MM;
-    act={sy:pick[1],sxs,dir:(!penC||Gd(penC,[lo,pick[1]*SECTOR_MM])<=Gd(penC,[hi,(pick[1]+1)*SECTOR_MM]))?1:-1};
-  }
-  seq.push(pick[0]+','+pick[1]);
-  penC=[pick[0]*SECTOR_MM+SECTOR_MM/2,pick[1]*SECTOR_MM+SECTOR_MM/2];
-  unfinished.delete(pick[0]+','+pick[1]);
-}
-/* ФАЗА B: подтягиваем «отставших». Жадный порядок оставляет редкие сектора на
- * самый конец — за ними пришлось бы лететь через лист. Or-opt по центрам:
- * сектор переставляется к своим соседям, если это сокращает путь. */
-const ctr=seq.map(k=>{const kv=k.split(',').map(Number);return[kv[0]*SECTOR_MM+SECTOR_MM/2,kv[1]*SECTOR_MM+SECTOR_MM/2];});
-for(let i=1;i<ctr.length;i++){
-  const ci=ctr[i],key=seq[i];
-  const prevC=ctr[i-1],nextC=i+1<ctr.length?ctr[i+1]:null;
-  const curCost=nextC?Gd(prevC,ci)+Gd(ci,nextC):Gd(prevC,ci);
-  let bestJ=-1,bestGain=0;
-  for(let j=1;j<i;j++){
-    const gain=curCost+Gd(ctr[j-1],ctr[j])-(Gd(ctr[j-1],ci)+Gd(ci,ctr[j]));
-    if(gain>bestGain){bestGain=gain;bestJ=j;}
-  }
-  if(bestJ>0){ctr.splice(i,1);ctr.splice(bestJ,0,ci);seq.splice(i,1);seq.splice(bestJ,0,key);}
-}
-/* ФАЗА C: рисуем по секторам. Внутри сектора — «ленивый сосед»: жадная ближайшая
- * точка (штрих можно обратить). СЕКТОР ДОРИСЫВАЕТСЯ ДО КОНЦА — к следующему
- * сектору не приступаем, пока в текущем остался хоть один штрих. */
-const ordered=[];
-let pen=null,maxFly=0;
-for(const key of seq){
-  const strokes=sectors.get(key).slice();
-  while(strokes.length){
-    let bestIdx=-1,bestDist=1e18,bestRev=false;
-    for(let i=0;i<strokes.length;i++){
-      const s=strokes[i];
-      if(pen===null){bestIdx=i;bestDist=0;bestRev=false;break;}
-      const d0=Gd(pen,s[0]);
-      const d1=Gd(pen,s[1]);
-      if(d0<bestDist){bestDist=d0;bestIdx=i;bestRev=false;}
-      if(d1<bestDist){bestDist=d1;bestIdx=i;bestRev=true;}
+const SECTOR_MM=Math.max(2,($('tSec')&&+$('tSec').value)||5);
+
+function routeRasterStrokes(clippedSegs, mode, secMm) {
+  let ordered=[], maxFly=0, flySum=0, drawSum=0, tag='';
+  if (mode === 'hilb') {
+    const rows = clippedSegs.slice().sort((a,b)=>Math.abs(a[0][1]-b[0][1])>1e-4?a[0][1]-b[0][1]:a[0][0]-b[0][0]);
+    const whole = [];
+    for (const s of rows) {
+      let x0=s[0][0], y0=s[0][1], x1=s[1][0], y1=s[1][1];
+      if (x1<x0) { [x0,x1]=[x1,x0]; [y0,y1]=[y1,y0]; }
+      if (whole.length) {
+        const prev = whole[whole.length-1];
+        if (Math.abs(prev[0][1]-y0)<=1e-4 && Math.abs(prev[1][0]-x0)<=0.08) {
+          prev[1] = [x1, y1];
+          continue;
+        }
+      }
+      whole.push([[x0,y0],[x1,y1]]);
     }
-    if(bestIdx<0) break;
-    let s=strokes.splice(bestIdx,1)[0];
-    if(bestRev) s=[s[1],s[0]];
-    if(pen){const fly=Gd(pen,s[0]);if(fly>maxFly)maxFly=fly;}
-    ordered.push(s);
-    pen=s[1];
+    let hx0=1e9, hy0=1e9, hx1=-1e9, hy1=-1e9;
+    for (const s of whole) for (const p of s) {
+      if (p[0]<hx0) hx0=p[0]; if (p[0]>hx1) hx1=p[0];
+      if (p[1]<hy0) hy0=p[1]; if (p[1]>hy1) hy1=p[1];
+    }
+    const span = Math.max(1e-3, hx1-hx0, hy1-hy0);
+    const N_ORD = 1024;
+    const hilbertD = (n, x, y) => {
+      let rx, ry, d = 0;
+      for (let s = n >> 1; s > 0; s >>= 1) {
+        rx = (x & s) > 0 ? 1 : 0;
+        ry = (y & s) > 0 ? 1 : 0;
+        d += s * s * ((3 * rx) ^ ry);
+        if (ry === 0) {
+          if (rx === 1) { x = s - 1 - x; y = s - 1 - y; }
+          const t = x; x = y; y = t;
+        }
+      }
+      return d;
+    };
+    const items = whole.map(s => {
+      const mx = (s[0][0]+s[1][0])*0.5, my = (s[0][1]+s[1][1])*0.5;
+      const ix = Math.max(0, Math.min(N_ORD-1, Math.floor(((mx-hx0)/span)*(N_ORD-1))));
+      const iy = Math.max(0, Math.min(N_ORD-1, Math.floor(((my-hy0)/span)*(N_ORD-1))));
+      return { s, h: hilbertD(N_ORD, ix, iy) };
+    });
+    items.sort((a,b) => a.h - b.h);
+    let pen = null;
+    for (const it of items) {
+      let s = it.s;
+      if (pen && Gd(pen, s[1]) < Gd(pen, s[0])) s = [s[1], s[0]];
+      if (pen) { const fly = Gd(pen, s[0]); flySum += fly; if (fly > maxFly) maxFly = fly; }
+      drawSum += Gd(s[0], s[1]);
+      ordered.push(s);
+      pen = s[1];
+    }
+    tag = 'Гильберт (целиком)';
+  } else if (mode === 'nn') {
+    const rows = clippedSegs.slice().sort((a,b)=>Math.abs(a[0][1]-b[0][1])>1e-4?a[0][1]-b[0][1]:a[0][0]-b[0][0]);
+    const pool = [];
+    for (const s of rows) {
+      let x0=s[0][0], y0=s[0][1], x1=s[1][0], y1=s[1][1];
+      if (x1<x0) { [x0,x1]=[x1,x0]; [y0,y1]=[y1,y0]; }
+      if (pool.length) {
+        const prev = pool[pool.length-1];
+        if (Math.abs(prev[0][1]-y0)<=1e-4 && Math.abs(prev[1][0]-x0)<=0.08) {
+          prev[1] = [x1, y1];
+          continue;
+        }
+      }
+      pool.push([[x0,y0],[x1,y1]]);
+    }
+    let pen = null;
+    while (pool.length) {
+      let bestIdx = -1, bestDist = 1e18, bestRev = false;
+      for (let i = 0; i < pool.length; i++) {
+        const s = pool[i];
+        if (!pen) { bestIdx = i; bestDist = 0; bestRev = false; break; }
+        const d0 = Gd(pen, s[0]), d1 = Gd(pen, s[1]);
+        if (d0 < bestDist) { bestDist = d0; bestIdx = i; bestRev = false; }
+        if (d1 < bestDist) { bestDist = d1; bestIdx = i; bestRev = true; }
+      }
+      let s = pool.splice(bestIdx, 1)[0];
+      if (bestRev) s = [s[1], s[0]];
+      if (pen) { const fly = Gd(pen, s[0]); flySum += fly; if (fly > maxFly) maxFly = fly; }
+      drawSum += Gd(s[0], s[1]);
+      ordered.push(s);
+      pen = s[1];
+    }
+    tag = 'Ближайший сосед (целиком)';
+  } else if (mode === 'scan') {
+    const rows = clippedSegs.slice().sort((a,b)=>Math.abs(a[0][1]-b[0][1])>1e-4?a[0][1]-b[0][1]:a[0][0]-b[0][0]);
+    const lines = [];
+    for (const s of rows) {
+      let x0=s[0][0], y0=s[0][1], x1=s[1][0], y1=s[1][1];
+      if (x1<x0) { [x0,x1]=[x1,x0]; [y0,y1]=[y1,y0]; }
+      if (lines.length && Math.abs(lines[lines.length-1][0][0][1]-y0)<=1e-4) {
+        const row = lines[lines.length-1];
+        const prev = row[row.length-1];
+        if (Math.abs(prev[1][0]-x0)<=0.08) prev[1] = [x1, y1];
+        else row.push([[x0,y0],[x1,y1]]);
+      } else {
+        lines.push([[[x0,y0],[x1,y1]]]);
+      }
+    }
+    let pen = null;
+    for (let r = 0; r < lines.length; r++) {
+      const row = lines[r];
+      const rev = (r % 2 === 1);
+      if (rev) row.reverse();
+      for (let s of row) {
+        if (rev) s = [s[1], s[0]];
+        if (pen) { const fly = Gd(pen, s[0]); flySum += fly; if (fly > maxFly) maxFly = fly; }
+        drawSum += Gd(s[0], s[1]);
+        ordered.push(s);
+        pen = s[1];
+      }
+    }
+    tag = 'Змейка по строкам';
+  } else {
+    const pieces=[];
+    for(const s of clippedSegs){
+      let x0=s[0][0],x1=s[1][0];const y=s[0][1];
+      if(x1<x0){const t=x0;x0=x1;x1=t;}
+      const k0=Math.floor((x0+1e-9)/secMm),k1=Math.floor((x1-1e-9)/secMm);
+      for(let k=k0;k<=k1;k++){
+        const a=Math.max(x0,k*secMm),b2=Math.min(x1,(k+1)*secMm);
+        if(b2-a>1e-4)pieces.push([[a,y],[b2,y]]);
+      }
+    }
+    const sectors=new Map();
+    for(const p of pieces){
+      const sx=Math.floor(((p[0][0]+p[1][0])/2)/secMm);
+      const sy=Math.floor(p[0][1]/secMm);
+      const key=sx+','+sy;
+      let arr=sectors.get(key);
+      if(!arr){arr=[];sectors.set(key,arr);}
+      arr.push(p);
+    }
+    for(const [,arr] of sectors){
+      if(arr.length<2)continue;
+      arr.sort((a,b)=>Math.abs(a[0][1]-b[0][1])>1e-4?a[0][1]-b[0][1]:a[0][0]-b[0][0]);
+      const merged=[arr[0]];
+      for(let i=1;i<arr.length;i++){
+        const prev=merged[merged.length-1],cur=arr[i];
+        if(Math.abs(prev[0][1]-cur[0][1])<=1e-4&&Math.abs(prev[1][0]-cur[0][0])<=0.08){
+          prev[1]=[cur[1][0],cur[1][1]];
+        }else merged.push(cur);
+      }
+      arr.length=0;arr.push.apply(arr,merged);
+    }
+    const ROW_BIAS_MM=8,ROW_GAP_MAX_MM=15;
+    const unfinished=new Map();for(const [k,arr] of sectors)unfinished.set(k,arr);
+    const rectDist=(pen,sx,sy)=>{if(!pen)return 0;const dx=Math.max(sx*secMm,Math.min(pen[0],(sx+1)*secMm))-pen[0],dy=Math.max(sy*secMm,Math.min(pen[1],(sy+1)*secMm))-pen[1];return Math.hypot(dx,dy);};
+    const rowSxs=sy=>{const a=[];for(const k of unfinished.keys()){const kv=k.split(',').map(Number);if(kv[1]===sy)a.push(kv[0]);}return a.sort((x,y)=>x-y);};
+    const seq=[];let penC=null,act=null;
+    while(unfinished.size){
+      let pick=null,cont=false;
+      if(act){
+        act.sxs=act.sxs.filter(sx=>unfinished.has(sx+','+act.sy));
+        if(!act.sxs.length)act=null;
+      }
+      if(act){
+        const nx=act.dir>0?act.sxs[0]:act.sxs[act.sxs.length-1];
+        let bd=1e18,bs=null;
+        for(const k of unfinished.keys()){const kv=k.split(',').map(Number);const dd=rectDist(penC,kv[0],kv[1]);if(dd<bd){bd=dd;bs=kv;}}
+        if(rectDist(penC,nx,act.sy)<=bd+ROW_BIAS_MM&&rectDist(penC,nx,act.sy)<=ROW_GAP_MAX_MM){pick=[nx,act.sy];cont=true;}
+      }
+      if(!cont){
+        let bd=1e18,bs=null;
+        for(const k of unfinished.keys()){const kv=k.split(',').map(Number);const dd=rectDist(penC,kv[0],kv[1]);if(dd<bd){bd=dd;bs=kv;}}
+        if(!penC){bs=null;for(const k of unfinished.keys()){const kv=k.split(',').map(Number);if(!bs||kv[1]<bs[1]||(kv[1]===bs[1]&&kv[0]<bs[0]))bs=kv;}}
+        pick=bs;
+        const sxs=rowSxs(pick[1]);
+        const lo=sxs[0]*secMm,hi=(sxs[sxs.length-1]+1)*secMm;
+        act={sy:pick[1],sxs,dir:(!penC||Gd(penC,[lo,pick[1]*secMm])<=Gd(penC,[hi,(pick[1]+1)*secMm]))?1:-1};
+      }
+      seq.push(pick[0]+','+pick[1]);
+      penC=[pick[0]*secMm+secMm/2,pick[1]*secMm+secMm/2];
+      unfinished.delete(pick[0]+','+pick[1]);
+    }
+    const ctr=seq.map(k=>{const kv=k.split(',').map(Number);return[kv[0]*secMm+secMm/2,kv[1]*secMm+secMm/2];});
+    for(let i=1;i<ctr.length;i++){
+      const ci=ctr[i],key=seq[i];
+      const prevC=ctr[i-1],nextC=i+1<ctr.length?ctr[i+1]:null;
+      const curCost=nextC?Gd(prevC,ci)+Gd(ci,nextC):Gd(prevC,ci);
+      let bestJ=-1,bestGain=0;
+      for(let j=1;j<i;j++){
+        const gain=curCost+Gd(ctr[j-1],ctr[j])-(Gd(ctr[j-1],ci)+Gd(ci,ctr[j]));
+        if(gain>bestGain){bestGain=gain;bestJ=j;}
+      }
+      if(bestJ>0){ctr.splice(i,1);ctr.splice(bestJ,0,ci);seq.splice(i,1);seq.splice(bestJ,0,key);}
+    }
+    let pen=null;
+    for(const key of seq){
+      const strokes=sectors.get(key).slice();
+      while(strokes.length){
+        let bestIdx=-1,bestDist=1e18,bestRev=false;
+        for(let i=0;i<strokes.length;i++){
+          const s=strokes[i];
+          if(pen===null){bestIdx=i;bestDist=0;bestRev=false;break;}
+          const d0=Gd(pen,s[0]);
+          const d1=Gd(pen,s[1]);
+          if(d0<bestDist){bestDist=d0;bestIdx=i;bestRev=false;}
+          if(d1<bestDist){bestDist=d1;bestIdx=i;bestRev=true;}
+        }
+        if(bestIdx<0) break;
+        let s=strokes.splice(bestIdx,1)[0];
+        if(bestRev) s=[s[1],s[0]];
+        if(pen){const fly=Gd(pen,s[0]);flySum+=fly;if(fly>maxFly)maxFly=fly;}
+        drawSum+=Gd(s[0],s[1]);
+        ordered.push(s);
+        pen=s[1];
+      }
+    }
+    tag = 'Сектора ('+secMm+'×'+secMm+' мм): '+sectors.size;
+    if(mode==='sec2'){
+      /* 2-opt поверх секторов: разворачиваем кусок маршрута [i..j] целиком
+       * (каждый штрих можно вести в обратную сторону — длина та же), если это
+       * сокращает холостой ход. Окно и число проходов ограничены, чтобы сводка
+       * по всем маршрутам при каждой перерисовке оставалась быстрой. */
+      const W2=Math.min(64,Math.max(12,ordered.length>>3));
+      for(let pass=0;pass<3;pass++){
+        let imp=false;
+        for(let i=0;i<ordered.length-1;i++){
+          const jEnd=Math.min(ordered.length-1,i+W2);
+          const a=ordered[i-1]?ordered[i-1][1]:null;
+          let bg=0,bj=-1;
+          for(let j=i+1;j<=jEnd;j++){
+            const nxt=(j+1<ordered.length)?ordered[j+1][0]:null;
+            const gain=(a?Gd(a,ordered[i][0]):0)+(nxt?Gd(ordered[j][1],nxt):0)
+                      -(a?Gd(a,ordered[j][1]):0)-(nxt?Gd(ordered[i][0],nxt):0);
+            if(gain>bg){bg=gain;bj=j;}
+          }
+          if(bj>0){
+            const seg=ordered.slice(i,bj+1).reverse();
+            for(let k=0;k<seg.length;k++)ordered[i+k]=[seg[k][1],seg[k][0]];
+            imp=true;
+          }
+        }
+        if(!imp)break;
+      }
+      maxFly=0;{let pen=null;for(const s of ordered){if(pen){const fly=Gd(pen,s[0]);if(fly>maxFly)maxFly=fly;}pen=s[1];}}
+      tag='Сектора ('+secMm+'×'+secMm+' мм) + 2-opt: '+sectors.size;
+    }else if(mode==='sec25'){
+      tag='Сектора ('+secMm+'×'+secMm+' мм) + сосед: '+sectors.size;
+    }
   }
+  // Расчёт сшивок/перелётов и расчётного времени печати (точно как в build() и routeMetrics())
+  const tr = applyTraceXform(ordered, [], []);
+  const stitchLim = ($('cSt') && $('cSt').checked) ? ((+$('lw').value||2.2) * 0.75) : -1;
+  let dMm=0, fMm=0, lifts=0, stCnt=0, prevP=null;
+  for (const s of tr.strokes) {
+    if (!s || s.length < 2) continue;
+    if (prevP) {
+      const gap = Gd(prevP, s[0]);
+      if (gap > 0.02) {
+        if (stitchLim > 0 && gap <= stitchLim) { dMm += gap; stCnt++; }
+        else { fMm += gap; lifts++; }
+      }
+    }
+    dMm += Gd(s[0], s[1]);
+    prevP = s[1];
+  }
+  const fXY = Math.max(10, +$('fXY').value || 1500);
+  const fZ  = Math.max(10, +$('fZ').value || 800);
+  const zTravel = Math.abs((+$('zU').value || 5) - (+$('zD').value || 0));
+  const liftTime = lifts * (2 * (zTravel / Math.max(1, fZ / 60)) + 0.08);
+  const estSec = (dMm / (fXY / 60)) + (fMm / ((fXY * 2) / 60)) + liftTime;
+  return { ordered, maxFly, flySum: fMm, drawSum: dMm, lifts, stCnt, estSec, tag, tr };
 }
 
-G.trace={strokes:ordered,holes:[],regions:[]};G.traceTok++;G._traceLbl=lbl||'растр';G._rasGrid=true;
+const sortMode = ($('tSort') && $('tSort').value) || 'sec';
+const activeRes = routeRasterStrokes(clipped, sortMode, sortMode==='sec25' ? 2.5 : SECTOR_MM);
+const { ordered, maxFly, flySum, drawSum, tag: routeTag, tr: trRas } = activeRes;
+
+// Считаем сводку по всем 4 методам для мгновенного сравнения прямо в панели и в выпадающем списке!
+const ALL_MODES = [
+  { id: 'sec',   short: 'Сектора '+SECTOR_MM+'×'+SECTOR_MM+' + сосед', mm: SECTOR_MM },
+  { id: 'sec2',  short: 'Сектора '+SECTOR_MM+'×'+SECTOR_MM+' + 2-opt', mm: SECTOR_MM },
+  { id: 'sec25', short: 'Сектора 2.5×2.5 + сосед', mm: 2.5 },
+  { id: 'hilb',  short: 'Кривая Гильберта (целиком)' },
+  { id: 'nn',    short: 'Ближайший сосед (целиком)' },
+  { id: 'scan',  short: 'Змейка по строкам' }
+];
+const fmtSec = sec => {
+  const s = Math.max(1, Math.round(sec));
+  return s >= 60 ? (Math.floor(s/60) + 'м ' + (s%60) + 'с') : (s + 'с');
+};
+const cmpList = ALL_MODES.map(m => {
+  const r = (m.id === sortMode) ? activeRes : routeRasterStrokes(clipped, m.id, m.mm || SECTOR_MM);
+  return { id: m.id, short: m.short, drawMm: r.drawSum, flyMm: r.flySum, totalMm: r.drawSum + r.flySum, lifts: r.lifts, estSec: r.estSec };
+});
+// Обновляем подписи прямо в <select id="tSort">, чтобы при открытии списка сразу были видны путь и время!
+const selEl = $('tSort');
+if (selEl) {
+  for (const c of cmpList) {
+    const opt = selEl.querySelector('option[value="' + c.id + '"]');
+    if (opt) opt.textContent = c.short + ' — ' + Math.round(c.totalMm) + ' мм (холост. ' + Math.round(c.flyMm) + '), ~' + fmtSec(c.estSec);
+  }
+}
+G._routeCmp = cmpList;
+G.trace={strokes:trRas.strokes,holes:[],regions:[]};G.traceTok++;G._traceLbl=lbl||'растр';G._rasGrid=(sortMode==='sec'||sortMode==='sec2'||sortMode==='sec25'||sortMode==='hilb'||sortMode==='nn'||sortMode==='scan');G._rasSec=(sortMode==='sec'||sortMode==='sec2')?SECTOR_MM:(sortMode==='sec25')?2.5:0;
 $('traceRow').style.display='flex';
-$('traceInfo').textContent=G._traceLbl+' · растр: прогонов: '+ordered.length+' · порог авто (Otsu): '+th+' · шаг: '+stepMm.toFixed(2)+' мм · секторов 5×5 мм: '+sectors.size+' · макс. перелёт: '+maxFly.toFixed(1)+' мм · '+Math.round(performance.now()-t0)+' мс';
+$('traceInfo').textContent=G._traceLbl+' · '+routeTag+' · штрихов: '+trRas.strokes.length+' · шаг: '+stepMm.toFixed(2)+' мм · перо: '+Math.round(drawSum)+' мм · перелёты: '+Math.round(flySum)+' мм · ~'+fmtSec(activeRes.estSec)+' · '+Math.round(performance.now()-t0)+' мс';
+const cmpBox=$('routeCmpBox');
+if(cmpBox){
+  const bestTime=Math.min(...cmpList.map(x=>x.estSec));
+  const bestFly=Math.min(...cmpList.map(x=>x.flyMm));
+  cmpBox.style.display='block';
+  cmpBox.innerHTML='<div style="font-weight:800;color:var(--mut);margin-bottom:.25rem;text-transform:uppercase;font-size:.63rem;letter-spacing:.4px">Сравнение маршрутов (нажми для выбора):</div>'+
+    '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:.28rem">'+
+    cmpList.map(c=>{
+      const on=c.id===sortMode;
+      const bTime=Math.abs(c.estSec-bestTime)<0.5?' <span style="color:var(--acidD);font-weight:900">★быстр</span>':'';
+      const bFly=Math.abs(c.flyMm-bestFly)<1?' <span style="color:var(--blueD);font-weight:900">★мин.перелёт</span>':'';
+      return '<button type="button" data-rmode="'+c.id+'" style="justify-content:space-between;text-align:left;min-height:0;padding:.32rem .48rem;border-radius:8px;font-size:.73rem;'+(on?'background:var(--blueT);border-color:var(--blue);color:var(--ink);':'background:#fff;')+'">'+
+        '<span><b>'+c.short+'</b>'+bTime+bFly+'<br><span style="color:var(--mut);font-weight:600">путь '+Math.round(c.totalMm)+' мм (холост. '+Math.round(c.flyMm)+' мм · '+c.lifts+' подъём.)</span></span>'+
+        '<span style="font-weight:900;font-size:.82rem;color:'+(on?'var(--blueD)':'var(--tx)')+';white-space:nowrap;margin-left:.4rem">~'+fmtSec(c.estSec)+'</span>'+
+      '</button>';
+    }).join('')+'</div>';
+  cmpBox.querySelectorAll('[data-rmode]').forEach(btn=>{
+    btn.onclick=()=>{if($('tSort')){$('tSort').value=btn.dataset.rmode;retrace(G._traceLbl);}};
+  });
+}
 G.invalidate();G.refresh();}
 function retrace(lbl){const S0=G.traceSrc;if(!S0)return;if($('tMode')&&$('tMode').value==='ras')return retraceRaster(lbl);const t0=performance.now();
 /* двойной порог: «порог» — жирность следа пера, «порог дырок» — где искать пустоты
@@ -1703,8 +2023,9 @@ if(s.length>2)s.push([s[0][0],s[0][1]]);
 ordered.push(s);pen=s[s.length-1];}
 for(const h of holes)for(let i=0;i<ordered.length;i++)if(pInPoly([h.cx,h.cy],ordered[i])){h.idx=i;break;}
 const regions=buildRegions(holes);
-G.trace={strokes:ordered,holes:holes,regions:regions};G.traceTok++;G._traceLbl=lbl||'картинка';G._rasGrid=false;
-$('traceRow').style.display='flex';$('traceInfo').textContent=G._traceLbl+' · контуров: '+ordered.length+' · пустот: '+holes.length+' · областей заливки: '+regions.length+' · порог следа/дырок: '+th+'/'+thH+' · '+Math.round(performance.now()-t0)+' мс';
+const trCnt=applyTraceXform(ordered,holes,regions);
+G.trace={strokes:trCnt.strokes,holes:trCnt.holes,regions:trCnt.regions};G.traceTok++;G._traceLbl=lbl||'картинка';G._rasGrid=false;
+$('traceRow').style.display='flex';$('traceInfo').textContent=G._traceLbl+' · контуров: '+trCnt.strokes.length+' · пустот: '+trCnt.holes.length+' · областей заливки: '+trCnt.regions.length+' · порог следа/дырок: '+th+'/'+thH+' · '+Math.round(performance.now()-t0)+' мс';
 G.invalidate();G.refresh();}
 async function importPdf(f){G.st('Читаю PDF…');
 const pdfjs=await loadPdfJs();
@@ -1714,7 +2035,7 @@ for(let p=1;p<=n;p++){const pg=await pdf.getPage(p),vp=pg.getViewport({scale});
 const c=document.createElement('canvas');c.width=Math.ceil(vp.width);c.height=Math.ceil(vp.height);
 await pg.render({canvasContext:c.getContext('2d',{willReadFrequently:true}),viewport:vp}).promise;
 cvs.push(c);szs.push([c.width,c.height]);}
-composeTrace(cvs,szs,mmPx,'PDF «'+f.name.slice(0,24)+'» · стр.: '+n);}
+resetTraceXform();composeTrace(cvs,szs,mmPx,'PDF «'+f.name.slice(0,24)+'» · стр.: '+n);}
 async function importImg(f){G.st('Читаю картинку…');
 const img=new Image();img.src=URL.createObjectURL(f);
 await new Promise((res,rej)=>{img.onload=res;img.onerror=()=>rej(new Error('не удалось прочитать картинку'));});
@@ -1722,7 +2043,7 @@ const k=Math.min(1,3200/img.naturalWidth),c=document.createElement('canvas');
 c.width=Math.max(1,Math.round(img.naturalWidth*k));c.height=Math.max(1,Math.round(img.naturalHeight*k));
 const ctx=c.getContext('2d',{willReadFrequently:true});ctx.fillStyle='#fff';ctx.fillRect(0,0,c.width,c.height);ctx.drawImage(img,0,0,c.width,c.height);
 URL.revokeObjectURL(img.src);
-composeTrace([c],[[c.width,c.height]],G.params().pW/c.width,'Картинка «'+f.name.slice(0,24)+'»');}
+resetTraceXform();composeTrace([c],[[c.width,c.height]],G.params().pW/c.width,'Картинка «'+f.name.slice(0,24)+'»');}
 $('fPdf').onchange=async e=>{const f=e.target.files[0];e.target.value='';if(!f)return;
 try{const n=f.name.toLowerCase();
 if(n.endsWith('.pdf')||(f.type||'')==='application/pdf')await importPdf(f);
@@ -1735,10 +2056,89 @@ $('tThr').addEventListener('change',()=>{if(G.traceSrc)retrace(G._traceLbl);});
 $('tThrH').addEventListener('change',()=>{if(G.traceSrc)retrace(G._traceLbl);});
 $('tMode').addEventListener('change',()=>{rasUI();if(G.traceSrc)retrace(G._traceLbl);});
 $('tStep').addEventListener('change',()=>{if(G.traceSrc)retrace(G._traceLbl);});
+$('tSort').addEventListener('change',()=>{if(G.traceSrc)retrace(G._traceLbl);});
 function rasUI(){const ras=$('tMode').value==='ras';
-for(const id of ['tFill','tHole','tThrH','tThr']){$(id).disabled=ras;$(id).style.opacity=ras?'.4':'1';}}
+for(const id of ['tFill','tHole','tThrH','tThr']){$(id).disabled=ras;$(id).style.opacity=ras?'.4':'1';}if($('tSort')){$('tSort').disabled=!ras;$('tSort').style.opacity=!ras?'.4':'1';}if($('routeCmpBox')&&!ras)$('routeCmpBox').style.display='none';}
 rasUI();
-$('tClr').onclick=()=>{G.trace=null;G.traceSrc=null;G.traceTok++;G._traceLbl='';G._rasGrid=false;$('traceRow').style.display='none';G.invalidate();G.refresh();toast('Картинка убрана');};
+
+function syncTraceXformFromUI(changedAxis){
+  const lock=$('tLock')&&$('tLock').checked;
+  let sx=Math.max(5,+$('tSx').value||100);
+  let sy=Math.max(5,+$('tSy').value||100);
+  if(lock&&changedAxis==='x'){sy=sx;$('tSy').value=sy;}
+  if(lock&&changedAxis==='y'){sx=sy;$('tSx').value=sx;}
+  G.tXform.sx=sx;
+  G.tXform.sy=sy;
+  G.tXform.dx=+$('tDx').value||0;
+  G.tXform.dy=+$('tDy').value||0;
+  if(G.traceSrc)retrace(G._traceLbl);
+}
+if($('tSx'))$('tSx').addEventListener('change',()=>syncTraceXformFromUI('x'));
+if($('tSy'))$('tSy').addEventListener('change',()=>syncTraceXformFromUI('y'));
+if($('tDx'))$('tDx').addEventListener('change',()=>syncTraceXformFromUI('dx'));
+if($('tDy'))$('tDy').addEventListener('change',()=>syncTraceXformFromUI('dy'));
+if($('tSelBtn'))$('tSelBtn').onclick=()=>{
+  if(!G.traceSrc){toast('Сначала загрузи картинку или PDF');return;}
+  G.tXform.selecting=!G.tXform.selecting;
+  $('tSelBtn').classList.toggle('ton',G.tXform.selecting);
+  cvG.style.cursor=G.tXform.selecting?'crosshair':'default';
+  if(G.tXform.selecting)toast('Выдели нужную область на холсте');
+};
+if($('tCropReset'))$('tCropReset').onclick=()=>{
+  resetTraceXform();
+  cvG.style.cursor='default';
+  if(G.traceSrc)retrace(G._traceLbl);
+  toast('Масштаб, сдвиг и выделение сброшены');
+};
+function cgPt(e){
+  const r=cvG.getBoundingClientRect(),s=e.touches&&e.touches[0]?e.touches[0]:e;
+  const px=(s.clientX-r.left)*(cvG.width/r.width),py=(s.clientY-r.top)*(cvG.height/r.height);
+  return G._lastT?G._lastT.inv([px,py]):[0,0];
+}
+cvG.addEventListener('pointerdown',e=>{
+  if(!G.tXform||!G.tXform.selecting||!G.traceSrc)return;
+  e.preventDefault();
+  try{cvG.setPointerCapture(e.pointerId);}catch(_){}
+  const p=cgPt(e);
+  G.tXform.selDrag={x0:p[0],y0:p[1],x1:p[0],y1:p[1]};
+  if(G._lastT)G.paint(G._lastT,G.plan.length,null);
+});
+cvG.addEventListener('pointermove',e=>{
+  if(!G.tXform||!G.tXform.selDrag)return;
+  e.preventDefault();
+  const p=cgPt(e);
+  G.tXform.selDrag.x1=p[0];G.tXform.selDrag.y1=p[1];
+  if(G._lastT)G.paint(G._lastT,G.plan.length,null);
+});
+function endCgSel(e){
+  if(!G.tXform||!G.tXform.selDrag)return;
+  if(e)e.preventDefault();
+  const d=G.tXform.selDrag;
+  G.tXform.selDrag=null;
+  G.tXform.selecting=false;
+  if($('tSelBtn'))$('tSelBtn').classList.remove('ton');
+  cvG.style.cursor='default';
+  if(Math.abs(d.x1-d.x0)>1&&Math.abs(d.y1-d.y0)>1){
+    // Переводим выделение обратно в исходные координаты до текущих sx/sy/dx/dy
+    const sx=Math.max(0.05,(+G.tXform.sx||100)/100),sy=Math.max(0.05,(+G.tXform.sy||100)/100);
+    const dx=+G.tXform.dx||0,dy=+G.tXform.dy||0;
+    const prev=G.tXform.crop||{x0:0,y0:0};
+    const bx0=prev.x0||0,by0=prev.y0||0;
+    const ux0=bx0+(Math.min(d.x0,d.x1)-dx-bx0)/sx;
+    const ux1=bx0+(Math.max(d.x0,d.x1)-dx-bx0)/sx;
+    const uy0=by0+(Math.min(d.y0,d.y1)-dy-by0)/sy;
+    const uy1=by0+(Math.max(d.y0,d.y1)-dy-by0)/sy;
+    G.tXform.crop={x0:ux0,y0:uy0,x1:ux1,y1:uy1};
+    retrace(G._traceLbl);
+    toast('Выделенная область обрезана и пересчитана');
+  }else if(G._lastT){
+    G.paint(G._lastT,G.plan.length,null);
+  }
+}
+cvG.addEventListener('pointerup',endCgSel);
+cvG.addEventListener('pointercancel',endCgSel);
+
+$('tClr').onclick=()=>{resetTraceXform();G.trace=null;G.traceSrc=null;G.traceTok++;G._traceLbl='';G._rasGrid=false;$('traceRow').style.display='none';if($('routeCmpBox'))$('routeCmpBox').style.display='none';G.invalidate();G.refresh();toast('Картинка убрана');};
 (()=>{const HOLD='!',RES='~',RST='\x18',JC='\x85';
 const clean=s=>{let o=String(s).replace(/\([^)]*\)/g,'');const i=o.indexOf(';');if(i>=0)o=o.slice(0,i);o=o.trim();return!o||o==='%'?'':o;};
 const r3=n=>String(Math.round(+n*1000)/1000);
